@@ -1,0 +1,29 @@
+{
+  "name": "topic-threads",
+  "version": "1.0.0",
+  "description": "CS 316 Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaeHunRo/topic-threads.git"
+  },
+  "author": "Phil Foo, Kevin He, Jae Ro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JaeHunRo/topic-threads/issues"
+  },
+  "homepage": "https://github.com/JaeHunRo/topic-threads#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "request": "^2.78.0",
+    "sequelize": "^3.24.8"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
