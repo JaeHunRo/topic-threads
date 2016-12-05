@@ -13,7 +13,7 @@ if (!global.hasOwnProperty('db')) {
     })
   } else {
     // the application is executed on the local machine ... use mysql
-    var DATABASE_URL = 'YOUR_POSTGRES_URL_HERE';
+    var DATABASE_URL = 'postgres://eppciifxazpjdr:12E7obHEuHKI3-EewVdXUrNMmi@ec2-54-163-249-150.compute-1.amazonaws.com:5432/dad988vhmool6k';
     var match = DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
     sequelize = new Sequelize(match[5], match[1], match[2], {
         dialect:  'postgres',
@@ -35,27 +35,43 @@ if (!global.hasOwnProperty('db')) {
   var Topic = sequelize.import(__dirname + '/topic');
   var Opinion = sequelize.import(__dirname + '/opinion');
   var Comment = sequelize.import(__dirname + '/comment');
+  var Topic_Votes = sequelize.import(__dirname + '/topic_votes');
+  var Opinion_Votes = sequelize.import(__dirname + '/opinion_votes');
 
   /*
     Associations defined here:
   */
   User.hasMany(Topic, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
       allowNull: false
     }
   });
 
   User.hasMany(Opinion, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
       allowNull: false
     }
   });
 
   User.hasMany(Comment, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
+      allowNull: false
+    }
+  });
+
+  User.hasMany(Topic_Votes, {
+    foreignKey: {
+      name: 'user_id',
+      allowNull: false
+    }
+  });
+
+  User.hasMany(Opinion_Votes, {
+    foreignKey: {
+      name: 'user_id',
       allowNull: false
     }
   });
@@ -74,7 +90,28 @@ if (!global.hasOwnProperty('db')) {
     }
   });
 
+  Topic.hasMany(Topic_Votes, {
+    foreignKey: {
+      name: 'topic_id',
+      allowNull: false
+    }
+  });
+
+  Topic.hasMany(Opinion_Votes, {
+    foreignKey: {
+      name: 'topic_id',
+      allowNull: false
+    }
+  });
+
   Opinion.hasMany(Comment, {
+    foreignKey: {
+      name: 'opinion_id',
+      allowNull: false
+    }
+  });
+
+  Opinion.hasMany(Opinion_Votes, {
     foreignKey: {
       name: 'opinion_id',
       allowNull: false
