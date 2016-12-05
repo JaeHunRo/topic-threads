@@ -13,7 +13,7 @@ if (!global.hasOwnProperty('db')) {
     })
   } else {
     // the application is executed on the local machine ... use mysql
-    var DATABASE_URL = 'YOUR_POSTGRES_URL_HERE';
+    var DATABASE_URL = 'postgres://eppciifxazpjdr:12E7obHEuHKI3-EewVdXUrNMmi@ec2-54-163-249-150.compute-1.amazonaws.com:5432/dad988vhmool6k';
     var match = DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/)
     sequelize = new Sequelize(match[5], match[1], match[2], {
         dialect:  'postgres',
