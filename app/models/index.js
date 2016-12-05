@@ -35,27 +35,43 @@ if (!global.hasOwnProperty('db')) {
   var Topic = sequelize.import(__dirname + '/topic');
   var Opinion = sequelize.import(__dirname + '/opinion');
   var Comment = sequelize.import(__dirname + '/comment');
+  var Topic_Votes = sequelize.import(__dirname + '/topic_votes');
+  var Opinion_Votes = sequelize.import(__dirname + '/opinion_votes');
 
   /*
     Associations defined here:
   */
   User.hasMany(Topic, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
       allowNull: false
     }
   });
 
   User.hasMany(Opinion, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
       allowNull: false
     }
   });
 
   User.hasMany(Comment, {
     foreignKey: {
-      name: 'created_by',
+      name: 'user_id',
+      allowNull: false
+    }
+  });
+
+  User.hasMany(Topic_Votes, {
+    foreignKey: {
+      name: 'user_id',
+      allowNull: false
+    }
+  });
+
+  User.hasMany(Opinion_Votes, {
+    foreignKey: {
+      name: 'user_id',
       allowNull: false
     }
   });
@@ -74,7 +90,28 @@ if (!global.hasOwnProperty('db')) {
     }
   });
 
+  Topic.hasMany(Topic_Votes, {
+    foreignKey: {
+      name: 'topic_id',
+      allowNull: false
+    }
+  });
+
+  Topic.hasMany(Opinion_Votes, {
+    foreignKey: {
+      name: 'topic_id',
+      allowNull: false
+    }
+  });
+
   Opinion.hasMany(Comment, {
+    foreignKey: {
+      name: 'opinion_id',
+      allowNull: false
+    }
+  });
+
+  Opinion.hasMany(Opinion_Votes, {
     foreignKey: {
       name: 'opinion_id',
       allowNull: false
