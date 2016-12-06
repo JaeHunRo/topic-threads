@@ -44,6 +44,20 @@ router.route('/logout')
 		res.redirect('/');
 	});
 
+
+/*
+========================================
+INTERNAL API ROUTES
+========================================
+*/
+//Topic routes
+router.get('/api/topic/:pageNum', userController.isLoggedIn, topicController.getTopics);
+router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
+
+//Opinion route
+
+
+
 /*
  =====================================
  CUSTOM ROUTES =====================

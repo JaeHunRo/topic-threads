@@ -35,8 +35,8 @@ if (!global.hasOwnProperty('db')) {
   var Topic = sequelize.import(__dirname + '/topic');
   var Opinion = sequelize.import(__dirname + '/opinion');
   var Comment = sequelize.import(__dirname + '/comment');
-  var Topic_Votes = sequelize.import(__dirname + '/topic_votes');
-  var Opinion_Votes = sequelize.import(__dirname + '/opinion_votes');
+  var TopicVotes = sequelize.import(__dirname + '/topic_votes');
+  var OpinionVotes = sequelize.import(__dirname + '/opinion_votes');
 
   /*
     Associations defined here:
@@ -62,14 +62,14 @@ if (!global.hasOwnProperty('db')) {
     }
   });
 
-  User.hasMany(Topic_Votes, {
+  User.hasMany(TopicVotes, {
     foreignKey: {
       name: 'user_id',
       allowNull: false
     }
   });
 
-  User.hasMany(Opinion_Votes, {
+  User.hasMany(OpinionVotes, {
     foreignKey: {
       name: 'user_id',
       allowNull: false
@@ -90,14 +90,14 @@ if (!global.hasOwnProperty('db')) {
     }
   });
 
-  Topic.hasMany(Topic_Votes, {
+  Topic.hasMany(TopicVotes, {
     foreignKey: {
       name: 'topic_id',
       allowNull: false
     }
   });
 
-  Topic.hasMany(Opinion_Votes, {
+  Topic.hasMany(OpinionVotes, {
     foreignKey: {
       name: 'topic_id',
       allowNull: false
@@ -111,7 +111,7 @@ if (!global.hasOwnProperty('db')) {
     }
   });
 
-  Opinion.hasMany(Opinion_Votes, {
+  Opinion.hasMany(OpinionVotes, {
     foreignKey: {
       name: 'opinion_id',
       allowNull: false
@@ -124,7 +124,9 @@ if (!global.hasOwnProperty('db')) {
     User:      User,
     Topic:     Topic,
     Opinion:   Opinion,
-    Comment:   Comment
+    Comment:   Comment,
+    TopicVotes: TopicVotes,
+    OpinionVotes: OpinionVotes
   }
 
 }

@@ -11,10 +11,6 @@ module.exports = function(sequelize, DataTypes) {
     category: {
 	    type     : DataTypes.STRING(30),
 	    allowNull: true
-	  },
-	  num_votes: {
-	  	type     : DataTypes.INTEGER,
-	    allowNull: true
 	  }
   });
 }
