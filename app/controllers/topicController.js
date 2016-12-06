@@ -13,58 +13,58 @@ already voted on that particular topic. Appends a hasVoted attribute to the
 result, then sends it back as a response.
 */
 function getTopics(req, res){
-	db.User.findOne({
-		where: {
-			fb_id: req.user.id
-		}
-	}).then(function(user){
-		db.Topic.findAndCountAll({
-			limit: numTopicsToShow,
-			offset: numTopicsToShow * (req.params.pageNum - 1)
-		}).then(function(result){
-			var topics = result.rows;
-			async.eachSeries(topics, function(topic, callback){
-				db.TopicVotes.findOne({
-					where: {
-						topic_id: topic.id,
-						user_id: user.id 
-					}
-				}).then(function(vote){
-					if (vote == null){
-						topic.dataValues.hasVoted = false;
-					}else{
-						topic.dataValues.hasVoted = true;
-					}
-					callback();
-				});
-			}, function(){
-				res.send(result);
-			});
-		})
-	});
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.Topic.findAndCountAll({
+            limit: numTopicsToShow,
+            offset: numTopicsToShow * (req.params.pageNum - 1)
+        }).then(function(result){
+            var topics = result.rows;
+            async.each(topics, function(topic, callback){
+                db.TopicVotes.findOne({
+                    where: {
+                        topic_id: topic.id,
+                        user_id: user.id 
+                    }
+                }).then(function(vote){
+                    if (vote == null){
+                        topic.dataValues.hasVoted = false;
+                    }else{
+                        topic.dataValues.hasVoted = true;
+                    }
+                    callback();
+                });
+            }, function(){
+                res.send(result);
+            });
+        })
+    });
 }
 
 function postTopic(req, res, next) {
-	db.User.findOne({
-		where: {
-			fb_id: req.user.id
-		}
-	}).then(function(user) {
-		db.Topic.create({
-			title: "Duke Basketball Players",
-			description: "I'm gay as hell.",
-			category: "Sports",
-			user_id: user.id 
-		})
-		.then(function() {
-			res.send({
-				status: "success"
-			});
-		});
-	});
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user) {
+        db.Topic.create({
+            title: "Duke Basketball Players",
+            description: "I'm gay as hell.",
+            category: "Sports",
+            user_id: user.id 
+        })
+        .then(function() {
+            res.send({
+                status: "success"
+            });
+        });
+    });
 }
 
 module.exports = {
-	postTopic: postTopic,
-	getTopics: getTopics
+    postTopic: postTopic,
+    getTopics: getTopics
 };
