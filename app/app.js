@@ -7,6 +7,7 @@ var passport = require('passport');
 
 var userController = require('./controllers/userController');
 var topicController = require('./controllers/topicController');
+var opinionController = require('./controllers/opinionController');
 
 var app = express();
 var router = express.Router();
@@ -55,8 +56,8 @@ router.get('/api/topic/:pageNum', userController.isLoggedIn, topicController.get
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
 
 //Opinion route
-
-
+router.get('/api/opinion/:topicId/:pageNum', userController.isLoggedIn, opinionController.getOpinions);
+router.post('/api/opinion/:topicId', userController.isLoggedIn, opinionController.postOpinion);
 
 /*
  =====================================
@@ -68,8 +69,7 @@ router.route('/topic')
 	.get(userController.isLoggedIn, function(req, res) {
 		// code here to direct to actual page?
 		res.sendFile(path.resolve(__dirname + '/../public/topic.html'));
-	})
-	.post(userController.isLoggedIn, topicController.postTopic);
+	});
 
 app.use('/', router);
 

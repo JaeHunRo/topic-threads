@@ -20,10 +20,8 @@ function registerUser(profile, callback) {
 		}
 	}).then(function(user) {
 		if (user.length) {
-			console.log(user);
 			callback(null, profile);
 		} else {
-			console.log("registering");
 			global.db.User.create({
 				fb_id: profile.id,
 				username: profile.displayName,

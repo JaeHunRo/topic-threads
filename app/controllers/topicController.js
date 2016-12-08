@@ -50,7 +50,7 @@ function postTopic(req, res, next) {
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
-            user_id: user.id
+            user_id: user.id 
         })
         .then(function() {
             res.send({
