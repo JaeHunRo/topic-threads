@@ -8,6 +8,7 @@ var passport = require('passport');
 var userController = require('./controllers/userController');
 var topicController = require('./controllers/topicController');
 var opinionController = require('./controllers/opinionController');
+var commentController = require('./controllers/commentController');
 
 var app = express();
 var router = express.Router();
@@ -55,9 +56,13 @@ INTERNAL API ROUTES
 router.get('/api/topic/:pageNum', userController.isLoggedIn, topicController.getTopics);
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
 
-//Opinion route
+//Opinion routes
 router.get('/api/opinion/:topicId/:pageNum', userController.isLoggedIn, opinionController.getOpinions);
 router.post('/api/opinion/:topicId', userController.isLoggedIn, opinionController.postOpinion);
+
+//Comment routes
+router.get('/api/comment/:topicId/:opinionId/:pageNum', userController.isLoggedIn, commentController.getComments);
+router.post('/api/comment/:topicId/:opinionId', userController.isLoggedIn, commentController.postComment);
 
 /*
  =====================================
