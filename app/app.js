@@ -52,7 +52,7 @@ INTERNAL API ROUTES
 */
 //Topic routes
 router.get('/api/topic/:pageNum', userController.isLoggedIn, topicController.getTopics);
-router.post('/api/topic', topicController.postTopic);
+router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
 
 //Opinion route
 
