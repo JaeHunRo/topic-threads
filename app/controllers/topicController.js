@@ -30,11 +30,7 @@ function getTopics(req, res){
                         user_id: user.id 
                     }
                 }).then(function(vote){
-                    if (vote == null){
-                        topic.dataValues.hasVoted = false;
-                    }else{
-                        topic.dataValues.hasVoted = true;
-                    }
+                    topic.dataValues.hasVoted = !(vote == null);
                     callback();
                 });
             }, function(){
@@ -51,10 +47,10 @@ function postTopic(req, res, next) {
         }
     }).then(function(user) {
         db.Topic.create({
-            title: "Duke Basketball Players",
-            description: "I'm gay as hell.",
-            category: "Sports",
-            user_id: user.id 
+            title: req.body.title,
+            description: req.body.description,
+            category: req.body.category,
+            user_id: user.id
         })
         .then(function() {
             res.send({
