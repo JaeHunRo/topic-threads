@@ -8,11 +8,13 @@
 		<input type = "text" name = "description">
 		<input type = "text" name = "category">
 		<input type = "submit" value = "Submit">
+		</form>
+		<input type="button" id="button" value="Simulate Get Request">
 	</body>
 	<script>
 		var button = document.getElementById("button");
 		button.addEventListener('click', function() {
-			$.post( "/topic", function( data ) {
+			$.get( "/api/topic/pageNum/1", function( data ) {
 			  console.log(data);
 			});
 		});

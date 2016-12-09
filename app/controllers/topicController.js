@@ -12,7 +12,7 @@ For each topic, it checks the TopicVotes table to see whether the user has
 already voted on that particular topic. Appends a hasVoted attribute to the
 result, then sends it back as a response.
 */
-function getTopics(req, res){
+function getTopics(req, res, next){
     db.User.findOne({
         where: {
             fb_id: req.user.id
@@ -34,7 +34,8 @@ function getTopics(req, res){
                     callback();
                 });
             }, function(){
-                res.send(result);
+                req.result = result;
+                next();
             });
         })
     });
