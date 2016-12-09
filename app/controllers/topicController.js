@@ -20,7 +20,7 @@ function getTopics(req, res){
     }).then(function(user){
         db.Topic.findAndCountAll({
             limit: numTopicsToShow,
-            offset: numTopincsToShow * (req.params.pageNum - 1)
+            offset: numTopicsToShow * (req.params.pageNum - 1)
         }).then(function(result){
             var topics = result.rows;
             async.each(topics, function(topic, callback){
