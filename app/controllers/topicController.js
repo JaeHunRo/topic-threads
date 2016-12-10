@@ -12,6 +12,7 @@ already voted on that particular topic. Appends a hasVoted attribute to the
 result, then sends it back as a response.
 */
 function getAllTopics(req, res, next){
+    console.log(req.user);
     db.User.findOne({
         where: {
             fb_id: req.user.id

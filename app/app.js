@@ -76,6 +76,8 @@ router.post('/api/topic_votes', userController.isLoggedIn, topicVotesController.
 router.post('/api/opinion_votes', userController.isLoggedIn, opinionVotesController.postOpinionVote);
 router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes);
 
+//User route
+router.get('/api/user', userController.isLoggedIn, userController.getUserStatus); //Tested
 
 /*
  =====================================
