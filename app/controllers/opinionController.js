@@ -38,7 +38,14 @@ function getAllOpinions(req, res, next) {
                     }else{
                         opinion.dataValues.userPreviouslyVoted = vote.type;
                     }
-                    callback();
+                    db.User.findOne({
+                        where: {
+                            id: opinion.user_id
+                        }
+                    }).then(function(user){
+                        opinion.dataValues.opinionAuthor = user.dataValues.username;
+                        callback();
+                    });
                 });
             }, function(){
                 req.result = result;
@@ -66,6 +73,11 @@ function getOpinion(req, res, next){
                 id: req.params.opinionId
             }
         }).then(function(result){
+            if (result == null){
+                res.status(400).send({
+                    message: "Could not find a matching opinion."
+                });
+            }
             db.OpinionVotes.findAndCountAll({
                 where: {
                     topic_id: req.params.topicId,
@@ -87,7 +99,14 @@ function getOpinion(req, res, next){
                     }
                 }
                 result.dataValues.voteCount = voteCount;
-                res.send(result);
+                db.User.findOne({
+                    where: {
+                        id: result.dataValues.user_id
+                    }
+                }).then(function(user){
+                    result.dataValues.opinionAuthor = user.dataValues.username;
+                    res.send(result);
+                });
             });
         });
     });

@@ -86,9 +86,61 @@ Otherwise returns a response with status 400 and message "There was an error pos
 ## Opinions API
 
 #### GET all opinions for a particular topic: /api/opinion/topicId/:topicId/pageNum/:pageNum
-
+Sample response:
+```javascript
+{
+	count: 2,
+	rows: [
+		{
+			id: 4,
+			content: "Big b00ty Jason",
+			createdAt: "2016-12-10T07:40:49.491Z",
+			updatedAt: "2016-12-10T07:40:49.491Z",
+			user_id: 1,
+			topic_id: 2,
+			userPreviouslyVoted: "savage",    //What the current user previously voted, if anything
+			opinionAuthor: "Phil Foo",
+			voteCount: {   //Number of votes for each type. Note that fields with 0 votes are omitted.
+				savage: 1,
+				debatable: 2
+			}
+		},
+		{
+			id: 5,
+			content: "Honestly I love Jayson Tatum",
+			createdAt: "2016-12-10T07:40:58.429Z",
+			updatedAt: "2016-12-10T07:40:58.429Z",
+			user_id: 1,
+			topic_id: 2,
+			userPreviouslyVoted: null,
+			opinionAuthor: "Phil Foo",
+			voteCount: { }
+		}
+	]
+}
+```
 
 #### GET a specific opinion: /api/opinion/topicId/:topicId/opinionId/:opinionId
+Will return to you a error response with status 400 and message "Could not find a matching opinion" if no
+opinion with corresponding topicId and opinionId could be found.
+
+Sample response otherwise:
+```javascript
+{
+	id: 1,
+	content: "I don't think that the point you make is really valid. Honestly, it kind of sucks and doesn't make much sense. Insert ad-hominem argument here.",
+	createdAt: "2016-12-10T07:23:23.452Z",
+	updatedAt: "2016-12-10T07:23:23.452Z",
+	user_id: 1,
+	topic_id: 3,
+	userPreviouslyVoted: "convincing",
+	voteCount: {
+		convincing: 1
+	},
+	opinionAuthor: "Phil Foo"
+}
+```
+
 #### POST a new opinion: /api/opinion/topicId/:topicId 
 Request body requires the following fields:
 * String: content
