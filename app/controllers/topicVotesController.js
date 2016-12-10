@@ -29,10 +29,40 @@ function getTopicVotes(req, res){
 Creates topicVote given user_id, topic_id, and isUp. 
 Could check to make sure the user has not voted already on a topic, or that could be middleware.
 */
-function postTopicVotes(req, res) {
-
+function postTopicVote(req, res) {
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.TopicVotes.findOne({
+            where: {
+                user_id: user.id,
+                topic_id: req.body.topic_id
+            }
+        })
+        .then(function(vote){
+            if (vote == null){
+                db.TopicVotes.create({
+                    user_id: user.id,
+                    topic_id: req.body.topic_id,
+                    isUp: req.body.is_up
+                })
+                .then(function(){
+                    res.send({
+                        status: "Vote posted."
+                    });
+                });
+            }else{
+                res.send({
+                    status: "User has already posted."
+                })
+            }
+        });
+    });
 }
 
 module.exports = {
-    getTopicVotes: getTopicVotes
+    getTopicVotes: getTopicVotes,
+    postTopicVote: postTopicVote
 };

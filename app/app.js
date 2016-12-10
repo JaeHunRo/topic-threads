@@ -65,6 +65,10 @@ router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionC
 router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum', userController.isLoggedIn, commentController.getComments);
 router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, commentController.postComment);
 
+//TopicVote routes
+router.post('/api/topic_votes', topicVotesController.postTopicVote);
+
+
 /*
  =====================================
  CUSTOM ROUTES =====================
