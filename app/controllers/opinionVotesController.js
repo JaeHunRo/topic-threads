@@ -13,11 +13,11 @@ function getOpinionVotes(req, res){
             }
         }).then(function(votes){
             var votesRows = votes.rows;
-            var voteCount = votesRows.map(function(map, el) {
-                var type = el.type;
-                map[type] = (map[type] || 0) + 1;
-                return map;
-            });
+            var voteCount = {};
+            for (var i = 0; i < votesRows.length; i++) {
+                var type = votesRows[i].type;
+                voteCount[type] = (voteCount[type] || 0) + 1;
+            }
             opinion.dataValues.voteCount = voteCount;
             callback();
         });
