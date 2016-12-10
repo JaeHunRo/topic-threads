@@ -50,7 +50,6 @@ function getDetailedOpinionVotes(req, res){
                     id: opinion.user_id
                 }
             }).then(function(user){
-                console.log(user);
                 opinion.dataValues.username = user.dataValues.username;
                 callback();
             })

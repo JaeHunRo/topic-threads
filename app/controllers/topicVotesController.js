@@ -26,6 +26,31 @@ function getTopicVotes(req, res){
 }
 
 /*
+Returns a detailed list of votes for one specific topic.
+*/
+function getDetailedTopicVotes(req, res){
+    db.TopicVotes.findAndCountAll({
+        where: {
+            topic_id: req.params.topicId,
+        }
+    }).then(function(result){
+        var topicVotes = result.rows;
+        async.each(topicVotes, function(topic, callback){
+            db.User.findOne({
+                where: {
+                    id: topic.user_id
+                }
+            }).then(function(user){
+                topic.dataValues.username = user.dataValues.username;
+                callback();
+            })
+        }, function(){
+            res.send(result);
+        });
+    });
+}
+
+/*
 Posts a topic vote associated with a particular topic.
 Required in the request body: topic_id and isUp (a boolean).
 Checks to see whether the user has already voted on a particular topic. If they 
@@ -68,5 +93,6 @@ function postTopicVote(req, res) {
 
 module.exports = {
     getTopicVotes: getTopicVotes,
-    postTopicVote: postTopicVote
+    postTopicVote: postTopicVote,
+    getDetailedTopicVotes: getDetailedTopicVotes
 };

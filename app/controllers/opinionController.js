@@ -106,7 +106,8 @@ function postOpinion(req, res, next) {
         })
         .then(function() {
             res.send({
-                status: "success"
+                status: 200,
+                message: "Opinion successfully posted!"
             });
         });
     });
