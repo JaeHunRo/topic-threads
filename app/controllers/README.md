@@ -237,6 +237,7 @@ Otherwise returns a response with status 400 and message "User has already voted
 
 #### GET all votes associated with a particular opinion: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Sample response:
+```javascript
 {
 	count: 2,
 	rows: [
@@ -262,6 +263,7 @@ Sample response:
 	}
 	]
 }
+```
 
 #### POST a new opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
