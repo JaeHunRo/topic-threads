@@ -9,12 +9,21 @@
 		<input type = "text" name = "category">
 		<input type = "submit" value = "Submit">
 		</form>
-		<input type="button" id="button" value="Simulate Get Request">
+		<input type="button" id="getTopics" value="Simulate Topic Get Request">
+		<input type="button" id="getOpinions" value="Simulate Opinion Get Request">
 	</body>
 	<script>
-		var button = document.getElementById("button");
-		button.addEventListener('click', function() {
+		var getTopicsButton = document.getElementById("getTopics");
+		var getOpinionsButton = document.getElementById("getOpinions");
+
+		getTopicsButton.addEventListener('click', function() {
 			$.get( "/api/topic/pageNum/1", function( data ) {
+			  console.log(data);
+			});
+		});
+
+		getOpinionsButton.addEventListener('click', function() {
+			$.get( "/api/opinion/topicId/1/pageNum/1", function( data ) {
 			  console.log(data);
 			});
 		});
