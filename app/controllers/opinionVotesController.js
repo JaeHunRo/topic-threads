@@ -26,6 +26,48 @@ function getOpinionVotes(req, res){
     });
 }
 
+/*
+Adds a vote on a particular opinion.
+Request body requires: topic_id, opinion_id, and type ("savage", etc.)
+First checks to see if the user has already voted on that particular opinion,
+then posts the vote if they have not.
+*/
+function postOpinionVote(req, res){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.OpinionVotes.findOne({
+            where: {
+                user_id: user.id,
+                topic_id: req.body.topic_id,
+                opinion_id: req.body.opinion_id
+            }
+        })
+        .then(function(vote){
+            if (vote == null){
+                db.OpinionVotes.create({
+                    user_id: user.id,
+                    topic_id: req.body.topic_id,
+                    opinion_id: req.body.opinion_id,
+                    type: req.body.type
+                })
+                .then(function(){
+                    res.send({
+                        status: "Opinion vote posted."
+                    });
+                });
+            }else{
+                res.send({
+                    status: "User has already voted on opinion."
+                });
+            }
+        });
+    });
+}
+
 module.exports = {
-    getOpinionVotes: getOpinionVotes
+    getOpinionVotes: getOpinionVotes,
+    postOpinionVote: postOpinionVote
 };

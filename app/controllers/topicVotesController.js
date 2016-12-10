@@ -26,8 +26,10 @@ function getTopicVotes(req, res){
 }
 
 /*
-Creates topicVote given user_id, topic_id, and isUp. 
-Could check to make sure the user has not voted already on a topic, or that could be middleware.
+Posts a topic vote associated with a particular topic.
+Required in the request body: topic_id and isUp (a boolean).
+Checks to see whether the user has already voted on a particular topic. If they 
+haven't, the topic vote is posted.
 */
 function postTopicVote(req, res) {
     db.User.findOne({
@@ -50,11 +52,13 @@ function postTopicVote(req, res) {
                 })
                 .then(function(){
                     res.send({
-                        status: "Vote posted."
+                        status: 200,
+                        message: "Vote posted."
                     });
                 });
             }else{
                 res.send({
+                    status: 400,
                     status: "User has already posted."
                 })
             }

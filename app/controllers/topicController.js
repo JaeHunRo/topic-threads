@@ -12,7 +12,7 @@ For each topic, it checks the TopicVotes table to see whether the user has
 already voted on that particular topic. Appends a hasVoted attribute to the
 result, then sends it back as a response.
 */
-function getTopics(req, res, next){
+function getAllTopics(req, res, next){
     db.User.findOne({
         where: {
             fb_id: req.user.id
@@ -30,7 +30,8 @@ function getTopics(req, res, next){
                         user_id: user.id 
                     }
                 }).then(function(vote){
-                    topic.dataValues.hasVoted = !(vote == null);
+                    console.log(vote);
+                    topic.dataValues.userPreviouslyVoted = vote.dataValues.isUp || null;
                     callback();
                 });
             }, function(){
@@ -38,6 +39,51 @@ function getTopics(req, res, next){
                 next();
             });
         })
+    });
+}
+
+/*
+Gets information associated with a particular topic. Nothing
+additional necessary in the request body. Also appends the
+number of upvotes and downvotes onto returned data.
+*/
+function getTopic(req, res, next){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.Topic.findOne({
+            where: {
+                id: req.params.topic_id
+            }
+        }).then(function(result){
+            if (result == null){
+                res.send({
+                    status: 400,
+                    message: "No topics with this ID found."
+                });
+            }
+            db.TopicVotes.findAndCountAll({
+                where: {
+                    topic_id: req.params.topic_id
+                }
+            }).then(function(votes){
+                var votes = votes.rows;
+                var numUpvotes = 0;
+                var numDownvotes = 0;
+                result.dataValues.userPreviouslyVoted = null;
+                for (var i = 0; i < votes.length; i++){
+                    if (votes[i].isUp) numUpvotes++;
+                    if (votes[i].user_id === user.id){
+                        result.dataValues.userPreviouslyVoted = votes[i].isUp;
+                    }
+                }
+                result.dataValues.numUpvotes = numUpvotes;
+                result.dataValues.numDownvotes = votes.length - numUpvotes;
+                res.send(result);
+           });
+        });
     });
 }
 
@@ -55,7 +101,8 @@ function postTopic(req, res, next) {
         })
         .then(function() {
             res.send({
-                status: "success"
+                status: 200,
+                message: "success"
             });
         });
     });
@@ -63,5 +110,6 @@ function postTopic(req, res, next) {
 
 module.exports = {
     postTopic: postTopic,
-    getTopics: getTopics
+    getAllTopics: getAllTopics,
+    getTopic: getTopic
 };
