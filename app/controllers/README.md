@@ -4,7 +4,6 @@
 
 #### GET All topics page-by-page: /api/topic/pageNum/:pageNum
 Returns all the topics, sorted in descending order with the most recent first. 
-* userPreviouslyVoted: null if the user has not voted on this topic. True if he/she has, etc.
 Sample request response:
 ```javascript
 {
@@ -18,7 +17,7 @@ Sample request response:
 			createdAt: "2016-12-10T07:08:55.993Z",
 			updatedAt: "2016-12-10T07:08:55.993Z",
 			user_id: 1,
-			userPreviouslyVoted: null,
+			userPreviouslyVoted: null,  //null if the user has never voted on this topic
 			topicAuthor: "Phil Foo",
 			upvotes: 0,
 			downvotes: 0
@@ -31,7 +30,7 @@ Sample request response:
 			createdAt: "2016-12-10T06:58:04.239Z",
 			updatedAt: "2016-12-10T06:58:04.239Z",
 			user_id: 1,
-			userPreviouslyVoted: null,
+			userPreviouslyVoted: true,  //user has upvoted this topic
 			topicAuthor: "Phil Foo",
 			upvotes: 0,
 			downvotes: 0
@@ -44,7 +43,7 @@ Sample request response:
 			createdAt: "2016-12-10T06:57:12.285Z",
 			updatedAt: "2016-12-10T06:57:12.285Z",
 			user_id: 1,
-			userPreviouslyVoted: null,
+			userPreviouslyVoted: false,  //user has downvoted this topic
 			topicAuthor: "Phil Foo",
 			upvotes: 0,
 			downvotes: 0
