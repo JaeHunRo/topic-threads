@@ -63,13 +63,12 @@ Retrieves information for one specific topic. Sample response:
 	createdAt: "2016-12-10T06:56:15.817Z",
 	updatedAt: "2016-12-10T06:56:15.817Z",
 	user_id: 1,
-	userPreviouslyVoted: false,    //Whether the user has already voted on this topic. Null if they haven't.
+	userPreviouslyVoted: false,    //What the user has already voted on this topic, if they have. Null if they haven't.
 	numUpvotes: 0,
-	numDownvotes: 1
+	numDownvotes: 1,
+	topicAuthor: "Phil Foo"
 }
 ````
-
-
 
 
 #### POST a new topic: /api/topic

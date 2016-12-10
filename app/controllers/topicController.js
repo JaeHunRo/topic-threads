@@ -91,7 +91,14 @@ function getTopic(req, res, next){
                 }
                 result.dataValues.numUpvotes = numUpvotes;
                 result.dataValues.numDownvotes = votes.length - numUpvotes;
-                res.send(result);
+                db.User.findOne({
+                    where: {
+                        id: result.dataValues.user_id
+                    }
+                }).then(function(user){
+                    result.dataValues.topicAuthor = user.dataValues.username;
+                    res.send(result);
+                });
            });
         });
     });
