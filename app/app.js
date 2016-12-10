@@ -69,10 +69,11 @@ router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum'
 router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, commentController.postComment);
 
 //TopicVote routes
-router.post('/api/topic_votes', topicVotesController.postTopicVote);
+router.post('/api/topic_votes', userController.isLoggedIn, topicVotesController.postTopicVote);
 
 //OpinionVote routes
-router.post('/api/opinion_votes', opinionVotesController.postOpinionVote);
+router.post('/api/opinion_votes', userController.isLoggedIn, opinionVotesController.postOpinionVote);
+router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes);
 
 
 /*

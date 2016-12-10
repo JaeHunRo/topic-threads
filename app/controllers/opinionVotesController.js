@@ -32,6 +32,34 @@ function getOpinionVotes(req, res){
     });
 }
 
+
+/*
+Returns a detailed list of votes for one specific opinion.
+*/
+function getDetailedOpinionVotes(req, res){
+    db.OpinionVotes.findAndCountAll({
+        where: {
+            topic_id: req.params.topicId,
+            opinion_id: req.params.opinionId
+        }
+    }).then(function(result){
+        var opinionVotes = result.rows;
+        async.each(opinionVotes, function(opinion, callback){
+            db.User.findOne({
+                where: {
+                    id: opinion.user_id
+                }
+            }).then(function(user){
+                console.log(user);
+                opinion.dataValues.username = user.dataValues.username;
+                callback();
+            })
+        }, function(){
+            res.send(result);
+        });
+    });
+}
+
 /*
 Adds a vote on a particular opinion.
 Request body requires: topic_id, opinion_id, and type ("savage", etc.)
@@ -75,5 +103,6 @@ function postOpinionVote(req, res){
 
 module.exports = {
     getOpinionVotes: getOpinionVotes,
-    postOpinionVote: postOpinionVote
+    postOpinionVote: postOpinionVote,
+    getDetailedOpinionVotes: getDetailedOpinionVotes
 };
