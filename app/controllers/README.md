@@ -199,9 +199,26 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 
 
-## TopicVote API
+## TopicVote API 
 
-#### Get all votes for one particular topic: /api/topic_votes/topicId/:topicId
+#### GET all votes for one particular topic: /api/topic_votes/topicId/:topicId
+Sample response:
+```javascript
+{
+	count: 1,
+	rows: [
+	{
+		id: 2,
+		isUp: true, //Phil Foo voted up
+		createdAt: "2016-12-10T08:53:28.843Z",
+		updatedAt: "2016-12-10T08:53:28.843Z",
+		user_id: 1,
+		topic_id: 3,
+		username: "Phil Foo"
+	}
+	]
+}
+```
 
 #### POST a new topic vote: /api/topic_votes/topicId/:topicId
 Request body requires the following fields:
@@ -216,10 +233,36 @@ Otherwise returns a response with status 400 and message "User has already voted
 
 
 
-
 ## OpinionVote API
 
 #### GET all votes associated with a particular opinion: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
+Sample response:
+{
+	count: 2,
+	rows: [
+	{
+		id: 3,
+		type: "savage",
+		createdAt: "2016-12-10T09:17:31.211Z",
+		updatedAt: "2016-12-10T09:17:31.211Z",
+		user_id: 1,
+		topic_id: 2,
+		opinion_id: 4,
+		username: "Phil Foo"
+	},
+	{
+		id: 4,
+		type: "convincing",
+		createdAt: "2016-12-10T09:17:31.211Z",
+		updatedAt: "2016-12-10T09:17:31.211Z",
+		user_id: 3,
+		topic_id: 2,
+		opinion_id: 4,
+		username: "Jae Hun Ro"
+	}
+	]
+}
+
 #### POST a new opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
 * String: type (convincing, debatable, savage, etc.)
@@ -229,8 +272,6 @@ Checks to make sure that the user has not already voted on a particular opinion.
 
 Returns a response with status 200 and message "Opinion vote posted."
 Otherwise returns a response with status 400 and message "User has already voted an opinion."
-
-
 
 
 

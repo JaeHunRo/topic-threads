@@ -69,12 +69,12 @@ router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum'
 router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', commentController.postComment); //Tested
 
 //TopicVote routes
-router.get('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.getDetailedTopicVotes);
+router.get('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.getDetailedTopicVotes); //Tested
 router.post('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.postTopicVote); //Tested
 
 //OpinionVote routes
 router.post('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.postOpinionVote); //Tested
-router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes);
+router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes); //Tested
 
 //User route
 router.get('/api/user', userController.isLoggedIn, userController.getUserStatus); //Tested
