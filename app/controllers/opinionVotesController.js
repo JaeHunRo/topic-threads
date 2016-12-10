@@ -74,25 +74,25 @@ function postOpinionVote(req, res){
         db.OpinionVotes.findOne({
             where: {
                 user_id: user.id,
-                topic_id: req.body.topic_id,
-                opinion_id: req.body.opinion_id
+                topic_id: req.params.topicId,
+                opinion_id: req.params.opinionId
             }
         })
         .then(function(vote){
             if (vote == null){
                 db.OpinionVotes.create({
                     user_id: user.id,
-                    topic_id: req.body.topic_id,
-                    opinion_id: req.body.opinion_id,
+                    topic_id: req.params.topicId,
+                    opinion_id: req.params.opinionId,
                     type: req.body.type
                 })
                 .then(function(){
-                    res.send({
+                    res.status(200).send({
                         status: "Opinion vote posted."
                     });
                 });
             }else{
-                res.send({
+                res.status(400).send({
                     status: "User has already voted on opinion."
                 });
             }

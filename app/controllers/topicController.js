@@ -18,6 +18,7 @@ function getAllTopics(req, res, next){
         }
     }).then(function(user){
         db.Topic.findAndCountAll({
+            order: '"updatedAt" DESC',
             limit: numTopicsToShow,
             offset: numTopicsToShow * (req.params.pageNum - 1)
         }).then(function(result){
@@ -25,12 +26,22 @@ function getAllTopics(req, res, next){
             async.each(topics, function(topic, callback){
                 db.TopicVotes.findOne({
                     where: {
-                        topic_id: topic.id,
+                        topic_id: topic.dataValues.id,
                         user_id: user.id 
                     }
                 }).then(function(vote){
-                    topic.dataValues.userPreviouslyVoted = vote.dataValues.isUp || null;
-                    callback();
+                    topic.dataValues.userPreviouslyVoted = null;
+                    if (vote != null){
+                        topic.dataValues.userPreviouslyVoted = vote.dataValues.isUp;
+                    }
+                    db.User.findOne({
+                        where: {
+                            id: topic.user_id
+                        }
+                    }).then(function(user){
+                        topic.dataValues.topicAuthor = user.dataValues.username;
+                        callback();
+                    });
                 });
             }, function(){
                 req.result = result;
@@ -101,11 +112,11 @@ function postTopic(req, res, next) {
         .then(function() {
             res.status(200).send({
                 message: "Topic successfully posted."
-            })
+            });
         }).catch(function(err){
             res.status(400).send({
                 message: "There was an error posting your topic."
-            })
+            });
         });
     });
 }

@@ -88,7 +88,7 @@ function getOpinion(req, res, next){
                 }
                 result.dataValues.voteCount = voteCount;
                 res.send(result);
-            })
+            });
         });
     });
 }
@@ -105,9 +105,12 @@ function postOpinion(req, res, next) {
             topic_id: req.params.topicId
         })
         .then(function() {
-            res.send({
-                status: 200,
+            res.status(200).send({
                 message: "Opinion successfully posted!"
+            });
+        }).catch(function(err){
+            res.status(400).send({
+                message: "There was an error posting your opinion."
             });
         });
     });
