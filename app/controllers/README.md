@@ -157,6 +157,35 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 #### GET all comments for a particular opinion: /api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum
 
+Sample response:
+```javascript
+{
+	count: 2,
+	rows: [
+	{
+		id: 1,
+		content: "Hi Phil. I Love You.",
+		createdAt: "2016-12-10T08:11:59.269Z",
+		updatedAt: "2016-12-10T08:11:59.269Z",
+		user_id: 1,
+		topic_id: 4,
+		opinion_id: 2,
+		commentAuthor: "Phil Foo"
+	},
+	{
+		id: 2,
+		content: "Hi Phil. I Don't Love You.",
+		createdAt: "2016-12-10T08:15:58.243Z",
+		updatedAt: "2016-12-10T08:15:58.243Z",
+		user_id: 1,
+		topic_id: 4,
+		opinion_id: 2,
+		commentAuthor: "Phil Foo"
+	}
+	]
+}
+```
+
 #### POST a new comment: /api/comment/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
 * String: content

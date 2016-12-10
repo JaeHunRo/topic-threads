@@ -60,8 +60,8 @@ router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.get
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic); //Tested
 
 //Opinion routes
-router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes);
-router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion);
+router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes); //Tested
+router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion); //Tested
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion); //Tested
 
 //Comment routes

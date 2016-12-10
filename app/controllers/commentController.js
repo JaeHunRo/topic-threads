@@ -1,3 +1,4 @@
+var async = require('async');
 /*
 Number of comments to show per page.
 */
@@ -17,7 +18,19 @@ function getComments(req, res, next) {
         limit: numCommentsToShow,
         offset: numCommentsToShow * (req.params.pageNum - 1)
     }).then(function(result){
-        res.send(result);
+        var comments = result.rows;
+        async.each(comments, function(comment, callback){
+            db.User.findOne({
+                where: {
+                    id: comment.user_id
+                }
+            }).then(function(user){
+                comment.dataValues.commentAuthor = user.dataValues.username;
+                callback();
+            });
+        }, function(){
+            res.send(result);
+        });
     });
 }
 
