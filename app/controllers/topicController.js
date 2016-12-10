@@ -76,7 +76,7 @@ function getTopic(req, res, next){
             }
             db.TopicVotes.findAndCountAll({
                 where: {
-                    topic_id: req.params.topic_id
+                    topic_id: req.params.topicId
                 }
             }).then(function(votes){
                 var votes = votes.rows;

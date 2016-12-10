@@ -53,6 +53,24 @@ Sample request response:
 ```
 
 #### GET information for one specific topic: /api/topic/:topicId
+Retrieves information for one specific topic. Sample response:
+```javascript
+{
+	id: 1,
+	title: "My Really Bad Diarrhea Last Week",
+	description: "A girl can't always have a smooth bathroom experience. Sometimes it gets a little rough. That's what happened last week when I plopped down onto the seat. I'll spare you the details.",
+	category: "humor",
+	createdAt: "2016-12-10T06:56:15.817Z",
+	updatedAt: "2016-12-10T06:56:15.817Z",
+	user_id: 1,
+	userPreviouslyVoted: false,    //Whether the user has already voted on this topic. Null if they haven't.
+	numUpvotes: 0,
+	numDownvotes: 1
+}
+````
+
+
+
 
 #### POST a new topic: /api/topic
 Request body requires the following fields:
@@ -97,6 +115,28 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 
 
+
+
+
+
+## TopicVote API
+
+#### Get all votes for one particular topic: /api/topic_votes/topicId/:topicId
+
+#### POST a new topic vote: /api/topic_votes/topicId/:topicId
+Request body requires the following fields:
+* Boolean: is_up
+
+Checks to see if the user has already voted on a particular topic. Will reject if the user has already voted.
+
+Returns a response with status 200 and message "Vote posted."
+Otherwise returns a response with status 400 and message "User has already voted."
+
+
+
+
+
+
 ## OpinionVote API
 
 #### GET all votes associated with a particular opinion: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
@@ -109,6 +149,9 @@ Checks to make sure that the user has not already voted on a particular opinion.
 
 Returns a response with status 200 and message "Opinion vote posted."
 Otherwise returns a response with status 400 and message "User has already voted an opinion."
+
+
+
 
 
 

@@ -56,7 +56,7 @@ INTERNAL API ROUTES
 */
 //Topic routes
 router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes); //Tested
-router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.getTopic);
+router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.getTopic); //Tested
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic); //Tested
 
 //Opinion routes
@@ -70,7 +70,7 @@ router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', commentControl
 
 //TopicVote routes
 router.get('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.getDetailedTopicVotes);
-router.post('/api/topic_votes', userController.isLoggedIn, topicVotesController.postTopicVote);
+router.post('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.postTopicVote); //Tested
 
 //OpinionVote routes
 router.post('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.postOpinionVote); //Tested

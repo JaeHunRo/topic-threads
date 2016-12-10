@@ -65,26 +65,25 @@ function postTopicVote(req, res) {
         db.TopicVotes.findOne({
             where: {
                 user_id: user.id,
-                topic_id: req.body.topic_id
+                topic_id: req.params.topicId
             }
         })
         .then(function(vote){
+            console.log(vote);
             if (vote == null){
                 db.TopicVotes.create({
                     user_id: user.id,
-                    topic_id: req.body.topic_id,
+                    topic_id: req.params.topicId,
                     isUp: req.body.is_up
                 })
                 .then(function(){
-                    res.send({
-                        status: 200,
+                    res.status(200).send({
                         message: "Vote posted."
                     });
                 });
             }else{
-                res.send({
-                    status: 400,
-                    status: "User has already posted."
+                res.status(400).send({
+                    message: "User has already voted."
                 })
             }
         });
