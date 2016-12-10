@@ -12,7 +12,6 @@ already voted on that particular topic. Appends a hasVoted attribute to the
 result, then sends it back as a response.
 */
 function getAllTopics(req, res, next){
-    console.log(req.user);
     db.User.findOne({
         where: {
             fb_id: req.user.id
@@ -100,10 +99,13 @@ function postTopic(req, res, next) {
             user_id: user.id 
         })
         .then(function() {
-            res.send({
-                status: 200,
-                message: "success"
-            });
+            res.status(200).send({
+                message: "Topic successfully posted."
+            })
+        }).catch(function(err){
+            res.status(400).send({
+                message: "There was an error posting your topic."
+            })
         });
     });
 }
