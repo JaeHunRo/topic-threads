@@ -56,11 +56,12 @@ INTERNAL API ROUTES
 */
 //Topic routes
 router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes);
-router.get('/api/topic/:topic_id', userController.isLoggedIn, topicController.getTopic);
+router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.getTopic);
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
 
 //Opinion routes
-router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getOpinions, opinionVotesController.getOpinionVotes);
+router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes);
+router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion);
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion);
 
 //Comment routes

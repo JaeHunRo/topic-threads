@@ -5,7 +5,6 @@ Number of topics to show per page.
 */
 var numTopicsToShow = 50;
 
-
 /*
 Grabs a specified number of topics to show (taking into account offsets).
 For each topic, it checks the TopicVotes table to see whether the user has
@@ -30,7 +29,6 @@ function getAllTopics(req, res, next){
                         user_id: user.id 
                     }
                 }).then(function(vote){
-                    console.log(vote);
                     topic.dataValues.userPreviouslyVoted = vote.dataValues.isUp || null;
                     callback();
                 });
@@ -45,7 +43,8 @@ function getAllTopics(req, res, next){
 /*
 Gets information associated with a particular topic. Nothing
 additional necessary in the request body. Also appends the
-number of upvotes and downvotes onto returned data.
+number of upvotes and downvotes onto returned data. Includes
+information about whether the current user has previously voted on the topic.
 */
 function getTopic(req, res, next){
     db.User.findOne({
@@ -55,7 +54,7 @@ function getTopic(req, res, next){
     }).then(function(user){
         db.Topic.findOne({
             where: {
-                id: req.params.topic_id
+                id: req.params.topicId
             }
         }).then(function(result){
             if (result == null){

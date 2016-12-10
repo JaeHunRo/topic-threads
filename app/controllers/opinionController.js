@@ -11,8 +11,7 @@ Grabs a specified number of opinions to show (taking into account offsets).
 For each opinion, it checks the OpinionVotes table to see whether the user has
 already voted on that particular opinion, and if so what type of vote it was. Appends a voteType attribute, then sends it back as a response.
 */
-
-function getOpinions(req, res, next) {
+function getAllOpinions(req, res, next) {
     db.User.findOne({
         where: {
             fb_id: req.user.id
@@ -35,9 +34,9 @@ function getOpinions(req, res, next) {
                     }
                 }).then(function(vote){
                     if (vote == null){
-                        opinion.dataValues.hasVotedType = null;
+                        opinion.dataValues.userPreviouslyVoted = null;
                     }else{
-                        opinion.dataValues.hasVotedType = vote.type;
+                        opinion.dataValues.userPreviouslyVoted = vote.type;
                     }
                     callback();
                 });
@@ -46,6 +45,51 @@ function getOpinions(req, res, next) {
                 next();
             });
         })
+    });
+}
+
+/*
+Gets information associated with a particular opinion. Nothing additional necessary
+in the request body. Includes vote counts for the opinion in a field "voteCount."
+userPreviouslyVoted field has information regarding what the current user has
+already voted on this opinion.
+*/
+function getOpinion(req, res, next){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.Opinion.findOne({
+            where: {
+                topic_id: req.params.topicId,
+                id: req.params.opinionId
+            }
+        }).then(function(result){
+            db.OpinionVotes.findAndCountAll({
+                where: {
+                    topic_id: req.params.topicId,
+                    opinion_id: req.params.opinionId
+                }
+            }).then(function(votesResult){
+                result.dataValues.userPreviouslyVoted = null;
+                var votes = votesResult.rows;
+                var voteCount = {};
+                for (var i = 0; i < votes.length; i++){
+                    if (!voteCount.hasOwnProperty(votes[i].type)){
+                        voteCount[votes[i].type] = 1;
+                    }else{
+                        voteCount[votes[i].type]++;
+                    }
+
+                    if (votes[i].user_id == user.id){
+                        result.dataValues.userPreviouslyVoted = votes[i].type;
+                    }
+                }
+                result.dataValues.voteCount = voteCount;
+                res.send(result);
+            })
+        });
     });
 }
 
@@ -70,5 +114,6 @@ function postOpinion(req, res, next) {
 
 module.exports = {
     postOpinion: postOpinion,
-    getOpinions: getOpinions
+    getAllOpinions: getAllOpinions,
+    getOpinion: getOpinion
 };
