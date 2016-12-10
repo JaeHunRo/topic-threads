@@ -2,7 +2,7 @@
 
 ## Topics API
 
-#### GET All topics page-by-page: /api/topic/pageNum/:pageNum
+#### GET all topics page-by-page: /api/topic/pageNum/:pageNum
 Returns all the topics, sorted in descending order with the most recent first. 
 Sample request response:
 ```javascript
@@ -52,13 +52,13 @@ Sample request response:
 }
 ```
 
-#### GET Information for one specific topic: /api/topic/:topicId
+#### GET information for one specific topic: /api/topic/:topicId
 
-#### POST A new topic: /api/topic
+#### POST a new topic: /api/topic
 Request body requires the following fields:
-* title
-* description
-* category
+* String: title
+* String: description
+* String: category
 
 Returns a response with status 200 and message "Topic successfully posted."
 Otherwise returns a response with status 400 and message "There was an error posting your topic."
@@ -74,7 +74,7 @@ Otherwise returns a response with status 400 and message "There was an error pos
 #### GET a specific opinion: /api/opinion/topicId/:topicId/opinionId/:opinionId
 #### POST a new opinion: /api/opinion/topicId/:topicId 
 Request body requires the following fields:
-* content
+* String: content
 
 Returns a response with status 200 and message "Opinion successfully posted!"
 Otherwise returns a response with status 400 and message "There was an error posting your opinion."
@@ -83,17 +83,31 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 
 
+
+## Comments API
+
+#### GET all comments for a particular opinion: /api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum
+
+#### POST a new comment: /api/comment/topicId/:topicId/opinionId/:opinionId
+Request body requires the following fields:
+* String: content
+
+Returns a response with status 200 and message "Comment successfully posted."
+Otherwise returns a response with status 400 and message "There was an error posting your comment."
+
+
+
 ## OpinionVote API
 
 #### GET all votes associated with a particular opinion: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 #### POST a new opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
-* type (convincing, debatable, savage, etc.)
+* String: type (convincing, debatable, savage, etc.)
 
 Checks to make sure that the user has not already voted on a particular opinion.
 
 
-Returns a respons with status 200 and message "Opinion vote posted."
+Returns a response with status 200 and message "Opinion vote posted."
 Otherwise returns a response with status 400 and message "User has already voted an opinion."
 
 

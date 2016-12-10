@@ -24,7 +24,7 @@ function getComments(req, res, next) {
 function postComment(req, res, next) {
     db.User.findOne({
         where: {
-            fb_id: req.user.id
+            fb_id: req.headers.id
         }
     }).then(function(user) {
         db.Comment.create({
@@ -34,8 +34,12 @@ function postComment(req, res, next) {
             opinion_id: req.params.opinionId
         })
         .then(function() {
-            res.send({
-                status: "success"
+            res.status(200).send({
+                message: "Comment successfully posted."
+            });
+        }).catch(function(err){
+            res.status(400).send({
+                message: "There was an error posting your comment."
             });
         });
     });
