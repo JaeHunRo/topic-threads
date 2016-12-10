@@ -35,14 +35,15 @@ function getOpinions(req, res, next) {
                     }
                 }).then(function(vote){
                     if (vote == null){
-                        opinion.dataValues.voteType = null;
+                        opinion.dataValues.hasVotedType = null;
                     }else{
-                        opinion.dataValues.voteType = vote.type;
+                        opinion.dataValues.hasVotedType = vote.type;
                     }
                     callback();
                 });
             }, function(){
-                res.send(result);
+                req.result = result;
+                next();
             });
         })
     });
