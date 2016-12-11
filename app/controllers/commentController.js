@@ -37,7 +37,7 @@ function getComments(req, res, next) {
 function postComment(req, res, next) {
     db.User.findOne({
         where: {
-            fb_id: req.headers.id
+            fb_id: req.user.id
         }
     }).then(function(user) {
         db.Comment.create({

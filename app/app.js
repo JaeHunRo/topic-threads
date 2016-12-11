@@ -65,16 +65,20 @@ router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion); //Tested
 
 //Comment routes
-router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum', userController.isLoggedIn, commentController.getComments);
-router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', commentController.postComment); //Tested
+router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum', userController.isLoggedIn, commentController.getComments); //Tested
+router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, commentController.postComment); //Tested
 
 //TopicVote routes
 router.get('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.getDetailedTopicVotes); //Tested
 router.post('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.postTopicVote); //Tested
+router.put('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.editTopicVote); //Tested
+router.delete('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.deleteTopicVote); //Tested
 
 //OpinionVote routes
 router.post('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.postOpinionVote); //Tested
 router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes); //Tested
+router.put('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.editOpinionVote); //Tested
+router.delete('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.deleteOpinionVote); //Tested
 
 //User route
 router.get('/api/user', userController.isLoggedIn, userController.getUserStatus); //Tested

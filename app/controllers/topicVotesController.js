@@ -25,6 +25,8 @@ function getTopicVotes(req, res){
     });
 }
 
+
+
 /*
 Returns a detailed list of votes for one specific topic.
 */
@@ -69,7 +71,6 @@ function postTopicVote(req, res) {
             }
         })
         .then(function(vote){
-            console.log(vote);
             if (vote == null){
                 db.TopicVotes.create({
                     user_id: user.id,
@@ -90,8 +91,78 @@ function postTopicVote(req, res) {
     });
 }
 
+function deleteTopicVote(req, res){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.TopicVotes.findOne({
+            where: {
+                user_id: user.id,
+                topic_id: req.params.topicId
+            }
+        }).then(function(vote){
+            if (vote == null){
+                res.status(400).send({
+                    message: "This vote does not currently exist in the database."
+                });
+            }
+            db.TopicVotes.destroy({
+                where: {
+                    user_id: user.id,
+                    topic_id: req.params.topicId
+                }
+            }).then(function(result){
+                res.status(200).send({
+                    message: "Vote deleted."
+                });
+            });
+        });
+    });
+}
+
+
+function editTopicVote(req, res){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.TopicVotes.findOne({
+            where: {
+                user_id: user.id,
+                topic_id: req.params.topicId
+            }
+        }).then(function(vote){
+            if (vote == null){
+                res.status(400).send({
+                    message: "Vote does not exist."
+                });
+            }
+            db.TopicVotes.update(
+                {
+                    isUp: req.body.is_up
+                }, {
+                    where: {
+                        user_id: user.id,
+                        topic_id: req.params.topicId
+                    },
+                    fields: ["isUp"]
+                }
+            ).then(function(){
+                res.status(200).send({
+                    message: "Vote result updated!"
+                });
+            });
+        });
+    });
+}
+
 module.exports = {
     getTopicVotes: getTopicVotes,
     postTopicVote: postTopicVote,
+    deleteTopicVote: deleteTopicVote,
+    editTopicVote: editTopicVote,
     getDetailedTopicVotes: getDetailedTopicVotes
 };

@@ -152,7 +152,6 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 
 
-
 ## Comments API
 
 #### GET all comments for a particular opinion: /api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum
@@ -197,8 +196,6 @@ Otherwise returns a response with status 400 and message "There was an error pos
 
 
 
-
-
 ## TopicVote API 
 
 #### GET all votes for one particular topic: /api/topic_votes/topicId/:topicId
@@ -230,6 +227,12 @@ Returns a response with status 200 and message "Vote posted."
 Otherwise returns a response with status 400 and message "User has already voted."
 
 
+#### PUT (Edit) an existing topic vote: /api/topic_votes/topicId/:topicId
+Request body requires the following fields:
+* Boolean: is_up
+
+#### DELETE an existing topic vote: /api/topic_votes/topicId/:topicId
+No additional notes.
 
 
 
@@ -265,6 +268,7 @@ Sample response:
 }
 ```
 
+
 #### POST a new opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
 * String: type (convincing, debatable, savage, etc.)
@@ -275,6 +279,13 @@ Checks to make sure that the user has not already voted on a particular opinion.
 Returns a response with status 200 and message "Opinion vote posted."
 Otherwise returns a response with status 400 and message "User has already voted an opinion."
 
+
+#### PUT (Edit) an existing opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
+Request body requires the following fields:
+* String: type (convincing, debatable, savage, etc.)
+
+#### DELETE an existing opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
+No additional notes.
 
 
 
