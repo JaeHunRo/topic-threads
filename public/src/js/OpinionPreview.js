@@ -33,7 +33,8 @@ export class OpinionPreview extends React.Component {
 
     this.state = {
       optionIndex: -1,
-      voteOverlayShown: false
+      voteOverlayShown: false,
+      reactionsShown: false
     }
   }
 
@@ -46,6 +47,18 @@ export class OpinionPreview extends React.Component {
   mouseLeaveOption() {
     this.setState({
       optionIndex: -1
+    });
+  }
+
+  mouseEnterCount() {
+    this.setState({
+      reactionsShown: true
+    });
+  }
+
+  mouseLeaveCount() {
+    this.setState({
+      reactionsShown: false
     });
   }
 
@@ -132,6 +145,16 @@ export class OpinionPreview extends React.Component {
       totalVoteCount += sortedVoteCount[i][1];
     }
 
+    if (totalVoteCount == 0) {
+      return (
+        <div
+          className="opinion-vote-count"
+          onClick={this.toggleOverlay.bind(this)}>
+          No reactions.
+        </div>
+      );
+    }
+
     for(let i = 0; i < length; i++) {
       let voteElement = (
         <div
@@ -144,14 +167,36 @@ export class OpinionPreview extends React.Component {
     }
 
     const reactionsLabel = totalVoteCount > 1 ? " reactions." : " reaction.";
+    const reactions = Object.keys(voteOptions);
+    let breakdownElements = [];
+    reactions.forEach((reaction, index) => {
+      const breakdownElement = (
+        <div key={index + "-breakdown-item"} className="reaction-breakdown-item">
+          <img src={'src/assets/vote-icons/' + voteOptions[reaction].icon}/>
+          <div>{voteCount[reaction] ? voteCount[reaction] : 0}</div>
+        </div>
+      );
+      breakdownElements.push(breakdownElement);
+    });
 
     return (
-      <div
-        className="opinion-vote-count"
-        onClick={this.toggleOverlay.bind(this)}>
-        {voteElements}
-        <div className="reaction-count">
-          {totalVoteCount + reactionsLabel}
+      <div>
+        <div
+          className="opinion-vote-count"
+          onClick={this.toggleOverlay.bind(this)}
+          onMouseEnter={this.mouseEnterCount.bind(this)}
+          onMouseLeave={this.mouseLeaveCount.bind(this)}>
+          {voteElements}
+          <div className="reaction-count">
+            {totalVoteCount + reactionsLabel}
+          </div>
+        </div>
+        <div className={
+          this.state.reactionsShown
+          ? "reaction-breakdown shown"
+          : "reaction-breakdown"
+        }>
+          {breakdownElements}
         </div>
       </div>
     );

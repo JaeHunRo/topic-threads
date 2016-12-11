@@ -326,7 +326,7 @@ body {
 
 .opinion-vote-count {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   cursor: pointer;
 }
 
@@ -340,13 +340,52 @@ body {
 }
 
 .reaction-count {
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
-.opinion-vote-count,
-.empty-opinion-vote-count {
+.opinion-vote-count {
   color: gray;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.reaction-breakdown {
+  background-color: rgba(0,0,0,0.8);
+  height: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  margin-left: -30px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  display: none;
+}
+
+.shown.reaction-breakdown {
+  display: flex;
+}
+
+.reaction-breakdown-item {
+  color: white;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.reaction-breakdown-item:first-child {
+  margin-left: 0;
+}
+
+.reaction-breakdown-item div {
+  margin-left: 4px;
+  font-size: 10px;
+}
+
+.reaction-breakdown-item img {
+  width: 20px;
+  height: 20px;
 }
 
 .hovered .opinion-vote-option-label {
@@ -478,11 +517,91 @@ body {
 }
 
 .comments {
-  
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  flex-direction: column;
 }
 
 .comment {
+  width: 500px;
+  background-color: white;
+  padding: 10px;
+  margin-top: 20px;
+  box-shadow: 0 0 2px gray;
+  border-radius: 10px;
+  text-align: left;
+}
 
+.comment:last-child {
+  margin-bottom: 20px;
+}
+
+.comment-body {
+  font-size: 16px;
+}
+
+.comment-metadata {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.comment-author {
+  color: gray;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.comment-author-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 2px lightgray;
+}
+
+.comment-author-icon div {
+  text-align: center;
+  margin-left: 1px;
+}
+
+.add-opinion {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.add-opinion-label {
+
+}
+
+.add-opinion-button {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  border-radius: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  padding: 10px;
+  background-color: #e50000;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.add-opinion-button:hover {
+  box-shadow: 0 0 2px black;
 }
 
 .back-to-opinions {

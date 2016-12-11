@@ -181,15 +181,46 @@ export class TopicViewer extends React.Component {
           topic_id: 4,
           opinion_id: 2,
           commentAuthor: "Phil Foo"
+      },
+      {
+          id: 3,
+          content: "Hi Phil. I Don't Love You.",
+          createdAt: "2016-12-10T08:15:58.243Z",
+          updatedAt: "2016-12-10T08:15:58.243Z",
+          user_id: 1,
+          topic_id: 4,
+          opinion_id: 2,
+          commentAuthor: "Phil Foo"
+      },
+      {
+          id: 4,
+          content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
+          createdAt: "2016-12-10T08:15:58.243Z",
+          updatedAt: "2016-12-10T08:15:58.243Z",
+          user_id: 1,
+          topic_id: 4,
+          opinion_id: 2,
+          commentAuthor: "Phil Foo"
+      },
+      {
+          id: 4,
+          content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
+          createdAt: "2016-12-10T08:15:58.243Z",
+          updatedAt: "2016-12-10T08:15:58.243Z",
+          user_id: 5,
+          topic_id: 4,
+          opinion_id: 2,
+          commentAuthor: "Kevin He"
       }
     ];
     comments.forEach((comment, index) => {
       let commentElement = (
         <Comment
           key={index + "-comment"}
-          info={comment} />
+          info={comment}
+          colorUtil={this.props.colorUtil} />
       );
-      commentElements.push(commentElement)
+      commentElements.push(commentElement);
     });
     return commentElements;
   }
@@ -226,9 +257,15 @@ export class TopicViewer extends React.Component {
               className="topic-viewer-opinions-section"
               style={{
                 width: (this.state.dimensions.width - 20) + 'px',
-                height: (this.state.dimensions.height - 290) + 'px'
+                height: (this.state.dimensions.height - 335) + 'px'
               }}>
               {this.renderOpinionPreviews()}
+            </div>
+            <div className="add-opinion">
+              <div className="add-opinion-label">Add Opinion</div>
+              <div className="add-opinion-button">
+                <i className="fa fa-plus" aria-hidden="true"></i>
+              </div>
             </div>
           </div>
         );

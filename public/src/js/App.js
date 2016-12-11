@@ -1,7 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var DiscussionBoard = React.createFactory(require('./DiscussionBoard'));
-var TopicViewer = React.createFactory(require('./TopicViewer'));
+var DiscussionBoard = require('./DiscussionBoard');
+var TopicViewer = require('./TopicViewer');
+var Color = require('./Color');
 
 const OPINIONS = [
   {
@@ -27,7 +28,7 @@ const OPINIONS = [
   },
   {
     opinionId: 3,
-    topicId: 1,
+    topicId: 3,
     voteCount: {
       savage: 1
     },
@@ -38,7 +39,7 @@ const OPINIONS = [
   },
   {
     opinionId: 4,
-    topicId: 5,
+    topicId: 3,
     voteCount: {
       convincing: 2,
       debatable: 6
@@ -53,6 +54,8 @@ const OPINIONS = [
 export class App extends React.Component{
   constructor(props) {
     super(props);
+    Color.shuffle();
+
     this.state = {
       viewedTopic: null,
       viewerExpanded: false,
@@ -88,12 +91,14 @@ export class App extends React.Component{
             opinions={this.state.opinions}
             viewedTopic={this.state.viewedTopic}
             expanded={this.state.viewerExpanded}
-            toggleViewer={this.toggleTopicViewer.bind(this)}/>
+            toggleViewer={this.toggleTopicViewer.bind(this)}
+            colorUtil={Color}/>
         </div>
         <div id="body-container">
           <DiscussionBoard
             setTopic={this.setViewedTopic.bind(this)}
-            toggleViewer={this.toggleTopicViewer.bind(this)}/>
+            toggleViewer={this.toggleTopicViewer.bind(this)}
+            colorUtil={Color}/>
         </div>
       </div>
     );
