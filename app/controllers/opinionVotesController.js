@@ -88,14 +88,91 @@ function postOpinionVote(req, res){
                 })
                 .then(function(){
                     res.status(200).send({
-                        status: "Opinion vote posted."
+                        message: "Opinion vote posted."
                     });
                 });
             }else{
                 res.status(400).send({
-                    status: "User has already voted on opinion."
+                    message: "User has already voted on opinion."
                 });
             }
+        });
+    });
+}
+
+
+function editOpinionVote(req, res){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.OpinionVotes.findOne({
+            where: {
+                user_id: user.id,
+                opinion_id: req.params.opinionId,
+                topic_id: req.params.topicId
+            }
+        }).then(function(vote){
+            if (vote == null){
+                res.status(400).send({
+                    message: "This vote does not currently exist in the database."
+                });
+            }
+            db.OpinionVotes.update(
+                {
+                    topic_id: req.params.topicId,
+                    opinion_id: req.params.opinionId,
+                    user_id: user.id,
+                    type: req.body.type
+                }, 
+                {
+                    where: {
+                        user_id: user.id,
+                        opinion_id: req.params.opinionId,
+                        topic_id: req.params.topicId
+                    },
+                    fields: ["type"]
+                }
+            ).then(function(result){
+                res.status(200).send({
+                    message: "Vote result updated!"
+                });
+            });
+        });
+    });
+}
+
+
+function deleteOpinionVote(req, res){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.OpinionVotes.findOne({
+            where: {
+                user_id: user.id,
+                topic_id: req.params.topicId,
+                opinion_id: req.params.opinionId
+            }
+        }).then(function(vote){
+            if (vote == null){
+                res.status(400).send({
+                    message: "This vote does not currently exist in the database."
+                });
+            }
+            db.OpinionVotes.destroy({
+                where: {
+                    user_id: user.id,
+                    opinion_id: req.params.opinionId,
+                    topic_id: req.params.topicId
+                }
+            }).then(function(result){
+                res.status(200).send({
+                    message: "Vote deleted."
+                });
+            });
         });
     });
 }
@@ -103,5 +180,7 @@ function postOpinionVote(req, res){
 module.exports = {
     getOpinionVotes: getOpinionVotes,
     postOpinionVote: postOpinionVote,
-    getDetailedOpinionVotes: getDetailedOpinionVotes
+    getDetailedOpinionVotes: getDetailedOpinionVotes,
+    editOpinionVote: editOpinionVote,
+    deleteOpinionVote: deleteOpinionVote
 };
