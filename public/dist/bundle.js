@@ -31572,7 +31572,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       var topics = this.props.topics;
       topics.forEach(function (topic, index) {
         topicElements.push(React.createElement(DiscussionTopic, {
-          key: 'topic-' + index,
+          key: 'topic-' + topic.id,
           topic: topic,
           updateTopic: _this4.props.updateTopic,
           setTopic: _this4.props.setTopic,

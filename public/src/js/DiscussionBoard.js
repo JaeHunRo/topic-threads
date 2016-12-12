@@ -209,7 +209,7 @@ export class DiscussionBoard extends React.Component {
     topics.forEach((topic, index) => {
       topicElements.push(
         <DiscussionTopic
-          key={'topic-' + index}
+          key={'topic-' + topic.id}
           topic={topic}
           updateTopic={this.props.updateTopic}
           setTopic={this.props.setTopic}
