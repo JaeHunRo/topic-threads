@@ -31735,8 +31735,12 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
             } },
           this.props.topics.length == 0 && !this.props.loadingTopics ? React.createElement(
             'div',
-            { className: 'no-topics' },
-            'No Topics Found'
+            { className: 'no-topics-container' },
+            React.createElement(
+              'div',
+              { className: 'no-topics' },
+              'No Topics Found'
+            )
           ) : null,
           this.renderTopics()
         )

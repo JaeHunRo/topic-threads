@@ -340,8 +340,10 @@ export class DiscussionBoard extends React.Component {
           {
             this.props.topics.length == 0 && !this.props.loadingTopics
             ? (
-              <div className="no-topics">
-                No Topics Found
+              <div className="no-topics-container">
+                <div className="no-topics">
+                  No Topics Found
+                </div>
               </div>
             ) : null
           }
