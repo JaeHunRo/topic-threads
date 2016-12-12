@@ -4,7 +4,7 @@
   "description": "A social platform to bring topic discussion to the forefront.",
   "main": "server.js",
   "scripts": {
-    "watch": "watchify -t [ babelify ] public/main.js -o dist/bundle.js -v",
+    "watch": "watchify -t [ babelify ] public/main.js -o public/dist/bundle.js -v",
     "build": "browserify -t [ babelify ] public/main.js  | uglifyjs -mc warnings=false > public/dist/bundle.js",
     "start": "node server.js"
   },
