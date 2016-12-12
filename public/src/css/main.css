@@ -905,12 +905,17 @@ body {
   border-top-right-radius: 0;
 }
 
+.expanded .dropdown-arrow {
+  top: 14px;
+}
+
 .dropdown-arrow {
   position: absolute;
   right: 10px;
   color: black;
   font-size: 18px;
   top: 5px;
+  line-height: 18px;
 }
 
 .topic-composer-category {
@@ -1028,6 +1033,44 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.topics-loading-container {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+.topics-loading-container.shown {
+  display: flex;
+}
+
+.topics-loading {
+  width: 175px;
+  height: 150px;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.topics-loading img {
+  width: 50px;
+  height: 50px;
+}
+
+.topics-loading-label {
+  margin-top: 20px;
+  color: white;
 }
 
 .divider {

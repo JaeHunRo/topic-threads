@@ -1,74 +1,29 @@
 const React = require('react');
 const DiscussionTopic = require('./DiscussionTopic');
 const Util = require('./Util');
+const $ = require('jquery');
 
 const categories = [
   {
+    key: 'sports',
     label: 'Sports',
     icon: 'sports.svg'
   },
   {
+    key: 'academics',
     label: 'Academics',
     icon: 'academics.svg'
   },
   {
+    key: 'campus-politics',
     label: 'Campus Politics',
     icon: 'campus-politics.svg'
   },
   {
+    key: 'general',
     label: 'General',
     icon: 'general.svg'
   },
-]
-const TOPICS = [
-  {
-    title:'Duke vs. UNC (Men\'s Basketball)',
-    categoryIcon:'sports',
-    categoryName:'Sports',
-    votes: 10,
-    opinions: 26,
-    topicId: 1
-  },
-  {
-    title:'Fall Semester Bookbagging',
-    categoryIcon:'academics',
-    categoryName:'Academics',
-    votes: 6,
-    opinions: 5,
-    topicId: 2,
-  },
-  {
-    title:'Microaggressions',
-    categoryIcon:'campus-politics',
-    categoryName: 'Campus Politics',
-    votes: 17,
-    opinions: 28,
-    topicId: 3,
-  },
-  {
-    title:'Yik Yak has been terrible!',
-    categoryIcon:'general',
-    categoryName: 'General Discussion',
-    votes: 25,
-    opinions: 162,
-    topicId: 4,
-  },
-  {
-    title:'Our football team has been looking awesome',
-    categoryIcon:'sports',
-    categoryName:'Sports',
-    votes: 1,
-    opinions: 1,
-    topicId: 5,
-  },
-  {
-    title:'Issues on Campus',
-    categoryIcon:'campus-politics',
-    categoryName:'Campus Politics',
-    votes: 12,
-    opinions: 53,
-    topicId: 6,
-  }
 ];
 
 export class DiscussionBoard extends React.Component {
@@ -114,11 +69,6 @@ export class DiscussionBoard extends React.Component {
     this.setState({
       descriptionValue: event.target.value
     });
-  }
-
-  getTopics() {
-    // TODO: retrieve topics on board from database
-    return TOPICS;
   }
 
   boardClicked(event) {
@@ -183,7 +133,11 @@ export class DiscussionBoard extends React.Component {
         onClick={this.toggleCategorySelector.bind(this)}>
         {selectedContent}
         <div className="dropdown-arrow">
-          <i className="fa fa-sort-desc" aria-hidden="true"></i>
+          <i className={
+            this.state.categorySelectorExpanded
+            ? "fa fa-sort-asc"
+            : "fa fa-sort-desc"
+          } aria-hidden="true"></i>
         </div>
       </div>
     );
@@ -219,11 +173,23 @@ export class DiscussionBoard extends React.Component {
 
   createTopic() {
     let topic = {
-      title: this.state.titleValue,
-      description: this.state.descriptionValue,
-      category: this.state.categoryValue
+      "title": this.state.titleValue,
+      "description": this.state.descriptionValue,
+      "category": this.state.categoryValue.key
     }
     console.log('topic', topic);
+    const topicCreateRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/topic',
+      type: 'POST',
+      data: JSON.stringify(topic),
+      dataType: 'json'
+    });
+
+    $.when(topicCreateRequest).done((data) => {
+      console.log('response', data);
+    });
+
     this.toggleTopicComposer();
     this.setState({
       titleValue: '',
@@ -249,7 +215,7 @@ export class DiscussionBoard extends React.Component {
 
   renderTopics() {
     let topicElements = [];
-    let topics = this.getTopics();
+    let topics = this.props.topics;
     topics.forEach((topic, index) => {
       topicElements.push(
         <DiscussionTopic
@@ -263,7 +229,7 @@ export class DiscussionBoard extends React.Component {
   }
 
   render() {
-    let initial = this.props.currentUser.username.charAt(0);
+    let initial = this.props.currentUser ? this.props.currentUser.username.charAt(0) : "?";
     return (
       <div onClick={this.boardClicked.bind(this)}>
         <div
@@ -352,7 +318,7 @@ export class DiscussionBoard extends React.Component {
             className="user-profile-button unselectable"
             onClick={this.toggleUserProfile.bind(this)}
             style={{
-              backgroundColor: this.props.colorUtil.getColor(this.props.currentUser.id)
+              backgroundColor: this.props.currentUser ? this.props.colorUtil.getColor(this.props.currentUser.id) : 'black'
             }}>
             <div>{initial}</div>
           </div>
@@ -361,10 +327,18 @@ export class DiscussionBoard extends React.Component {
           this.state.userProfileShown ? "user-profile shown" : "user-profile"
         }>
           <div className="user-profile-name">
-            {this.props.currentUser.username}
+            {
+              this.props.currentUser
+              ? this.props.currentUser.username
+              : "No User Found"
+            }
           </div>
           <div className="user-profile-creation">
-            {"User since " + Util.getTimeAgo(this.props.currentUser.createdAt)}
+            {
+              this.props.currentUser
+              ? "User since " + Util.getTimeAgo(this.props.currentUser.createdAt)
+              : "Error"
+            }
           </div>
           <div className="logout unselectable">
             Logout

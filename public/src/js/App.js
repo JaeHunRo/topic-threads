@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var DiscussionBoard = require('./DiscussionBoard');
 var TopicViewer = require('./TopicViewer');
 var Color = require('./Color');
+var $ = require('jquery');
 
 const OPINIONS = [
   {
@@ -49,7 +50,61 @@ const OPINIONS = [
     profilePic: "phil.png",
     body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent consequat, elit et commodo accumsan, enim libero efficitur eros, ac sodales magna neque non est."
   },
-]
+];
+
+let currentUser = null;
+let topics = null;
+
+const TOPICS = [
+  {
+    title:'Duke vs. UNC (Men\'s Basketball)',
+    categoryIcon:'sports',
+    categoryName:'Sports',
+    votes: 10,
+    opinions: 26,
+    topicId: 1
+  },
+  {
+    title:'Fall Semester Bookbagging',
+    categoryIcon:'academics',
+    categoryName:'Academics',
+    votes: 6,
+    opinions: 5,
+    topicId: 2,
+  },
+  {
+    title:'Microaggressions',
+    categoryIcon:'campus-politics',
+    categoryName: 'Campus Politics',
+    votes: 17,
+    opinions: 28,
+    topicId: 3,
+  },
+  {
+    title:'Yik Yak has been terrible!',
+    categoryIcon:'general',
+    categoryName: 'General Discussion',
+    votes: 25,
+    opinions: 162,
+    topicId: 4,
+  },
+  {
+    title:'Our football team has been looking awesome',
+    categoryIcon:'sports',
+    categoryName:'Sports',
+    votes: 1,
+    opinions: 1,
+    topicId: 5,
+  },
+  {
+    title:'Issues on Campus',
+    categoryIcon:'campus-politics',
+    categoryName:'Campus Politics',
+    votes: 12,
+    opinions: 53,
+    topicId: 6,
+  }
+];
 
 export class App extends React.Component{
   constructor(props) {
@@ -67,15 +122,42 @@ export class App extends React.Component{
       viewerExpanded: false,
       dimensions: [window.innerWidth, window.innerHeight],
       opinions: [],
-      currentUser: {
-        id: 5,
-        fb_id: "10210619611520173",
-        username: "Kevin He",
-        admin: true,
-        createdAt: "2016-12-06T05:27:21.777Z",
-        updatedAt: "2016-12-06T05:27:21.777Z"
-      }
+      currentUser: currentUser,
+      loadingTopics: true,
+      topics: [],
+      topicPage: 1
     }
+  }
+
+  componentDidMount() {
+    const currentUserRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/user',
+      type: 'GET'
+    });
+
+    $.when(currentUserRequest).done((data) => {
+      console.log('user', data);
+      this.setState({
+        currentUser: data
+      });
+    });
+
+    const topicsRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/topic/pageNum/' + this.state.topicPage,
+      type: 'GET'
+    });
+
+    console.log('what')
+
+    $.when(topicsRequest).done((data) => {
+      console.log(data);
+      this.setState({
+        topics: TOPICS,
+        loadingTopics: false
+      });
+    });
   }
 
   toggleTopicViewer() {
@@ -112,12 +194,25 @@ export class App extends React.Component{
             dimensions={this.state.dimensions}/>
         </div>
         <div id="body-container">
+          <div className={
+            this.state.loadingTopics
+            ? "topics-loading-container shown"
+            : "topics-loading-container"
+          }>
+            <div className="topics-loading">
+              <img src="src/assets/loading.gif"/>
+              <div className="topics-loading-label">
+                Loading Topics...
+              </div>
+            </div>
+          </div>
           <DiscussionBoard
             setTopic={this.setViewedTopic.bind(this)}
             toggleViewer={this.toggleTopicViewer.bind(this)}
             colorUtil={Color}
             currentUser={this.state.currentUser}
-            dimensions={this.state.dimensions}/>
+            dimensions={this.state.dimensions}
+            topics={this.state.topics}/>
         </div>
       </div>
     );
