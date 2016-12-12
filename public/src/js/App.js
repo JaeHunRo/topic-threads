@@ -56,10 +56,25 @@ export class App extends React.Component{
     super(props);
     Color.shuffle();
 
+    window.onresize = () => {
+      this.setState({
+        dimensions: [window.innerWidth, window.innerHeight]
+      });
+    }
+
     this.state = {
       viewedTopic: null,
       viewerExpanded: false,
-      opinions: []
+      dimensions: [window.innerWidth, window.innerHeight],
+      opinions: [],
+      currentUser: {
+        id: 5,
+        fb_id: "10210619611520173",
+        username: "Kevin He",
+        admin: true,
+        createdAt: "2016-12-06T05:27:21.777Z",
+        updatedAt: "2016-12-06T05:27:21.777Z"
+      }
     }
   }
 
@@ -92,13 +107,17 @@ export class App extends React.Component{
             viewedTopic={this.state.viewedTopic}
             expanded={this.state.viewerExpanded}
             toggleViewer={this.toggleTopicViewer.bind(this)}
-            colorUtil={Color}/>
+            colorUtil={Color}
+            currentUser={this.state.currentUser}
+            dimensions={this.state.dimensions}/>
         </div>
         <div id="body-container">
           <DiscussionBoard
             setTopic={this.setViewedTopic.bind(this)}
             toggleViewer={this.toggleTopicViewer.bind(this)}
-            colorUtil={Color}/>
+            colorUtil={Color}
+            currentUser={this.state.currentUser}
+            dimensions={this.state.dimensions}/>
         </div>
       </div>
     );

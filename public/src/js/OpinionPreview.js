@@ -70,7 +70,8 @@ export class OpinionPreview extends React.Component {
   toggleOverlay(event) {
     event.stopPropagation();
     this.setState({
-      voteOverlayShown: !this.state.voteOverlayShown
+      voteOverlayShown: !this.state.voteOverlayShown,
+      reactionsShown: false
     });
   }
 

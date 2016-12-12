@@ -1,4 +1,5 @@
 const React = require('react');
+const Util = require('./Util');
 
 export class Comment extends React.Component {
   constructor(props) {
@@ -7,32 +8,6 @@ export class Comment extends React.Component {
     this.state = {
 
     }
-  }
-
-  getTimeAgo() {
-    let createdAt = (new Date(this.props.info.createdAt)).getTime();
-    let now = (new Date()).getTime();
-    let diff = now - createdAt;
-    let seconds = Math.floor(diff / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-    let days = Math.floor(hours / 24);
-
-    let agoString;
-    if (seconds < 60) {
-      agoString = seconds;
-      agoString += seconds == 1 ? " second" : " seconds";
-    } else if (minutes < 60) {
-      agoString = minutes;
-      agoString += minutes == 1 ? " minute" : " minutes";
-    } else if (hours < 24) {
-      agoString = hours;
-      agoString += hours == 1 ? " hour" : " hours";
-    } else {
-      agoString = days;
-      agoString += days == 1 ? " day" : " days";
-    }
-    return agoString + " ago";
   }
 
   render() {
@@ -48,7 +23,7 @@ export class Comment extends React.Component {
             <div>{this.props.info.commentAuthor.charAt(0)}</div>
           </div>
           <div className="comment-author">
-            {this.props.info.commentAuthor + " • " + this.getTimeAgo()}
+            {this.props.info.commentAuthor + " • " + Util.getTimeAgo(this.props.info.createdAt)}
           </div>
         </div>
       </div>

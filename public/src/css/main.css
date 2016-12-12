@@ -6,6 +6,7 @@ body {
   --upvote-hover: #ffd27f;
   --upvoted: #ffa500;
   overflow: hidden;
+  font-family: 'Exo 2', sans-serif;
 }
 
 #body-container {
@@ -25,7 +26,7 @@ body {
   justify-content: center;
   padding-top: 50px;
   width: 100%;
-  font-family: 'Open Sans', sans-serif;
+  /*font-family: 'Exo 2', sans-serif;*/
 }
 
 .discussion-topic {
@@ -155,7 +156,7 @@ body {
   /*border-radius: 10px;*/
   text-align: center;
   position: absolute;
-  font-family: 'Exo', sans-serif;
+  /*font-family: 'Exo 2', sans-serif;*/
   min-width: 300px;
 }
 
@@ -514,13 +515,13 @@ body {
   width: 500px;
   max-height: 200px;
   overflow: auto;
+  font-size: 18px;
 }
 
 .comments {
   display: flex;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
   flex-direction: column;
 }
 
@@ -532,6 +533,10 @@ body {
   box-shadow: 0 0 2px gray;
   border-radius: 10px;
   text-align: left;
+}
+
+.comment:first-child {
+  margin-top: 20px;
 }
 
 .comment:last-child {
@@ -571,6 +576,120 @@ body {
   margin-left: 1px;
 }
 
+.comment-composer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.comment-composer {
+  resize: none;
+  width: 500px;
+  height: 50px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  outline: none;
+  font-size: 14px;
+  /*font-family: 'Exo 2', sans-serif;*/
+  box-shadow: 0 0 2px gray;
+  background-color: #fafafa;
+}
+
+.comment-composer-buttons {
+  display: flex;
+  justify-content: flex-end;
+  width: 520px;
+  margin-top: 10px;
+}
+
+.comment-composer-post-button,
+.comment-composer-cancel-button {
+  border-radius: 5px;
+  padding: 5px;
+  width: 70px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.comment-composer-post-button:hover,
+.comment-composer-cancel-button:hover {
+  box-shadow: 0 0 2px black;
+}
+
+.comment-composer-post-button {
+  background-color: rgb(0,122,255);
+  color: white;
+}
+
+.comment-composer-cancel-button {
+  margin-left: 10px;
+  background-color: lightgray;
+}
+
+.opinion-composer-container {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.opinion-composer-container.shown {
+  display: flex;
+}
+
+.opinion-composer {
+  width: 400px;
+  height: 270px;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.opinion-composer-label {
+  text-align: left;
+}
+
+.opinion-composer-text {
+  width: 300px;
+  margin-top: 20px;
+}
+
+.opinion-composer-text-area.opinion-composer-text-area {
+  width: 278px;
+  height: 120px;
+  resize: none;
+}
+
+.opinion-composer-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+}
+
+.opinion-composer-cancel-button {
+  margin-left: 10px;
+}
+
 .add-opinion {
   display: flex;
   position: absolute;
@@ -584,7 +703,9 @@ body {
 
 }
 
-.add-opinion-button {
+.add-opinion-button,
+.add-topic-button,
+.user-profile-button {
   width: 20px;
   height: 20px;
   margin-left: 10px;
@@ -600,7 +721,291 @@ body {
   border: 1px solid white;
 }
 
-.add-opinion-button:hover {
+.add-opinion-button:hover,
+.add-topic-button:hover,
+.user-profile-button:hover {
+  box-shadow: 0 0 2px black;
+}
+
+.add-topic-label {
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  text-shadow: 0 0 5px black;
+  display: none;
+}
+
+.add-topic-label.shown {
+  display: block;
+}
+
+.add-topic-button {
+  background-color: green;
+}
+
+.board-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  display: flex;
+}
+
+.user-profile-button {
+  line-height: 20px;
+}
+
+.user-profile {
+  width: 320px;
+  height: 250px;
+  background-color: white;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 100;
+  border-radius: 10px;
+  box-shadow: 0 0 5px black;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user-profile.shown {
+  display: flex;
+}
+
+.user-profile-name {
+  font-size: 32px;
+}
+
+.user-profile-creation {
+  font-size: 14px;
+  color: gray;
+}
+
+.logout {
+  border-radius: 5px;
+  color: gray;
+  background-color: #ededed;
+  padding: 10px 20px;
+  border: 1px solid gray;
+  margin-top: 30px;
+  line-height: 14px;
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.logout:hover {
+  box-shadow: 0 0 1px black;
+}
+
+.topic-composer-container {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  display: none;
+}
+
+.topic-composer-container.shown {
+  display: block;
+}
+
+.topic-composer {
+  width: 400px;
+  height: 540px;
+  background-color: white;
+  position: absolute;
+  border-radius: 10px;
+  box-shadow: 0 0 2px lightgray;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.topic-composer-header {
+  margin-top: 20px;
+  font-size: 28px;
+}
+
+.topic-composer-title {
+  margin-top: 20px;
+}
+
+.topic-composer-description,
+.topic-composer-category {
+  margin-top: 10px;
+}
+
+.topic-composer-label,
+.opinion-composer-label {
+  color: gray;
+  font-size: 14px;
+}
+
+.topic-composer-title-field,
+.topic-composer-description-field,
+.opinion-composer-text-area {
+  margin-top: 2px;
+  width: 300px;
+  height: 30px;
+  font-size: 16px;
+  padding: 10px;
+  font-family: 'Exo 2', sans-serif;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  outline: none;
+}
+
+.topic-composer-char-limit,
+.opinion-composer-char-limit {
+  text-align: right;
+  font-size: 12px;
+  color: gray;
+}
+
+.topic-composer-title-field {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.topic-composer-description-field {
+  height: 120px;
+  resize: none;
+  font-size: 12px;
+}
+
+.topic-composer-selected-category.topic-composer-selected-category {
+  font-size: 14px;
+  color: black;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin-top: 2px;
+  position: relative;
+  width: 200px;
+}
+
+.expanded .topic-composer-selected-category {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.expanded .topic-composer-category-field {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 10px;
+  color: black;
+  font-size: 18px;
+  top: 5px;
+}
+
+.topic-composer-category {
+  width: 320px;
+}
+
+.expanded .topic-composer-category-field {
+  display: block;
+}
+
+.topic-composer-category-field {
+  background-color: white;
+  width: 210px;
+  height: 120px;
+  border: 1px solid lightgray;
+  border-top: none;
+  border-radius: 5px;
+  overflow: auto;
+  overflow-x: hidden;
+  display: none;
+  position: relative;
+  z-index: 100;
+}
+
+.topic-composer-selected-category-option {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.topic-composer-category-option {
+  width: 200px;
+  height: 40px;
+  padding-left: 10px;
+  color: gray;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+}
+
+.topic-composer-category-option:hover {
+  color: white;
+  background-color: rgba(0,122,255,0.8);
+}
+
+.topic-composer-category-option-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.topic-composer-category-option-label {
+  font-size: 14px;
+  margin-left: 10px;
+  text-align: left;
+  width: 150px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.topic-composer-buttons {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  bottom: 20px;
+}
+
+.topic-composer-cancel-button,
+.opinion-composer-cancel-button {
+  margin-left: 20px;
+  background-color: lightgray;
+}
+
+.topic-composer-create-button,
+.opinion-composer-create-button {
+  background-color: green;
+  color: white;
+}
+
+.topic-composer-create-button,
+.topic-composer-cancel-button,
+.opinion-composer-create-button,
+.opinion-composer-cancel-button {
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.topic-composer-create-button:hover,
+.topic-composer-cancel-button:hover,
+.opinion-composer-create-button:hover,
+.opinion-composer-cancel-button:hover  {
   box-shadow: 0 0 2px black;
 }
 

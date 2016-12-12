@@ -10,17 +10,12 @@ export class TopicViewer extends React.Component {
   constructor(props) {
     super(props);
 
-    window.onresize = () => {
-      this.setState({
-        dimensions: this.calculateDimensions()
-      });
-    }
-
     this.state = {
-      dimensions: this.calculateDimensions(),
       currentView: views.Topic,
       commentsFor: -1,
-      commentList: null
+      commentList: null,
+      composerShown: false,
+      opinionValue: ''
     }
   }
 
@@ -31,14 +26,6 @@ export class TopicViewer extends React.Component {
         commentsFor: -1
       });
     }
-  }
-
-  calculateDimensions() {
-    const windowDimensions = [window.innerWidth, window.innerHeight];
-    return {
-      width: windowDimensions[0] - 300,
-      height: windowDimensions[1] - 100,
-    };
   }
 
   toggleViewer() {
@@ -123,6 +110,30 @@ export class TopicViewer extends React.Component {
       }
     }
     return opinion;
+  }
+
+  toggleOpinionComposer() {
+    this.setState({
+      composerShown: !this.state.composerShown
+    });
+  }
+
+  createOpinion() {
+    let opinion = {
+      body: this.state.opinionValue
+    }
+    console.log(opinion);
+    this.toggleOpinionComposer();
+  }
+
+  cancelOpinion() {
+    this.toggleOpinionComposer();
+  }
+
+  handleOpinionChange(event) {
+    this.setState({
+      opinionValue: event.target.value
+    });
   }
 
   renderOpinionAuthor() {
@@ -256,14 +267,16 @@ export class TopicViewer extends React.Component {
             <div
               className="topic-viewer-opinions-section"
               style={{
-                width: (this.state.dimensions.width - 20) + 'px',
-                height: (this.state.dimensions.height - 335) + 'px'
+                width: (this.props.dimensions[0] - 320) + 'px',
+                height: (this.props.dimensions[1] - 435) + 'px'
               }}>
               {this.renderOpinionPreviews()}
             </div>
             <div className="add-opinion">
               <div className="add-opinion-label">Add Opinion</div>
-              <div className="add-opinion-button">
+              <div
+                className="add-opinion-button"
+                onClick={this.toggleOpinionComposer.bind(this)}>
                 <i className="fa fa-plus" aria-hidden="true"></i>
               </div>
             </div>
@@ -280,6 +293,20 @@ export class TopicViewer extends React.Component {
                 {this.renderOpinionAuthor()}
               </div>
             </div>
+            <div className="comment-composer-container">
+              <textarea
+                className="comment-composer"
+                placeholder="Write a comment...">
+              </textarea>
+              <div className="comment-composer-buttons">
+                <div className="comment-composer-post-button unselectable">
+                  <div>Post</div>
+                </div>
+                <div className="comment-composer-cancel-button unselectable">
+                  <div>Cancel</div>
+                </div>
+              </div>
+            </div>
             <div className="comments">
               {this.renderComments()}
             </div>
@@ -294,11 +321,46 @@ export class TopicViewer extends React.Component {
         id="topic-viewer"
         className={this.props.expanded ? "topic-expanded" : ""}
         style={{
-          width: this.state.dimensions.width + 'px',
-          height: this.state.dimensions.height + 'px',
+          width: (this.props.dimensions[0] - 300) + 'px',
+          height: (this.props.dimensions[1] - 100) + 'px',
           left: '150px',
           top: '50px'
         }}>
+        <div
+          className={
+            this.state.composerShown
+            ? "opinion-composer-container shown"
+            : "opinion-composer-container"
+          }>
+          <div className="opinion-composer">
+            <div className="opinion-composer-text">
+              <div className="opinion-composer-label">
+                {"What's Your Opinion?"}
+              </div>
+              <textarea
+                className="opinion-composer-text-area"
+                value={this.state.opinionValue}
+                onChange={this.handleOpinionChange.bind(this)}
+                maxLength="1000">
+              </textarea>
+              <div className="opinion-composer-char-limit">
+                {this.state.opinionValue.length + " / 1000"}
+              </div>
+            </div>
+            <div className="opinion-composer-buttons">
+              <div
+                className="opinion-composer-create-button"
+                onClick={this.createOpinion.bind(this)}>
+                Create
+              </div>
+              <div
+                className="opinion-composer-cancel-button"
+                onClick={this.cancelOpinion.bind(this)}>
+                Cancel
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           className="exit-topic-viewer"
           onClick={this.toggleViewer.bind(this)}>
