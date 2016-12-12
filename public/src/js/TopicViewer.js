@@ -39,7 +39,7 @@ export class TopicViewer extends React.Component {
   }
 
   renderOpinionPreviews() {
-    if (this.props.opinions.length == 0 && !this.props.loadingOpinions) {
+    if (this.props.opinions && this.props.opinions.length == 0 && !this.props.loadingOpinions || !this.props.opinions) {
       return (
         <div className="no-opinions">
           <div>
