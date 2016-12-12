@@ -135,8 +135,25 @@ function postOpinion(req, res, next) {
     });
 }
 
+function getOpinionCountForAllTopics(req, res, next) {
+    var topics = req.result.rows;
+    async.each(topics, function(topic, callback){
+        db.Opinion.count({
+            where: {
+                topic_id: topic.dataValues.id
+            }
+        }).then(function(count) {
+            topic.dataValues.opinionCount = count;
+            callback();
+        });
+    }, function(){
+        res.send(req.result);
+    });
+}
+
 module.exports = {
     postOpinion: postOpinion,
     getAllOpinions: getAllOpinions,
-    getOpinion: getOpinion
+    getOpinion: getOpinion,
+    getOpinionCountForAllTopics: getOpinionCountForAllTopics
 };

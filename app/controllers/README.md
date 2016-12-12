@@ -11,6 +11,7 @@ Sample request response:
 	rows: [
 		{
 			id: 4,
+			opinionCount: 1,
 			title: "Sample Data 4",
 			description: "This is a description for sample data 4. SOOO EXCITING.",
 			category: "general",
@@ -24,6 +25,7 @@ Sample request response:
 		},
 		{
 			id: 3,
+			opinionCount: 1,
 			title: "Sample Data 3",
 			description: "This is a description for sample data 3. Kinda boring, I know.",
 			category: "general",
@@ -37,6 +39,7 @@ Sample request response:
 		},
 		{
 			id: 2,
+			opinionCount: 2,
 			title: "Jayson Tatum's Sick Throwdown",
 			description: "DID YOU SEE THAT DUNK BR0000ooOOOHHHH?? DIRTY! FILTHY! VILE!",
 			category: "sports",

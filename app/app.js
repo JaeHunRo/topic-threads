@@ -55,7 +55,7 @@ INTERNAL API ROUTES
 ========================================
 */
 //Topic routes
-router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes); //Tested
+router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes, opinionController.getOpinionCountForAllTopics); //Tested
 router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.getTopic); //Tested
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic); //Tested
 
