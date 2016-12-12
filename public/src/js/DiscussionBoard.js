@@ -203,7 +203,6 @@ export class DiscussionBoard extends React.Component {
   }
 
   renderTopics() {
-    console.log('render topics');
     let topicElements = [];
     let topics = this.props.topics;
     topics.forEach((topic, index) => {
