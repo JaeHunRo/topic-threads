@@ -24,10 +24,14 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
+  align-content: flex-start;
   margin-top: 63px;
   width: 100%;
   overflow: auto;
+}
+
+.discussion-topic-container {
+  align-self: flex-start;
 }
 
 .discussion-topic {
