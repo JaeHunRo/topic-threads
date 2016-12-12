@@ -13,7 +13,8 @@ export class DiscussionBoard extends React.Component {
       descriptionValue: '',
       categoryValue: '',
       categorySelectorExpanded: false,
-      composerShown: false
+      composerShown: false,
+      composerError: false
     }
   }
 
@@ -149,6 +150,12 @@ export class DiscussionBoard extends React.Component {
   }
 
   createTopic() {
+    if (this.state.titleValue.length == 0 || this.state.descriptionValue.length == 0 || this.state.categoryValue.length == 0) {
+      this.setState({
+        composerError: true
+      });
+      return;
+    }
     let topic = {
       "title": this.state.titleValue,
       "description": this.state.descriptionValue,
@@ -171,7 +178,8 @@ export class DiscussionBoard extends React.Component {
           this.setState({
             titleValue: '',
             descriptionValue: '',
-            categoryValue: ''
+            categoryValue: '',
+            composerError: false
           });
         });
       });
@@ -183,7 +191,8 @@ export class DiscussionBoard extends React.Component {
     this.setState({
       titleValue: '',
       descriptionValue: '',
-      categoryValue: ''
+      categoryValue: '',
+      composerError: false
     });
   }
 
@@ -239,6 +248,13 @@ export class DiscussionBoard extends React.Component {
               <div className="topic-composer-char-limit">
                 {this.state.titleValue.length + " / 80"}
               </div>
+              <div className={
+                this.state.composerError && this.state.titleValue.length == 0
+                ? "topic-composer-title-error error shown"
+                : "topic-composer-title-error error"
+              }>
+                Please enter a title for your topic.
+              </div>
             </div>
             <div className="topic-composer-description">
               <div className="topic-composer-label">
@@ -248,6 +264,7 @@ export class DiscussionBoard extends React.Component {
                 id="new-topic-description"
                 className="topic-composer-description-field"
                 maxLength="300"
+                placeholder="(Optional)"
                 value={this.state.descriptionValue}
                 onChange={this.handleDescriptionChange.bind(this)}/>
               <div className="topic-composer-char-limit">
@@ -263,7 +280,18 @@ export class DiscussionBoard extends React.Component {
                 ? "topic-composer-category-selector expanded"
                 : "topic-composer-category-selector"
               }>
-                {this.renderSelectedCategory()}
+                <div style={{
+                  position: "relative"
+                }}>
+                  {this.renderSelectedCategory()}
+                  <div className={
+                    this.state.composerError && this.state.categoryValue.length == 0
+                    ? "topic-composer-category-error error shown"
+                    : "topic-composer-category-error error"
+                  }>
+                    Please select a category for your topic.
+                  </div>
+                </div>
                 <div className="topic-composer-category-field">
                   {this.renderCategoryOptions()}
                 </div>

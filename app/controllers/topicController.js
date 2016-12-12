@@ -27,7 +27,7 @@ function getAllTopics(req, res, next){
                 db.TopicVotes.findOne({
                     where: {
                         topic_id: topic.dataValues.id,
-                        user_id: user.id 
+                        user_id: user.id
                     }
                 }).then(function(vote){
                     topic.dataValues.userPreviouslyVoted = null;
@@ -89,8 +89,8 @@ function getTopic(req, res, next){
                         result.dataValues.userPreviouslyVoted = votes[i].isUp;
                     }
                 }
-                result.dataValues.numUpvotes = numUpvotes;
-                result.dataValues.numDownvotes = votes.length - numUpvotes;
+                result.dataValues.upvotes = numUpvotes;
+                result.dataValues.downvotes = votes.length - numUpvotes;
                 db.User.findOne({
                     where: {
                         id: result.dataValues.user_id
@@ -114,7 +114,7 @@ function postTopic(req, res, next) {
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
-            user_id: user.id 
+            user_id: user.id
         })
         .then(function() {
             res.status(200).send({

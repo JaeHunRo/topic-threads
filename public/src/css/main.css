@@ -949,6 +949,7 @@ body {
 
 .topic-composer-category {
   width: 320px;
+  position: relative;
 }
 
 .expanded .topic-composer-category-field {
@@ -1011,6 +1012,18 @@ body {
   position: absolute;
   width: 100%;
   bottom: 20px;
+}
+
+.opinion-composer-create-button.disabled,
+.comment-composer-post-button.disabled {
+  background-color: lightgray;
+  color: gray;
+  cursor: default;
+}
+
+.opinion-composer-create-button.disabled:hover,
+.comment-composer-post-button.disabled:hover {
+  box-shadow: none;
 }
 
 .topic-composer-create-button img,
@@ -1165,6 +1178,26 @@ body {
 .topics-loading-label {
   margin-top: 20px;
   color: white;
+}
+
+.topic-composer-title-error {
+  margin-top: -13px;
+}
+
+.topic-composer-category-error {
+  position: absolute;
+  bottom: -13px;
+}
+
+.error {
+  font-size: 10px;
+  color: red;
+  margin-left: 5px;
+  visibility: hidden;
+}
+
+.error.shown {
+  visibility: visible;
 }
 
 .divider {

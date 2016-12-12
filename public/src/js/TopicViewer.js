@@ -161,6 +161,9 @@ export class TopicViewer extends React.Component {
   }
 
   createOpinion() {
+    if (this.state.opinionValue.length == 0) {
+      return;
+    }
     let opinion = {
       "content": this.state.opinionValue
     }
@@ -287,6 +290,9 @@ export class TopicViewer extends React.Component {
   }
 
   createComment() {
+    if (this.state.commentValue.length == 0) {
+      return;
+    }
     const comment = {
       "content": this.state.commentValue
     }
@@ -394,7 +400,11 @@ export class TopicViewer extends React.Component {
               </textarea>
               <div className="comment-composer-buttons">
                 <div
-                  className="comment-composer-post-button unselectable"
+                  className={
+                    this.state.commentValue.length == 0
+                    ? "comment-composer-post-button unselectable disabled"
+                    : "comment-composer-post-button unselectable"
+                  }
                   onClick={this.createComment.bind(this)}>
                   <div>
                     {
@@ -455,7 +465,11 @@ export class TopicViewer extends React.Component {
             </div>
             <div className="opinion-composer-buttons">
               <div
-                className="opinion-composer-create-button"
+                className={
+                  this.state.opinionValue.length == 0
+                  ? "opinion-composer-create-button unselectable disabled"
+                  : "opinion-composer-create-button unselectable "
+                }
                 onClick={this.createOpinion.bind(this)}>
                 {
                   this.props.postingOpinion
@@ -466,7 +480,7 @@ export class TopicViewer extends React.Component {
                 }
               </div>
               <div
-                className="opinion-composer-cancel-button"
+                className="opinion-composer-cancel-button unselectable"
                 onClick={this.cancelOpinion.bind(this)}>
                 Cancel
               </div>

@@ -31354,7 +31354,8 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       descriptionValue: '',
       categoryValue: '',
       categorySelectorExpanded: false,
-      composerShown: false
+      composerShown: false,
+      composerError: false
     };
     return _this;
   }
@@ -31508,6 +31509,12 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
     value: function createTopic() {
       var _this3 = this;
 
+      if (this.state.titleValue.length == 0 || this.state.descriptionValue.length == 0 || this.state.categoryValue.length == 0) {
+        this.setState({
+          composerError: true
+        });
+        return;
+      }
       var topic = {
         "title": this.state.titleValue,
         "description": this.state.descriptionValue,
@@ -31530,7 +31537,8 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
             _this3.setState({
               titleValue: '',
               descriptionValue: '',
-              categoryValue: ''
+              categoryValue: '',
+              composerError: false
             });
           });
         });
@@ -31543,7 +31551,8 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       this.setState({
         titleValue: '',
         descriptionValue: '',
-        categoryValue: ''
+        categoryValue: '',
+        composerError: false
       });
     }
   }, {
@@ -31612,6 +31621,11 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
                 'div',
                 { className: 'topic-composer-char-limit' },
                 this.state.titleValue.length + " / 80"
+              ),
+              React.createElement(
+                'div',
+                { className: this.state.composerError && this.state.titleValue.length == 0 ? "topic-composer-title-error error shown" : "topic-composer-title-error error" },
+                'Please enter a title for your topic.'
               )
             ),
             React.createElement(
@@ -31626,6 +31640,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
                 id: 'new-topic-description',
                 className: 'topic-composer-description-field',
                 maxLength: '300',
+                placeholder: '(Optional)',
                 value: this.state.descriptionValue,
                 onChange: this.handleDescriptionChange.bind(this) }),
               React.createElement(
@@ -31645,7 +31660,18 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
               React.createElement(
                 'div',
                 { className: this.state.categorySelectorExpanded ? "topic-composer-category-selector expanded" : "topic-composer-category-selector" },
-                this.renderSelectedCategory(),
+                React.createElement(
+                  'div',
+                  { style: {
+                      position: "relative"
+                    } },
+                  this.renderSelectedCategory(),
+                  React.createElement(
+                    'div',
+                    { className: this.state.composerError && this.state.categoryValue.length == 0 ? "topic-composer-category-error error shown" : "topic-composer-category-error error" },
+                    'Please select a category for your topic.'
+                  )
+                ),
                 React.createElement(
                   'div',
                   { className: 'topic-composer-category-field' },
@@ -32478,6 +32504,9 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
     value: function createOpinion() {
       var _this5 = this;
 
+      if (this.state.opinionValue.length == 0) {
+        return;
+      }
       var opinion = {
         "content": this.state.opinionValue
       };
@@ -32641,6 +32670,9 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
     value: function createComment() {
       var _this8 = this;
 
+      if (this.state.commentValue.length == 0) {
+        return;
+      }
       var comment = {
         "content": this.state.commentValue
       };
@@ -32783,7 +32815,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
                 React.createElement(
                   'div',
                   {
-                    className: 'comment-composer-post-button unselectable',
+                    className: this.state.commentValue.length == 0 ? "comment-composer-post-button unselectable disabled" : "comment-composer-post-button unselectable",
                     onClick: this.createComment.bind(this) },
                   React.createElement(
                     'div',
@@ -32858,14 +32890,14 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
               React.createElement(
                 'div',
                 {
-                  className: 'opinion-composer-create-button',
+                  className: this.state.opinionValue.length == 0 ? "opinion-composer-create-button unselectable disabled" : "opinion-composer-create-button unselectable ",
                   onClick: this.createOpinion.bind(this) },
                 this.props.postingOpinion ? React.createElement('img', { src: 'src/assets/loading.gif' }) : "Create"
               ),
               React.createElement(
                 'div',
                 {
-                  className: 'opinion-composer-cancel-button',
+                  className: 'opinion-composer-cancel-button unselectable',
                   onClick: this.cancelOpinion.bind(this) },
                 'Cancel'
               )
