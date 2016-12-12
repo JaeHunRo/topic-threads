@@ -317,26 +317,29 @@ export class DiscussionBoard extends React.Component {
             </div>
           </div>
         </div>
-        <div className="board-buttons">
-          <div className={
-            this.state.showButtonLabel ? "add-topic-label shown" : "add-topic-label"
-          }>
-            Create new topic
-          </div>
-          <div
-            className="add-topic-button unselectable"
-            onMouseEnter={this.mouseEnterLabel.bind(this)}
-            onMouseLeave={this.mouseLeaveLabel.bind(this)}
-            onClick={this.toggleTopicComposer.bind(this)}>
-            <i className="fa fa-plus" aria-hidden="true"></i>
-          </div>
-          <div
-            className="user-profile-button unselectable"
-            onClick={this.toggleUserProfile.bind(this)}
-            style={{
-              backgroundColor: this.props.currentUser ? this.props.colorUtil.getColor(this.props.currentUser.id) : 'black'
-            }}>
-            <div>{initial}</div>
+        <div className="header-bar">
+          <div className="page-title">Topic Threads</div>
+          <div className="board-buttons">
+            <div className={
+              this.state.showButtonLabel ? "add-topic-label shown" : "add-topic-label"
+            }>
+              Create new topic
+            </div>
+            <div
+              className="add-topic-button unselectable"
+              onMouseEnter={this.mouseEnterLabel.bind(this)}
+              onMouseLeave={this.mouseLeaveLabel.bind(this)}
+              onClick={this.toggleTopicComposer.bind(this)}>
+              <i className="fa fa-plus" aria-hidden="true"></i>
+            </div>
+            <div
+              className="user-profile-button unselectable"
+              onClick={this.toggleUserProfile.bind(this)}
+              style={{
+                backgroundColor: this.props.currentUser ? this.props.colorUtil.getColor(this.props.currentUser.id) : 'black'
+              }}>
+              <div>{initial}</div>
+            </div>
           </div>
         </div>
         <div id="user-profile" className={
