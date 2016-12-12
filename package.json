@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "watchify -t [ babelify ] public/main.js -o public/dist/bundle.js -v",
     "build": "browserify -t [ babelify ] public/main.js  | uglifyjs -mc warnings=false > public/dist/bundle.js",
-    "postinstall": "browserify -t [ babelify ] ./public/main.js  | uglifyjs -mc warnings=false > ./public/dist/bundle.js",
+    "postinstall": "browserify -t [ babelify ] public/main.js  | uglifyjs -mc warnings=false > public/dist/bundle.js",
     "start": "node server.js"
   },
   "repository": {
@@ -30,14 +30,13 @@
     "express-session": "^1.14.2",
     "jquery": "^3.1.1",
     "morgan": "^1.7.0",
-    "nodemon": "^1.11.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "pg": "^6.1.0",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "sequelize": "^3.24.8",
-    "uglify": "^0.1.5"
+    "uglifyjs": "^2.4.10"
   },
   "devDependencies": {
     "nodemon": "^1.11.0",
