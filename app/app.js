@@ -32,20 +32,20 @@ require('../config/passport')(passport); // pass passport for configuration
 */
 
 // route for facebook authentication and login
-router.route('/login')
+router.route('/fblogin')
 	.get(passport.authenticate('facebook'));
 
 // handle the callback after facebook has authenticated the user
 router.route('/login/callback')
 	.get(passport.authenticate('facebook', { failureRedirect: '/' }), 
 		function (req, res, next) {
-			res.redirect('/topic');
+			res.redirect('/');
 		});
 
 router.route('/logout')
 	.get(function(req, res) {
 		req.logout();
-		res.redirect('/');
+		res.redirect('/login');
 	});
 
 
@@ -89,7 +89,12 @@ router.get('/api/user', userController.isLoggedIn, userController.getUserStatus)
  =====================================
 */
 
-router.route('/topic')
+router.route('/login')
+	.get(function(req, res) {
+		res.sendFile(path.resolve(__dirname + '/../public/index.html'));
+	})
+
+router.route('/')
 	.get(userController.isLoggedIn, function(req, res) {
 		// code here to direct to actual page?
 		res.sendFile(path.resolve(__dirname + '/../public/topic.html'));
