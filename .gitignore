@@ -1,6 +1,5 @@
 */node_modules
 node_modules
-config/auth.js
 public/dist/bundle.js
 npm-debug.
 .DS_Store
