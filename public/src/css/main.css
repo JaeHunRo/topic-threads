@@ -30,10 +30,6 @@ body {
   overflow: auto;
 }
 
-.discussion-topic-container {
-  align-self: flex-start;
-}
-
 .discussion-topic {
   width: 200px;
   height: 240px;
