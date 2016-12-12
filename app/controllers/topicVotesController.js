@@ -3,7 +3,7 @@ var async = require('async');
 /*
 Grabs the upvotes/downvotes for each topic and appends to the result.
 */
-function getTopicVotes(req, res){
+function getTopicVotes(req, res, next){
     var topics = req.result.rows;
     async.each(topics, function(topic, callback){
         db.TopicVotes.findAndCountAll({
@@ -21,7 +21,7 @@ function getTopicVotes(req, res){
             callback();
         });
     }, function(){
-        res.send(req.result);
+        next();
     });
 }
 
