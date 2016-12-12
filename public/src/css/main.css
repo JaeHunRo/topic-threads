@@ -281,6 +281,8 @@ body {
   align-items: center;
   color: white;
   font-size: 36px;
+  line-height: 36px;
+  text-shadow: 0 0 2px black;
 }
 
 .topic-opinion-metadata {
@@ -739,6 +741,7 @@ body {
   background-color: #e50000;
   cursor: pointer;
   border: 1px solid white;
+  text-shadow: 0 0 2px black;
 }
 
 .add-opinion-button:hover {
