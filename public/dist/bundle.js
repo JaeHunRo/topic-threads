@@ -31509,7 +31509,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
     value: function createTopic() {
       var _this3 = this;
 
-      if (this.state.titleValue.length == 0 || this.state.descriptionValue.length == 0 || this.state.categoryValue.length == 0) {
+      if (this.state.titleValue.length == 0 || this.state.categoryValue.length == 0) {
         this.setState({
           composerError: true
         });
@@ -31567,6 +31567,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
     value: function renderTopics() {
       var _this4 = this;
 
+      console.log('render topics');
       var topicElements = [];
       var topics = this.props.topics;
       topics.forEach(function (topic, index) {

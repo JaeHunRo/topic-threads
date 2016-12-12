@@ -150,7 +150,7 @@ export class DiscussionBoard extends React.Component {
   }
 
   createTopic() {
-    if (this.state.titleValue.length == 0 || this.state.descriptionValue.length == 0 || this.state.categoryValue.length == 0) {
+    if (this.state.titleValue.length == 0 || this.state.categoryValue.length == 0) {
       this.setState({
         composerError: true
       });
@@ -203,6 +203,7 @@ export class DiscussionBoard extends React.Component {
   }
 
   renderTopics() {
+    console.log('render topics');
     let topicElements = [];
     let topics = this.props.topics;
     topics.forEach((topic, index) => {
