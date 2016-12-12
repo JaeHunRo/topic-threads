@@ -6,6 +6,7 @@
   "scripts": {
     "watch": "watchify -t [ babelify ] public/main.js -o public/dist/bundle.js -v",
     "build": "browserify -t [ babelify ] public/main.js  | uglifyjs -mc warnings=false > public/dist/bundle.js",
+    "postinstall": "browserify -t [ babelify ] public/main.js  | uglifyjs -mc warnings=false > public/dist/bundle.js",
     "start": "node server.js"
   },
   "repository": {
