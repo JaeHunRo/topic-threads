@@ -22,6 +22,18 @@ const categories = {
     label: 'General',
     icon: 'general.svg'
   },
+  'food': {
+    label: 'Food',
+    icon: 'groceries.svg'
+  },
+  'event': {
+    label: 'Event',
+    icon: 'calendar.svg'
+  },
+  'health': {
+    label: 'Health',
+    icon: 'heart.svg'
+  }
 };
 
 export class App extends React.Component{
