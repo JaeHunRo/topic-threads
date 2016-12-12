@@ -3,39 +3,15 @@ const DiscussionTopic = require('./DiscussionTopic');
 const Util = require('./Util');
 const $ = require('jquery');
 
-const categories = [
-  {
-    key: 'sports',
-    label: 'Sports',
-    icon: 'sports.svg'
-  },
-  {
-    key: 'academics',
-    label: 'Academics',
-    icon: 'academics.svg'
-  },
-  {
-    key: 'campus-politics',
-    label: 'Campus Politics',
-    icon: 'campus-politics.svg'
-  },
-  {
-    key: 'general',
-    label: 'General',
-    icon: 'general.svg'
-  },
-];
-
 export class DiscussionBoard extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       showButtonLabel: false,
       userProfileShown: false,
       titleValue: '',
       descriptionValue: '',
-      categoryValue: {},
+      categoryValue: '',
       categorySelectorExpanded: false,
       composerShown: false
     }
@@ -108,7 +84,7 @@ export class DiscussionBoard extends React.Component {
 
   renderSelectedCategory() {
     let selectedContent;
-    if (this.isEmpty(this.state.categoryValue)) {
+    if (this.state.categoryValue == '') {
       selectedContent = (
         <div>No category selected</div>
       );
@@ -117,9 +93,9 @@ export class DiscussionBoard extends React.Component {
         <div className="topic-composer-selected-category-option">
           <img
             className="topic-composer-category-option-icon"
-            src={'src/assets/' + this.state.categoryValue.icon} />
+            src={'src/assets/' + this.props.categories[this.state.categoryValue].icon} />
           <div className="topic-composer-category-option-label">
-            {this.state.categoryValue.label}
+            {this.props.categories[this.state.categoryValue].label}
           </div>
         </div>
       )
@@ -146,12 +122,13 @@ export class DiscussionBoard extends React.Component {
 
   renderCategoryOptions() {
     let categoryElements = [];
-    categories.forEach((category, index) => {
+    Object.keys(this.props.categories).forEach((key, index) => {
+      const category = this.props.categories[key];
       let categoryElement = (
         <div
           key={index + "-category-option"}
           className="topic-composer-category-option"
-          onClick={this.selectCategory.bind(this, category)}>
+          onClick={this.selectCategory.bind(this, key)}>
           <img
             className="topic-composer-category-option-icon"
             src={'src/assets/' + category.icon} />
@@ -175,7 +152,7 @@ export class DiscussionBoard extends React.Component {
     let topic = {
       "title": this.state.titleValue,
       "description": this.state.descriptionValue,
-      "category": this.state.categoryValue.key
+      "category": this.state.categoryValue
     }
     console.log('topic', topic);
     const topicCreateRequest = $.ajax({
@@ -188,13 +165,16 @@ export class DiscussionBoard extends React.Component {
 
     $.when(topicCreateRequest).done((data) => {
       console.log('response', data);
-    });
-
-    this.toggleTopicComposer();
-    this.setState({
-      titleValue: '',
-      descriptionValue: '',
-      categoryValue: {}
+      this.props.startLoading(() => {
+        this.props.addNewTopic(() => {
+          this.toggleTopicComposer();
+          this.setState({
+            titleValue: '',
+            descriptionValue: '',
+            categoryValue: ''
+          });
+        });
+      });
     });
   }
 
@@ -203,7 +183,7 @@ export class DiscussionBoard extends React.Component {
     this.setState({
       titleValue: '',
       descriptionValue: '',
-      categoryValue: {}
+      categoryValue: ''
     });
   }
 
@@ -221,8 +201,10 @@ export class DiscussionBoard extends React.Component {
         <DiscussionTopic
           key={'topic-' + index}
           topic={topic}
+          updateTopic={this.props.updateTopic}
           setTopic={this.props.setTopic}
-          toggleViewer={this.props.toggleViewer}/>
+          toggleViewer={this.props.toggleViewer}
+          categories={this.props.categories}/>
       );
     });
     return topicElements;
@@ -291,7 +273,13 @@ export class DiscussionBoard extends React.Component {
               <div
                 className="topic-composer-create-button"
                 onClick={this.createTopic.bind(this)}>
-                Create
+                {
+                  this.props.postingTopic == true
+                  ? (
+                    <img src="src/assets/loading.gif"/>
+                  )
+                  : "Create"
+                }
               </div>
               <div
                 className="topic-composer-cancel-button"
@@ -340,11 +328,23 @@ export class DiscussionBoard extends React.Component {
               : "Error"
             }
           </div>
-          <div className="logout unselectable">
-            Logout
-          </div>
+          <a href="/logout">
+            <div className="logout unselectable">
+              Logout
+            </div>
+          </a>
         </div>
-        <div id="discussion-board">
+        <div id="discussion-board" style={{
+          height: (this.props.dimensions[1] - 63) + 'px'
+        }}>
+          {
+            this.props.topics.length == 0 && !this.props.loadingTopics
+            ? (
+              <div className="no-topics">
+                No Topics Found
+              </div>
+            ) : null
+          }
           {this.renderTopics()}
         </div>
       </div>

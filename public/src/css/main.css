@@ -24,9 +24,10 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  padding-top: 50px;
+  align-items: flex-start;
+  margin-top: 63px;
   width: 100%;
-  /*font-family: 'Exo 2', sans-serif;*/
+  overflow: auto;
 }
 
 .discussion-topic {
@@ -57,6 +58,7 @@ body {
   border-top: none;
   margin-right: 20px;
   margin-left: 20px;
+  margin-bottom: 20px;
   text-align: center;
   padding: 10px;
   box-shadow: 0 0 2px black;
@@ -144,6 +146,8 @@ body {
   height: 100%;
   display: none;
   background-color: rgba(0,0,0,0.8);
+  top: 0;
+  left: 0;
 }
 
 #overlay.topic-expanded {
@@ -267,11 +271,16 @@ body {
   align-items: center;
 }
 
-.topic-opinion-author-profile-pic {
+.topic-opinion-author-icon {
   border-radius: 30px;
   border: 1px solid lightgray;
   width: 60px;
   height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
 }
 
 .topic-opinion-metadata {
@@ -485,10 +494,11 @@ body {
 }
 
 .comment-section-opinion-author
-.topic-opinion-author-profile-pic {
+.topic-opinion-author-icon {
   width: 20px;
   height: 20px;
   margin-left: 10px;
+  font-size: 12px;
 }
 
 .comment-section-opinion-author
@@ -516,6 +526,11 @@ body {
   max-height: 200px;
   overflow: auto;
   font-size: 18px;
+}
+
+.comment-section-opinion-body span {
+  font-size: 24px;
+  color: gray;
 }
 
 .comments {
@@ -629,6 +644,11 @@ body {
   color: white;
 }
 
+.comment-composer-post-button img {
+  width: 20px;
+  height: 20px;
+}
+
 .comment-composer-cancel-button {
   margin-left: 10px;
   background-color: lightgray;
@@ -721,10 +741,13 @@ body {
   border: 1px solid white;
 }
 
-.add-opinion-button:hover,
+.add-opinion-button:hover {
+  box-shadow: 0 0 2px black;
+}
+
 .add-topic-button:hover,
 .user-profile-button:hover {
-  box-shadow: 0 0 2px black;
+  box-shadow: 0 0 8px white;
 }
 
 .add-topic-label {
@@ -745,15 +768,21 @@ body {
 
 .board-buttons {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0;
+  right: 0;
   justify-content: flex-end;
   align-items: center;
   display: flex;
+  height: 60px;
+  width: 100%;
+  background-color: #8b5a2b;
+  border-bottom: 1px solid white;
+  box-shadow: 0 2px 4px black;
 }
 
 .user-profile-button {
   line-height: 20px;
+  margin-right: 20px;
 }
 
 .user-profile {
@@ -761,7 +790,7 @@ body {
   height: 250px;
   background-color: white;
   position: absolute;
-  top: 60px;
+  top: 70px;
   right: 10px;
   z-index: 100;
   border-radius: 10px;
@@ -984,6 +1013,12 @@ body {
   bottom: 20px;
 }
 
+.topic-composer-create-button img,
+.opinion-composer-create-button img {
+  width: 20px;
+  height: 20px;
+}
+
 .topic-composer-cancel-button,
 .opinion-composer-cancel-button {
   margin-left: 20px;
@@ -1005,6 +1040,9 @@ body {
   font-size: 14px;
   border: 1px solid white;
   cursor: pointer;
+  width: 60px;
+  text-align: center;
+  height: 20px;
 }
 
 .topic-composer-create-button:hover,
@@ -1027,9 +1065,57 @@ body {
   opacity: 0.4;
 }
 
-.no-opinions {
+.loading-opinions-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-opinions,
+.loading-comments {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(0,0,0,0.7);
+  width: 175px;
+  height: 150px;
+  color: white;
+  border-radius: 10px;
+}
+
+.loading-opinions img,
+.loading-comments img {
+  width: 50px;
+  height: 50px;
+}
+
+.loading-comments div {
+  margin-top: 10px;
+}
+
+.comments-placeholder-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.no-opinions,
+.no-comments {
   font-size: 32px;
   color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-topics {
+  font-size: 48px;
+  color: white;
+  text-shadow: 0 0 10px black;
   display: flex;
   justify-content: center;
   align-items: center;

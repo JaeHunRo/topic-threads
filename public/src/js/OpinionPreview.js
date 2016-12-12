@@ -63,7 +63,7 @@ export class OpinionPreview extends React.Component {
   }
 
   selectVoteOption(key, event) {
-    this.props.selectOpinionVote(key, this.props.info.opinionId)
+    this.props.selectOpinionVote(key, this.props.info.id);
     this.toggleOverlay(event);
   }
 
@@ -113,7 +113,7 @@ export class OpinionPreview extends React.Component {
     if (this.state.voteOverlayShown) {
       return;
     }
-    this.props.viewCommentList(this.props.info.opinionId);
+    this.props.viewCommentList(this.props.info);
   }
 
   renderVoteCount() {
@@ -226,12 +226,14 @@ export class OpinionPreview extends React.Component {
           {this.renderUserVote()}
         </div>
         <div className="topic-opinion-info">
-          <img
-            className="topic-opinion-author-profile-pic"
-            src={"src/assets/" + this.props.info.profilePic}/>
+          <div className="topic-opinion-author-icon" style={{
+            backgroundColor: this.props.colorUtil.getColor(this.props.info.user_id)
+          }}>
+            <div>{this.props.info.opinionAuthor.charAt(0)}</div>
+          </div>
           <div className="topic-opinion-metadata">
             <div className="topic-opinion-author-name">
-              {this.props.info.author}
+              {this.props.info.opinionAuthor}
             </div>
             <div className="opinion-vote-count-container">
               {this.renderVoteCount()}
@@ -245,7 +247,7 @@ export class OpinionPreview extends React.Component {
         }}>
           <div className="topic-opinion-preview-container">
             <div className="topic-opinion-preview">
-              {this.props.info.body}
+              {this.props.info.content}
               <div className="preview-fade"/>
             </div>
           </div>

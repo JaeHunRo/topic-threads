@@ -1,13 +1,15 @@
 var React = require('react');
+var $ = require('jquery');
 
 export class DiscussionTopic extends React.Component {
   constructor(props) {
     super(props);
+    console.log('upvoted?', this.props.topic.userPreviouslyVoted === true);
     this.state = {
-      upvoted: false,
+      upvoted: this.props.topic.userPreviouslyVoted === true,
       expanded: false,
-      votes: this.props.topic.votes,
-      opinions: this.props.topic.opinions
+      votes: this.props.topic.upvotes,
+      opinions: this.props.topic.opinionCount
     }
   }
 
@@ -15,8 +17,37 @@ export class DiscussionTopic extends React.Component {
     let votes = this.state.upvoted
       ? this.state.votes - 1
       : this.state.votes + 1;
+    const nextState = !this.state.upvoted;
+    const voteRequest = $.ajax({
+      contentType: 'application/json',
+      url: '/api/topic_votes/topicId/' + this.props.topic.id,
+      type: this.props.topic.userPreviouslyVoted === null ? 'POST' : 'PUT',
+      data: JSON.stringify({
+        "is_up": nextState
+      }),
+      dataType: 'json'
+    });
+
+    const voteGetRequest = $.ajax({
+      contentType: 'application/json',
+      url: '/api/topic/' + this.props.topic.id,
+      type: 'GET'
+    });
+
+    $.when(voteRequest).done((data) => {
+      console.log('vote completed', data);
+      $.when(voteGetRequest).done((response) => {
+        console.log('response vote data', response);
+        this.props.updateTopic(response);
+        this.setState({
+          upvoted: response.userPreviouslyVoted === true,
+          votes: response.upvotes
+        });
+      });
+    });
+
     this.setState({
-      upvoted: !this.state.upvoted,
+      upvoted: nextState,
       votes: votes
     });
   }
@@ -29,6 +60,7 @@ export class DiscussionTopic extends React.Component {
   }
 
   render() {
+    const topic = this.props.topic;
     return (
       <div className="unselectable discussion-topic-container">
         <div
@@ -37,14 +69,25 @@ export class DiscussionTopic extends React.Component {
           <div className="thumbtack"></div>
           <div className="topic-category">
             <div className="topic-category-icon">
-              <img
-                src={'src/assets/' + this.props.topic.categoryIcon + '.svg'}
-                width={100}
-                height={100}/>
+              {
+                topic.category != ''
+                ? (
+                  <img
+                    src={'src/assets/' + this.props.categories[topic.category].icon}
+                    width={100}
+                    height={100}/>
+                )
+                : (
+                  <div style={{
+                    width: '100px',
+                    height: '100px'
+                  }}> ? </div>
+                )
+              }
             </div>
           </div>
           <div className="topic-title">
-            {this.props.topic.title}
+            {topic.title}
           </div>
         </div>
         <div className="discussion-topic-metadata">

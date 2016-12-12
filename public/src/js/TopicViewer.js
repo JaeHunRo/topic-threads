@@ -1,6 +1,7 @@
 const React = require('react');
 const OpinionPreview = require('./OpinionPreview');
 const Comment = require('./Comment');
+const $ = require('jquery');
 const views = {
   Topic: 0,
   Comments: 1
@@ -12,10 +13,13 @@ export class TopicViewer extends React.Component {
 
     this.state = {
       currentView: views.Topic,
-      commentsFor: -1,
-      commentList: null,
+      commentsFor: {},
+      commentList: [],
       composerShown: false,
-      opinionValue: ''
+      opinionValue: '',
+      loadingComments: false,
+      commentValue: '',
+      postingComment: false
     }
   }
 
@@ -23,7 +27,7 @@ export class TopicViewer extends React.Component {
     if (nextProps.expanded && nextProps.expanded != this.props.expanded) {
       this.setState({
         currentView: views.Topic,
-        commentsFor: -1
+        commentsFor: {}
       });
     }
   }
@@ -35,11 +39,20 @@ export class TopicViewer extends React.Component {
   }
 
   renderOpinionPreviews() {
-    if (this.props.opinions.length == 0) {
+    if (this.props.opinions.length == 0 && !this.props.loadingOpinions) {
       return (
         <div className="no-opinions">
           <div>
             No opinions yet!
+          </div>
+        </div>
+      );
+    } else if (this.props.loadingOpinions) {
+      return (
+        <div className="loading-opinions-container">
+          <div className="loading-opinions">
+            <img src="src/assets/loading.gif"/>
+            <div>Loading Opinions...</div>
           </div>
         </div>
       );
@@ -51,7 +64,9 @@ export class TopicViewer extends React.Component {
           key={index+'-opinion-preview'}
           info={opinion}
           selectOpinionVote={this.selectOpinionVote.bind(this)}
-          viewCommentList={this.viewCommentList.bind(this)}/>
+          viewCommentList={this.viewCommentList.bind(this)}
+          colorUtil={this.props.colorUtil}
+          viewedTopic={this.props.viewedTopic}/>
       );
     });
     return previews;
@@ -61,55 +76,82 @@ export class TopicViewer extends React.Component {
     console.log('voted', voteType, "on", opinionId);
     for (let i = 0; i < this.props.opinions.length; i++) {
       const opinion = this.props.opinions[i];
-      if (opinion.opinionId == opinionId) {
+      if (opinion.id == opinionId) {
         console.log("before", opinion.voteCount);
+        let requestType = '';
         const userVote = opinion.userPreviouslyVoted;
         if (userVote) {
           if (userVote == voteType) {
+            // user is unvoting
             opinion.voteCount[voteType] = opinion.voteCount[voteType] - 1;
             opinion.userPreviouslyVoted = null;
+            requestType = 'DELETE';
           } else {
+            // user is switching vote
             opinion.voteCount[userVote] = opinion.voteCount[userVote] - 1;
             opinion.voteCount[voteType] = opinion.voteCount[voteType] ? opinion.voteCount[voteType] + 1 : 1;
             opinion.userPreviouslyVoted = voteType;
+            requestType = 'PUT';
           }
         } else {
+          //user is making new vote
           opinion.voteCount[voteType] = opinion.voteCount[voteType] ? opinion.voteCount[voteType] + 1 : 1;
           opinion.userPreviouslyVoted = voteType;
+          requestType = 'POST';
         }
         console.log("after", opinion.voteCount);
+
+        let request = {
+          contentType: 'application/json',
+          url: '/api/opinion_votes/topicId/' + this.props.viewedTopic.id + '/opinionId/' + opinionId,
+          type: requestType
+        }
+
+        if (requestType == 'POST' || requestType == 'PUT') {
+          request.data = JSON.stringify({
+            'type': voteType
+          });
+          request.dataType = 'json';
+        }
+
+        const voteRequest = $.ajax(request);
+        const voteGetRequest = $.ajax({
+          contentType: 'application/json',
+          url: '/api/opinion/topicId/' + this.props.viewedTopic.id + '/opinionId/' + opinionId,
+          type: 'GET'
+        });
+
+        $.when(voteRequest).done((data) => {
+          console.log('vote completed', data);
+          $.when(voteGetRequest).done((response) => {
+            console.log('response vote data', response);
+            this.props.updateOpinion(response);
+            opinion.voteCount = response.voteCount;
+            opinion.userPreviouslyVoted = response.userPreviouslyVoted;
+          });
+        });
+
         return;
       }
     }
   }
 
-  viewCommentList(opinionId) {
-    console.log("go to", opinionId);
+  viewCommentList(opinion) {
+    console.log("go to", opinion.id);
     this.setState({
-      commentList: {
-        opinionId: opinionId
-      },
-      commentsFor: opinionId,
-      currentView: views.Comments
+      commentsFor: opinion,
+      currentView: views.Comments,
+      loadingComments: true,
+    }, () => {
+      this.retrieveComments();
     });
   }
 
   backToOpinions() {
     this.setState({
       currentView: views.Topic,
-      commentsFor: -1
+      commentsFor: {}
     });
-  }
-
-  getViewedOpinion() {
-    let opinions = this.props.opinions;
-    let opinion;
-    for (let i = 0; i < opinions.length; i++) {
-      if (opinions[i].opinionId == this.state.commentsFor) {
-        opinion = opinions[i];
-      }
-    }
-    return opinion;
   }
 
   toggleOpinionComposer() {
@@ -120,10 +162,47 @@ export class TopicViewer extends React.Component {
 
   createOpinion() {
     let opinion = {
-      body: this.state.opinionValue
+      "content": this.state.opinionValue
     }
+
     console.log(opinion);
-    this.toggleOpinionComposer();
+    const opinionCreateRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/opinion/topicId/' + this.props.viewedTopic.id,
+      type: 'POST',
+      data: JSON.stringify(opinion),
+      dataType: 'json'
+    });
+
+    $.when(opinionCreateRequest).done((data) => {
+      console.log('response', data);
+      this.props.startLoading(() => {
+        this.props.addNewOpinion(() => {
+          this.toggleOpinionComposer();
+          this.setState({
+            opinionValue: ''
+          });
+        });
+      });
+    });
+  }
+
+  retrieveComments(callback) {
+    const commentsRequest = $.ajax({
+      contentType: 'application/json',
+      url: '/api/comment/topicId/' + this.props.viewedTopic.id + '/opinionId/' + this.state.commentsFor.id + '/pageNum/' + this.props.topicPage,
+      type: 'GET'
+    });
+
+    console.log('comments request');
+
+    $.when(commentsRequest).done((data) => {
+      console.log('response', data);
+      this.setState({
+        commentList: data.rows,
+        loadingComments: false
+      }, callback);
+    });
   }
 
   cancelOpinion() {
@@ -137,19 +216,21 @@ export class TopicViewer extends React.Component {
   }
 
   renderOpinionAuthor() {
-    let opinion = this.getViewedOpinion();
+    let opinion = this.state.commentsFor;
     if (!opinion) {
       return null;
     } else {
       return (
         <div className="topic-opinion-info">
           <div>{"-"}</div>
-          <img
-            className="topic-opinion-author-profile-pic"
-            src={"src/assets/" + opinion.profilePic}/>
+          <div className="topic-opinion-author-icon" style={{
+            backgroundColor: this.props.colorUtil.getColor(opinion.user_id)
+          }}>
+            {opinion.opinionAuthor.charAt(0)}
+          </div>
           <div className="topic-opinion-metadata">
             <div className="topic-opinion-author-name">
-              {opinion.author}
+              {opinion.opinionAuthor}
             </div>
           </div>
         </div>
@@ -158,13 +239,15 @@ export class TopicViewer extends React.Component {
   }
 
   renderOpinionBody() {
-    let opinion = this.getViewedOpinion();
+    let opinion = this.state.commentsFor;
     if (!opinion) {
       return null;
     } else {
       return (
         <div className="comment-section-opinion-body">
-          {opinion.body}
+          <span>&ldquo;</span>
+          {opinion.content}
+          <span>&rdquo;</span>
         </div>
       );
     }
@@ -172,58 +255,25 @@ export class TopicViewer extends React.Component {
 
   renderComments() {
     let commentElements = [];
-    let comments = [
-      {
-          id: 1,
-          content: "Hi Phil. I Love You.",
-          createdAt: "2016-12-10T08:11:59.269Z",
-          updatedAt: "2016-12-10T08:11:59.269Z",
-          user_id: 1,
-          topic_id: 4,
-          opinion_id: 2,
-          commentAuthor: "Phil Foo"
-      },
-      {
-          id: 2,
-          content: "Hi Phil. I Don't Love You.",
-          createdAt: "2016-12-10T08:15:58.243Z",
-          updatedAt: "2016-12-10T08:15:58.243Z",
-          user_id: 1,
-          topic_id: 4,
-          opinion_id: 2,
-          commentAuthor: "Phil Foo"
-      },
-      {
-          id: 3,
-          content: "Hi Phil. I Don't Love You.",
-          createdAt: "2016-12-10T08:15:58.243Z",
-          updatedAt: "2016-12-10T08:15:58.243Z",
-          user_id: 1,
-          topic_id: 4,
-          opinion_id: 2,
-          commentAuthor: "Phil Foo"
-      },
-      {
-          id: 4,
-          content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
-          createdAt: "2016-12-10T08:15:58.243Z",
-          updatedAt: "2016-12-10T08:15:58.243Z",
-          user_id: 1,
-          topic_id: 4,
-          opinion_id: 2,
-          commentAuthor: "Phil Foo"
-      },
-      {
-          id: 4,
-          content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
-          createdAt: "2016-12-10T08:15:58.243Z",
-          updatedAt: "2016-12-10T08:15:58.243Z",
-          user_id: 5,
-          topic_id: 4,
-          opinion_id: 2,
-          commentAuthor: "Kevin He"
-      }
-    ];
+    let comments = this.state.commentList;
+    if (comments.length == 0 && !this.state.loadingComments) {
+      return (
+        <div className="comments-placeholder-container">
+          <div className="no-comments">
+            No comments yet!
+          </div>
+        </div>
+      )
+    } else if (this.state.loadingComments) {
+      return (
+        <div className="comments-placeholder-container">
+          <div className="loading-comments">
+            <img src="src/assets/loading.gif"/>
+            <div>Loading Comments...</div>
+          </div>
+        </div>
+      )
+    }
     comments.forEach((comment, index) => {
       let commentElement = (
         <Comment
@@ -234,6 +284,47 @@ export class TopicViewer extends React.Component {
       commentElements.push(commentElement);
     });
     return commentElements;
+  }
+
+  createComment() {
+    const comment = {
+      "content": this.state.commentValue
+    }
+    const commentCreateRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/comment/topicId/' + this.props.viewedTopic.id + '/opinionId/' + this.state.commentsFor.id,
+      type: 'POST',
+      data: JSON.stringify(comment),
+      dataType: 'json'
+    });
+
+    document.getElementById('comment-composer').disabled = true;
+    this.setState({
+      postingComment: true,
+    }, () => {
+      $.when(commentCreateRequest).done((data) => {
+        console.log(data);
+        this.retrieveComments(() => {
+          document.getElementById('comment-composer').disabled = false;
+          this.setState({
+            postingComment: false,
+            commentValue: ''
+          });
+        });
+      });
+    });
+  }
+
+  cancelComment() {
+    this.setState({
+      commentValue: ''
+    });
+  }
+
+  handleCommentChange(event) {
+    this.setState({
+      commentValue: event.target.value
+    });
   }
 
   renderContent() {
@@ -252,16 +343,16 @@ export class TopicViewer extends React.Component {
                 <div className="topic-viewer-category-icon-container">
                   <img
                     src={
-                      'src/assets/' + this.props.viewedTopic.categoryIcon + '.svg'
+                      'src/assets/' + this.props.categories[this.props.viewedTopic.category].icon
                     }
                     className="topic-viewer-category-icon"/>
                 </div>
                 <div className="topic-viewer-category-name">
-                  {this.props.viewedTopic.categoryName}
+                  {this.props.categories[this.props.viewedTopic.category].label}
                 </div>
               </div>
               <div className="topic-viewer-description">
-                This is a description. This is just some text.
+                {this.props.viewedTopic.description}
               </div>
             </div>
             <div
@@ -295,14 +386,29 @@ export class TopicViewer extends React.Component {
             </div>
             <div className="comment-composer-container">
               <textarea
+                id="comment-composer"
                 className="comment-composer"
-                placeholder="Write a comment...">
+                placeholder="Write a comment..."
+                value={this.state.commentValue}
+                onChange={this.handleCommentChange.bind(this)}>
               </textarea>
               <div className="comment-composer-buttons">
-                <div className="comment-composer-post-button unselectable">
-                  <div>Post</div>
+                <div
+                  className="comment-composer-post-button unselectable"
+                  onClick={this.createComment.bind(this)}>
+                  <div>
+                    {
+                      this.state.postingComment
+                      ? (
+                        <img src="src/assets/loading.gif"/>
+                      )
+                      : "Post"
+                    }
+                  </div>
                 </div>
-                <div className="comment-composer-cancel-button unselectable">
+                <div
+                  className="comment-composer-cancel-button unselectable"
+                  onClick={this.cancelComment.bind(this)}>
                   <div>Cancel</div>
                 </div>
               </div>
@@ -351,7 +457,13 @@ export class TopicViewer extends React.Component {
               <div
                 className="opinion-composer-create-button"
                 onClick={this.createOpinion.bind(this)}>
-                Create
+                {
+                  this.props.postingOpinion
+                  ? (
+                    <img src="src/assets/loading.gif"/>
+                  )
+                  : "Create"
+                }
               </div>
               <div
                 className="opinion-composer-cancel-button"

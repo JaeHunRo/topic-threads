@@ -30919,6 +30919,25 @@ var TOPICS = [{
   topicId: 6
 }];
 
+var categories = {
+  'sports': {
+    label: 'Sports',
+    icon: 'sports.svg'
+  },
+  'academic': {
+    label: 'Academics',
+    icon: 'academics.svg'
+  },
+  'campus-politics': {
+    label: 'Campus Politics',
+    icon: 'campus-politics.svg'
+  },
+  'general': {
+    label: 'General',
+    icon: 'general.svg'
+  }
+};
+
 var App = exports.App = function (_React$Component) {
   _inherits(App, _React$Component);
 
@@ -30940,10 +30959,13 @@ var App = exports.App = function (_React$Component) {
       viewerExpanded: false,
       dimensions: [window.innerWidth, window.innerHeight],
       opinions: [],
-      currentUser: currentUser,
+      currentUser: null,
       loadingTopics: true,
       topics: [],
-      topicPage: 1
+      topicPage: 1,
+      postingTopic: false,
+      loadingOpinions: false,
+      postingOpinion: false
     };
     return _this;
   }
@@ -30966,20 +30988,48 @@ var App = exports.App = function (_React$Component) {
         });
       });
 
+      this.requestTopics();
+    }
+  }, {
+    key: 'updateTopic',
+    value: function updateTopic(topic) {
+      for (var i = 0; i < this.state.topics.length; i++) {
+        if (this.state.topics[i].id == topic.id) {
+          this.state.topics[i].userPreviouslyVoted = topic.userPreviouslyVoted;
+          this.state.topics[i].upvotes = topic.upvotes;
+          return;
+        }
+      }
+    }
+  }, {
+    key: 'updateOpinion',
+    value: function updateOpinion(opinion) {
+      for (var i = 0; i < this.state.opinions.length; i++) {
+        if (this.state.opinions[i].id == opinion.id) {
+          this.state.opinions[i].userPreviouslyVoted = opinion.userPreviouslyVoted;
+          this.state.opinions[i].voteCount = opinion.voteCount;
+          return;
+        }
+      }
+    }
+  }, {
+    key: 'requestTopics',
+    value: function requestTopics(callback) {
+      var _this3 = this;
+
       var topicsRequest = $.ajax({
         contentType: 'application/json',
         url: 'api/topic/pageNum/' + this.state.topicPage,
         type: 'GET'
       });
 
-      console.log('what');
-
       $.when(topicsRequest).done(function (data) {
         console.log(data);
-        _this2.setState({
-          topics: TOPICS,
-          loadingTopics: false
-        });
+        _this3.setState({
+          topics: data.rows,
+          loadingTopics: false,
+          postingTopic: false
+        }, callback);
       });
     }
   }, {
@@ -30992,16 +31042,81 @@ var App = exports.App = function (_React$Component) {
   }, {
     key: 'setViewedTopic',
     value: function setViewedTopic(topic) {
+      var _this4 = this;
+
       console.log('set topic', topic);
       var opinions = [];
-      OPINIONS.forEach(function (opinion) {
-        if (opinion.topicId == topic.topicId) {
-          opinions.push(opinion);
-        }
-      });
       this.setState({
         viewedTopic: topic,
-        opinions: opinions
+        opinions: [],
+        loadingOpinions: true
+      }, function () {
+        var opinionsRequest = $.ajax({
+          contentType: 'application/json',
+          url: 'api/opinion/topicId/' + topic.id + '/pageNum/' + _this4.state.topicPage,
+          type: 'GET'
+        });
+
+        $.when(opinionsRequest).done(function (data) {
+          console.log(data);
+          _this4.setState({
+            loadingOpinions: false,
+            opinions: data.rows
+          });
+        });
+      });
+    }
+  }, {
+    key: 'startLoadingTopicPost',
+    value: function startLoadingTopicPost(callback) {
+      this.setState({
+        postingTopic: true
+      }, callback);
+    }
+  }, {
+    key: 'cancelLoadingTopicPost',
+    value: function cancelLoadingTopicPost() {
+      this.setState({
+        postingTopic: false
+      });
+    }
+  }, {
+    key: 'addNewTopic',
+    value: function addNewTopic(callback) {
+      console.log('add new topic...');
+      this.requestTopics(callback);
+    }
+  }, {
+    key: 'startLoadingOpinionPost',
+    value: function startLoadingOpinionPost(callback) {
+      this.setState({
+        postingOpinion: true
+      }, callback);
+    }
+  }, {
+    key: 'cancelLoadingOpinionPost',
+    value: function cancelLoadingOpinionPost() {
+      this.setState({
+        postingOpinion: false
+      });
+    }
+  }, {
+    key: 'addNewOpinion',
+    value: function addNewOpinion(callback) {
+      var _this5 = this;
+
+      var opinionsRequest = $.ajax({
+        contentType: 'application/json',
+        url: 'api/opinion/topicId/' + this.state.viewedTopic.id + '/pageNum/' + this.state.topicPage,
+        type: 'GET'
+      });
+
+      $.when(opinionsRequest).done(function (data) {
+        console.log(data);
+        _this5.setState({
+          loadingOpinions: false,
+          opinions: data.rows
+        }, callback);
       });
     }
   }, {
@@ -31015,12 +31130,20 @@ var App = exports.App = function (_React$Component) {
           { id: 'overlay' },
           React.createElement(TopicViewer, {
             opinions: this.state.opinions,
+            loadingOpinions: this.state.loadingOpinions,
             viewedTopic: this.state.viewedTopic,
             expanded: this.state.viewerExpanded,
             toggleViewer: this.toggleTopicViewer.bind(this),
             colorUtil: Color,
             currentUser: this.state.currentUser,
-            dimensions: this.state.dimensions })
+            dimensions: this.state.dimensions,
+            categories: categories,
+            addNewOpinion: this.addNewOpinion.bind(this),
+            startLoading: this.startLoadingOpinionPost.bind(this),
+            cancelLoading: this.cancelLoadingOpinionPost.bind(this),
+            postingOpinion: this.state.postingOpinion,
+            topicPage: this.state.topicPage,
+            updateOpinion: this.updateOpinion.bind(this) })
         ),
         React.createElement(
           'div',
@@ -31045,7 +31168,14 @@ var App = exports.App = function (_React$Component) {
             colorUtil: Color,
             currentUser: this.state.currentUser,
             dimensions: this.state.dimensions,
-            topics: this.state.topics })
+            topics: this.state.topics,
+            updateTopic: this.updateTopic.bind(this),
+            loadingTopics: this.state.loadingTopics,
+            postingTopic: this.state.postingTopic,
+            addNewTopic: this.addNewTopic.bind(this),
+            startLoading: this.startLoadingTopicPost.bind(this),
+            cancelLoading: this.cancelLoadingTopicPost.bind(this),
+            categories: categories })
         )
       );
     }
@@ -31209,24 +31339,6 @@ var DiscussionTopic = require('./DiscussionTopic');
 var Util = require('./Util');
 var $ = require('jquery');
 
-var categories = [{
-  key: 'sports',
-  label: 'Sports',
-  icon: 'sports.svg'
-}, {
-  key: 'academics',
-  label: 'Academics',
-  icon: 'academics.svg'
-}, {
-  key: 'campus-politics',
-  label: 'Campus Politics',
-  icon: 'campus-politics.svg'
-}, {
-  key: 'general',
-  label: 'General',
-  icon: 'general.svg'
-}];
-
 var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
   _inherits(DiscussionBoard, _React$Component);
 
@@ -31240,7 +31352,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       userProfileShown: false,
       titleValue: '',
       descriptionValue: '',
-      categoryValue: {},
+      categoryValue: '',
       categorySelectorExpanded: false,
       composerShown: false
     };
@@ -31323,7 +31435,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
     key: 'renderSelectedCategory',
     value: function renderSelectedCategory() {
       var selectedContent = void 0;
-      if (this.isEmpty(this.state.categoryValue)) {
+      if (this.state.categoryValue == '') {
         selectedContent = React.createElement(
           'div',
           null,
@@ -31335,11 +31447,11 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
           { className: 'topic-composer-selected-category-option' },
           React.createElement('img', {
             className: 'topic-composer-category-option-icon',
-            src: 'src/assets/' + this.state.categoryValue.icon }),
+            src: 'src/assets/' + this.props.categories[this.state.categoryValue].icon }),
           React.createElement(
             'div',
             { className: 'topic-composer-category-option-label' },
-            this.state.categoryValue.label
+            this.props.categories[this.state.categoryValue].label
           )
         );
       }
@@ -31363,13 +31475,14 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       var _this2 = this;
 
       var categoryElements = [];
-      categories.forEach(function (category, index) {
+      Object.keys(this.props.categories).forEach(function (key, index) {
+        var category = _this2.props.categories[key];
         var categoryElement = React.createElement(
           'div',
           {
             key: index + "-category-option",
             className: 'topic-composer-category-option',
-            onClick: _this2.selectCategory.bind(_this2, category) },
+            onClick: _this2.selectCategory.bind(_this2, key) },
           React.createElement('img', {
             className: 'topic-composer-category-option-icon',
             src: 'src/assets/' + category.icon }),
@@ -31393,10 +31506,12 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
   }, {
     key: 'createTopic',
     value: function createTopic() {
+      var _this3 = this;
+
       var topic = {
         "title": this.state.titleValue,
         "description": this.state.descriptionValue,
-        "category": this.state.categoryValue.key
+        "category": this.state.categoryValue
       };
       console.log('topic', topic);
       var topicCreateRequest = $.ajax({
@@ -31409,13 +31524,16 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
 
       $.when(topicCreateRequest).done(function (data) {
         console.log('response', data);
-      });
-
-      this.toggleTopicComposer();
-      this.setState({
-        titleValue: '',
-        descriptionValue: '',
-        categoryValue: {}
+        _this3.props.startLoading(function () {
+          _this3.props.addNewTopic(function () {
+            _this3.toggleTopicComposer();
+            _this3.setState({
+              titleValue: '',
+              descriptionValue: '',
+              categoryValue: ''
+            });
+          });
+        });
       });
     }
   }, {
@@ -31425,7 +31543,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
       this.setState({
         titleValue: '',
         descriptionValue: '',
-        categoryValue: {}
+        categoryValue: ''
       });
     }
   }, {
@@ -31438,7 +31556,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
   }, {
     key: 'renderTopics',
     value: function renderTopics() {
-      var _this3 = this;
+      var _this4 = this;
 
       var topicElements = [];
       var topics = this.props.topics;
@@ -31446,8 +31564,10 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
         topicElements.push(React.createElement(DiscussionTopic, {
           key: 'topic-' + index,
           topic: topic,
-          setTopic: _this3.props.setTopic,
-          toggleViewer: _this3.props.toggleViewer }));
+          updateTopic: _this4.props.updateTopic,
+          setTopic: _this4.props.setTopic,
+          toggleViewer: _this4.props.toggleViewer,
+          categories: _this4.props.categories }));
       });
       return topicElements;
     }
@@ -31541,7 +31661,7 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
                 {
                   className: 'topic-composer-create-button',
                   onClick: this.createTopic.bind(this) },
-                'Create'
+                this.props.postingTopic == true ? React.createElement('img', { src: 'src/assets/loading.gif' }) : "Create"
               ),
               React.createElement(
                 'div',
@@ -31599,14 +31719,25 @@ var DiscussionBoard = exports.DiscussionBoard = function (_React$Component) {
             this.props.currentUser ? "User since " + Util.getTimeAgo(this.props.currentUser.createdAt) : "Error"
           ),
           React.createElement(
-            'div',
-            { className: 'logout unselectable' },
-            'Logout'
+            'a',
+            { href: '/logout' },
+            React.createElement(
+              'div',
+              { className: 'logout unselectable' },
+              'Logout'
+            )
           )
         ),
         React.createElement(
           'div',
-          { id: 'discussion-board' },
+          { id: 'discussion-board', style: {
+              height: this.props.dimensions[1] - 63 + 'px'
+            } },
+          this.props.topics.length == 0 && !this.props.loadingTopics ? React.createElement(
+            'div',
+            { className: 'no-topics' },
+            'No Topics Found'
+          ) : null,
           this.renderTopics()
         )
       );
@@ -31634,6 +31765,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var React = require('react');
+var $ = require('jquery');
 
 var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
   _inherits(DiscussionTopic, _React$Component);
@@ -31643,11 +31775,12 @@ var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DiscussionTopic).call(this, props));
 
+    console.log('upvoted?', _this.props.topic.userPreviouslyVoted === true);
     _this.state = {
-      upvoted: false,
+      upvoted: _this.props.topic.userPreviouslyVoted === true,
       expanded: false,
-      votes: _this.props.topic.votes,
-      opinions: _this.props.topic.opinions
+      votes: _this.props.topic.upvotes,
+      opinions: _this.props.topic.opinionCount
     };
     return _this;
   }
@@ -31655,9 +31788,40 @@ var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
   _createClass(DiscussionTopic, [{
     key: 'handleUpvote',
     value: function handleUpvote() {
+      var _this2 = this;
+
       var votes = this.state.upvoted ? this.state.votes - 1 : this.state.votes + 1;
+      var nextState = !this.state.upvoted;
+      var voteRequest = $.ajax({
+        contentType: 'application/json',
+        url: '/api/topic_votes/topicId/' + this.props.topic.id,
+        type: this.props.topic.userPreviouslyVoted === null ? 'POST' : 'PUT',
+        data: JSON.stringify({
+          "is_up": nextState
+        }),
+        dataType: 'json'
+      });
+
+      var voteGetRequest = $.ajax({
+        contentType: 'application/json',
+        url: '/api/topic/' + this.props.topic.id,
+        type: 'GET'
+      });
+
+      $.when(voteRequest).done(function (data) {
+        console.log('vote completed', data);
+        $.when(voteGetRequest).done(function (response) {
+          console.log('response vote data', response);
+          _this2.props.updateTopic(response);
+          _this2.setState({
+            upvoted: response.userPreviouslyVoted === true,
+            votes: response.upvotes
+          });
+        });
+      });
+
       this.setState({
-        upvoted: !this.state.upvoted,
+        upvoted: nextState,
         votes: votes
       });
     }
@@ -31672,6 +31836,7 @@ var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var topic = this.props.topic;
       return React.createElement(
         'div',
         { className: 'unselectable discussion-topic-container' },
@@ -31687,16 +31852,23 @@ var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
             React.createElement(
               'div',
               { className: 'topic-category-icon' },
-              React.createElement('img', {
-                src: 'src/assets/' + this.props.topic.categoryIcon + '.svg',
+              topic.category != '' ? React.createElement('img', {
+                src: 'src/assets/' + this.props.categories[topic.category].icon,
                 width: 100,
-                height: 100 })
+                height: 100 }) : React.createElement(
+                'div',
+                { style: {
+                    width: '100px',
+                    height: '100px'
+                  } },
+                ' ? '
+              )
             )
           ),
           React.createElement(
             'div',
             { className: 'topic-title' },
-            this.props.topic.title
+            topic.title
           )
         ),
         React.createElement(
@@ -31750,7 +31922,7 @@ var DiscussionTopic = exports.DiscussionTopic = function (_React$Component) {
 
 module.exports = DiscussionTopic;
 
-},{"react":172}],178:[function(require,module,exports){
+},{"jquery":27,"react":172}],178:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31841,7 +32013,7 @@ var OpinionPreview = exports.OpinionPreview = function (_React$Component) {
   }, {
     key: "selectVoteOption",
     value: function selectVoteOption(key, event) {
-      this.props.selectOpinionVote(key, this.props.info.opinionId);
+      this.props.selectOpinionVote(key, this.props.info.id);
       this.toggleOverlay(event);
     }
   }, {
@@ -31894,7 +32066,7 @@ var OpinionPreview = exports.OpinionPreview = function (_React$Component) {
       if (this.state.voteOverlayShown) {
         return;
       }
-      this.props.viewCommentList(this.props.info.opinionId);
+      this.props.viewCommentList(this.props.info);
     }
   }, {
     key: "renderVoteCount",
@@ -32015,16 +32187,24 @@ var OpinionPreview = exports.OpinionPreview = function (_React$Component) {
         React.createElement(
           "div",
           { className: "topic-opinion-info" },
-          React.createElement("img", {
-            className: "topic-opinion-author-profile-pic",
-            src: "src/assets/" + this.props.info.profilePic }),
+          React.createElement(
+            "div",
+            { className: "topic-opinion-author-icon", style: {
+                backgroundColor: this.props.colorUtil.getColor(this.props.info.user_id)
+              } },
+            React.createElement(
+              "div",
+              null,
+              this.props.info.opinionAuthor.charAt(0)
+            )
+          ),
           React.createElement(
             "div",
             { className: "topic-opinion-metadata" },
             React.createElement(
               "div",
               { className: "topic-opinion-author-name" },
-              this.props.info.author
+              this.props.info.opinionAuthor
             ),
             React.createElement(
               "div",
@@ -32046,7 +32226,7 @@ var OpinionPreview = exports.OpinionPreview = function (_React$Component) {
             React.createElement(
               "div",
               { className: "topic-opinion-preview" },
-              this.props.info.body,
+              this.props.info.content,
               React.createElement("div", { className: "preview-fade" })
             )
           )
@@ -32078,6 +32258,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32089,6 +32271,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var React = require('react');
 var OpinionPreview = require('./OpinionPreview');
 var Comment = require('./Comment');
+var $ = require('jquery');
 var views = {
   Topic: 0,
   Comments: 1
@@ -32104,10 +32287,13 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
 
     _this.state = {
       currentView: views.Topic,
-      commentsFor: -1,
-      commentList: null,
+      commentsFor: {},
+      commentList: [],
       composerShown: false,
-      opinionValue: ''
+      opinionValue: '',
+      loadingComments: false,
+      commentValue: '',
+      postingComment: false
     };
     return _this;
   }
@@ -32118,7 +32304,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
       if (nextProps.expanded && nextProps.expanded != this.props.expanded) {
         this.setState({
           currentView: views.Topic,
-          commentsFor: -1
+          commentsFor: {}
         });
       }
     }
@@ -32134,7 +32320,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
     value: function renderOpinionPreviews() {
       var _this2 = this;
 
-      if (this.props.opinions.length == 0) {
+      if (this.props.opinions.length == 0 && !this.props.loadingOpinions) {
         return React.createElement(
           'div',
           { className: 'no-opinions' },
@@ -32144,6 +32330,21 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
             'No opinions yet!'
           )
         );
+      } else if (this.props.loadingOpinions) {
+        return React.createElement(
+          'div',
+          { className: 'loading-opinions-container' },
+          React.createElement(
+            'div',
+            { className: 'loading-opinions' },
+            React.createElement('img', { src: 'src/assets/loading.gif' }),
+            React.createElement(
+              'div',
+              null,
+              'Loading Opinions...'
+            )
+          )
+        );
       }
       var previews = [];
       this.props.opinions.forEach(function (opinion, index) {
@@ -32151,47 +32352,106 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
           key: index + '-opinion-preview',
           info: opinion,
           selectOpinionVote: _this2.selectOpinionVote.bind(_this2),
-          viewCommentList: _this2.viewCommentList.bind(_this2) }));
+          viewCommentList: _this2.viewCommentList.bind(_this2),
+          colorUtil: _this2.props.colorUtil,
+          viewedTopic: _this2.props.viewedTopic }));
       });
       return previews;
     }
   }, {
     key: 'selectOpinionVote',
     value: function selectOpinionVote(voteType, opinionId) {
+      var _this3 = this;
+
       console.log('voted', voteType, "on", opinionId);
-      for (var i = 0; i < this.props.opinions.length; i++) {
-        var opinion = this.props.opinions[i];
-        if (opinion.opinionId == opinionId) {
-          console.log("before", opinion.voteCount);
-          var userVote = opinion.userPreviouslyVoted;
-          if (userVote) {
-            if (userVote == voteType) {
-              opinion.voteCount[voteType] = opinion.voteCount[voteType] - 1;
-              opinion.userPreviouslyVoted = null;
+
+      var _loop = function _loop(i) {
+        var opinion = _this3.props.opinions[i];
+        if (opinion.id == opinionId) {
+          var _ret2 = function () {
+            console.log("before", opinion.voteCount);
+            var requestType = '';
+            var userVote = opinion.userPreviouslyVoted;
+            if (userVote) {
+              if (userVote == voteType) {
+                // user is unvoting
+                opinion.voteCount[voteType] = opinion.voteCount[voteType] - 1;
+                opinion.userPreviouslyVoted = null;
+                requestType = 'DELETE';
+              } else {
+                // user is switching vote
+                opinion.voteCount[userVote] = opinion.voteCount[userVote] - 1;
+                opinion.voteCount[voteType] = opinion.voteCount[voteType] ? opinion.voteCount[voteType] + 1 : 1;
+                opinion.userPreviouslyVoted = voteType;
+                requestType = 'PUT';
+              }
             } else {
-              opinion.voteCount[userVote] = opinion.voteCount[userVote] - 1;
+              //user is making new vote
               opinion.voteCount[voteType] = opinion.voteCount[voteType] ? opinion.voteCount[voteType] + 1 : 1;
               opinion.userPreviouslyVoted = voteType;
+              requestType = 'POST';
             }
-          } else {
-            opinion.voteCount[voteType] = opinion.voteCount[voteType] ? opinion.voteCount[voteType] + 1 : 1;
-            opinion.userPreviouslyVoted = voteType;
-          }
-          console.log("after", opinion.voteCount);
-          return;
+            console.log("after", opinion.voteCount);
+
+            var request = {
+              contentType: 'application/json',
+              url: '/api/opinion_votes/topicId/' + _this3.props.viewedTopic.id + '/opinionId/' + opinionId,
+              type: requestType
+            };
+
+            if (requestType == 'POST' || requestType == 'PUT') {
+              request.data = JSON.stringify({
+                'type': voteType
+              });
+              request.dataType = 'json';
+            }
+
+            var voteRequest = $.ajax(request);
+            var voteGetRequest = $.ajax({
+              contentType: 'application/json',
+              url: '/api/opinion/topicId/' + _this3.props.viewedTopic.id + '/opinionId/' + opinionId,
+              type: 'GET'
+            });
+
+            $.when(voteRequest).done(function (data) {
+              console.log('vote completed', data);
+              $.when(voteGetRequest).done(function (response) {
+                console.log('response vote data', response);
+                _this3.props.updateOpinion(response);
+                opinion.voteCount = response.voteCount;
+                opinion.userPreviouslyVoted = response.userPreviouslyVoted;
+              });
+            });
+
+            return {
+              v: {
+                v: void 0
+              }
+            };
+          }();
+
+          if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
         }
+      };
+
+      for (var i = 0; i < this.props.opinions.length; i++) {
+        var _ret = _loop(i);
+
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
       }
     }
   }, {
     key: 'viewCommentList',
-    value: function viewCommentList(opinionId) {
-      console.log("go to", opinionId);
+    value: function viewCommentList(opinion) {
+      var _this4 = this;
+
+      console.log("go to", opinion.id);
       this.setState({
-        commentList: {
-          opinionId: opinionId
-        },
-        commentsFor: opinionId,
-        currentView: views.Comments
+        commentsFor: opinion,
+        currentView: views.Comments,
+        loadingComments: true
+      }, function () {
+        _this4.retrieveComments();
       });
     }
   }, {
@@ -32199,20 +32459,8 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
     value: function backToOpinions() {
       this.setState({
         currentView: views.Topic,
-        commentsFor: -1
+        commentsFor: {}
       });
-    }
-  }, {
-    key: 'getViewedOpinion',
-    value: function getViewedOpinion() {
-      var opinions = this.props.opinions;
-      var opinion = void 0;
-      for (var i = 0; i < opinions.length; i++) {
-        if (opinions[i].opinionId == this.state.commentsFor) {
-          opinion = opinions[i];
-        }
-      }
-      return opinion;
     }
   }, {
     key: 'toggleOpinionComposer',
@@ -32224,11 +32472,53 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
   }, {
     key: 'createOpinion',
     value: function createOpinion() {
+      var _this5 = this;
+
       var opinion = {
-        body: this.state.opinionValue
+        "content": this.state.opinionValue
       };
+
       console.log(opinion);
-      this.toggleOpinionComposer();
+      var opinionCreateRequest = $.ajax({
+        contentType: 'application/json',
+        url: 'api/opinion/topicId/' + this.props.viewedTopic.id,
+        type: 'POST',
+        data: JSON.stringify(opinion),
+        dataType: 'json'
+      });
+
+      $.when(opinionCreateRequest).done(function (data) {
+        console.log('response', data);
+        _this5.props.startLoading(function () {
+          _this5.props.addNewOpinion(function () {
+            _this5.toggleOpinionComposer();
+            _this5.setState({
+              opinionValue: ''
+            });
+          });
+        });
+      });
+    }
+  }, {
+    key: 'retrieveComments',
+    value: function retrieveComments(callback) {
+      var _this6 = this;
+
+      var commentsRequest = $.ajax({
+        contentType: 'application/json',
+        url: '/api/comment/topicId/' + this.props.viewedTopic.id + '/opinionId/' + this.state.commentsFor.id + '/pageNum/' + this.props.topicPage,
+        type: 'GET'
+      });
+
+      console.log('comments request');
+
+      $.when(commentsRequest).done(function (data) {
+        console.log('response', data);
+        _this6.setState({
+          commentList: data.rows,
+          loadingComments: false
+        }, callback);
+      });
     }
   }, {
     key: 'cancelOpinion',
@@ -32245,7 +32535,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
   }, {
     key: 'renderOpinionAuthor',
     value: function renderOpinionAuthor() {
-      var opinion = this.getViewedOpinion();
+      var opinion = this.state.commentsFor;
       if (!opinion) {
         return null;
       } else {
@@ -32257,16 +32547,20 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
             null,
             "-"
           ),
-          React.createElement('img', {
-            className: 'topic-opinion-author-profile-pic',
-            src: "src/assets/" + opinion.profilePic }),
+          React.createElement(
+            'div',
+            { className: 'topic-opinion-author-icon', style: {
+                backgroundColor: this.props.colorUtil.getColor(opinion.user_id)
+              } },
+            opinion.opinionAuthor.charAt(0)
+          ),
           React.createElement(
             'div',
             { className: 'topic-opinion-metadata' },
             React.createElement(
               'div',
               { className: 'topic-opinion-author-name' },
-              opinion.author
+              opinion.opinionAuthor
             )
           )
         );
@@ -32275,77 +32569,114 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
   }, {
     key: 'renderOpinionBody',
     value: function renderOpinionBody() {
-      var opinion = this.getViewedOpinion();
+      var opinion = this.state.commentsFor;
       if (!opinion) {
         return null;
       } else {
         return React.createElement(
           'div',
           { className: 'comment-section-opinion-body' },
-          opinion.body
+          React.createElement(
+            'span',
+            null,
+            '“'
+          ),
+          opinion.content,
+          React.createElement(
+            'span',
+            null,
+            '”'
+          )
         );
       }
     }
   }, {
     key: 'renderComments',
     value: function renderComments() {
-      var _this3 = this;
+      var _this7 = this;
 
       var commentElements = [];
-      var comments = [{
-        id: 1,
-        content: "Hi Phil. I Love You.",
-        createdAt: "2016-12-10T08:11:59.269Z",
-        updatedAt: "2016-12-10T08:11:59.269Z",
-        user_id: 1,
-        topic_id: 4,
-        opinion_id: 2,
-        commentAuthor: "Phil Foo"
-      }, {
-        id: 2,
-        content: "Hi Phil. I Don't Love You.",
-        createdAt: "2016-12-10T08:15:58.243Z",
-        updatedAt: "2016-12-10T08:15:58.243Z",
-        user_id: 1,
-        topic_id: 4,
-        opinion_id: 2,
-        commentAuthor: "Phil Foo"
-      }, {
-        id: 3,
-        content: "Hi Phil. I Don't Love You.",
-        createdAt: "2016-12-10T08:15:58.243Z",
-        updatedAt: "2016-12-10T08:15:58.243Z",
-        user_id: 1,
-        topic_id: 4,
-        opinion_id: 2,
-        commentAuthor: "Phil Foo"
-      }, {
-        id: 4,
-        content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
-        createdAt: "2016-12-10T08:15:58.243Z",
-        updatedAt: "2016-12-10T08:15:58.243Z",
-        user_id: 1,
-        topic_id: 4,
-        opinion_id: 2,
-        commentAuthor: "Phil Foo"
-      }, {
-        id: 4,
-        content: "Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You. Hi Phil. I Don't Love You.",
-        createdAt: "2016-12-10T08:15:58.243Z",
-        updatedAt: "2016-12-10T08:15:58.243Z",
-        user_id: 5,
-        topic_id: 4,
-        opinion_id: 2,
-        commentAuthor: "Kevin He"
-      }];
+      var comments = this.state.commentList;
+      if (comments.length == 0 && !this.state.loadingComments) {
+        return React.createElement(
+          'div',
+          { className: 'comments-placeholder-container' },
+          React.createElement(
+            'div',
+            { className: 'no-comments' },
+            'No comments yet!'
+          )
+        );
+      } else if (this.state.loadingComments) {
+        return React.createElement(
+          'div',
+          { className: 'comments-placeholder-container' },
+          React.createElement(
+            'div',
+            { className: 'loading-comments' },
+            React.createElement('img', { src: 'src/assets/loading.gif' }),
+            React.createElement(
+              'div',
+              null,
+              'Loading Comments...'
+            )
+          )
+        );
+      }
       comments.forEach(function (comment, index) {
         var commentElement = React.createElement(Comment, {
           key: index + "-comment",
           info: comment,
-          colorUtil: _this3.props.colorUtil });
+          colorUtil: _this7.props.colorUtil });
         commentElements.push(commentElement);
       });
       return commentElements;
+    }
+  }, {
+    key: 'createComment',
+    value: function createComment() {
+      var _this8 = this;
+
+      var comment = {
+        "content": this.state.commentValue
+      };
+      var commentCreateRequest = $.ajax({
+        contentType: 'application/json',
+        url: 'api/comment/topicId/' + this.props.viewedTopic.id + '/opinionId/' + this.state.commentsFor.id,
+        type: 'POST',
+        data: JSON.stringify(comment),
+        dataType: 'json'
+      });
+
+      document.getElementById('comment-composer').disabled = true;
+      this.setState({
+        postingComment: true
+      }, function () {
+        $.when(commentCreateRequest).done(function (data) {
+          console.log(data);
+          _this8.retrieveComments(function () {
+            document.getElementById('comment-composer').disabled = false;
+            _this8.setState({
+              postingComment: false,
+              commentValue: ''
+            });
+          });
+        });
+      });
+    }
+  }, {
+    key: 'cancelComment',
+    value: function cancelComment() {
+      this.setState({
+        commentValue: ''
+      });
+    }
+  }, {
+    key: 'handleCommentChange',
+    value: function handleCommentChange(event) {
+      this.setState({
+        commentValue: event.target.value
+      });
     }
   }, {
     key: 'renderContent',
@@ -32373,19 +32704,19 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
                   'div',
                   { className: 'topic-viewer-category-icon-container' },
                   React.createElement('img', {
-                    src: 'src/assets/' + this.props.viewedTopic.categoryIcon + '.svg',
+                    src: 'src/assets/' + this.props.categories[this.props.viewedTopic.category].icon,
                     className: 'topic-viewer-category-icon' })
                 ),
                 React.createElement(
                   'div',
                   { className: 'topic-viewer-category-name' },
-                  this.props.viewedTopic.categoryName
+                  this.props.categories[this.props.viewedTopic.category].label
                 )
               ),
               React.createElement(
                 'div',
                 { className: 'topic-viewer-description' },
-                'This is a description. This is just some text.'
+                this.props.viewedTopic.description
               )
             ),
             React.createElement(
@@ -32437,23 +32768,30 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
               'div',
               { className: 'comment-composer-container' },
               React.createElement('textarea', {
+                id: 'comment-composer',
                 className: 'comment-composer',
-                placeholder: 'Write a comment...' }),
+                placeholder: 'Write a comment...',
+                value: this.state.commentValue,
+                onChange: this.handleCommentChange.bind(this) }),
               React.createElement(
                 'div',
                 { className: 'comment-composer-buttons' },
                 React.createElement(
                   'div',
-                  { className: 'comment-composer-post-button unselectable' },
+                  {
+                    className: 'comment-composer-post-button unselectable',
+                    onClick: this.createComment.bind(this) },
                   React.createElement(
                     'div',
                     null,
-                    'Post'
+                    this.state.postingComment ? React.createElement('img', { src: 'src/assets/loading.gif' }) : "Post"
                   )
                 ),
                 React.createElement(
                   'div',
-                  { className: 'comment-composer-cancel-button unselectable' },
+                  {
+                    className: 'comment-composer-cancel-button unselectable',
+                    onClick: this.cancelComment.bind(this) },
                   React.createElement(
                     'div',
                     null,
@@ -32518,7 +32856,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
                 {
                   className: 'opinion-composer-create-button',
                   onClick: this.createOpinion.bind(this) },
-                'Create'
+                this.props.postingOpinion ? React.createElement('img', { src: 'src/assets/loading.gif' }) : "Create"
               ),
               React.createElement(
                 'div',
@@ -32552,7 +32890,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
 
 module.exports = TopicViewer;
 
-},{"./Comment":175,"./OpinionPreview":178,"react":172}],180:[function(require,module,exports){
+},{"./Comment":175,"./OpinionPreview":178,"jquery":27,"react":172}],180:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
