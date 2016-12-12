@@ -806,8 +806,11 @@ body {
 
 .page-title {
   color: white;
-  font-size: 24px;
+  font-size: 42px;
+  line-height: 30px;
   text-align: center;
+  font-family: 'Amatica SC', cursive;
+  margin-top: -10px;
 }
 
 .user-profile-button {
