@@ -25,7 +25,7 @@ function registerUser(profile, callback) {
 			global.db.User.create({
 				fb_id: profile.id,
 				username: profile.displayName,
-				admin: true
+				admin: false
 			})
 			.then(function() {
 				callback(null, profile);
