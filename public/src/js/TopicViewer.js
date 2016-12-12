@@ -357,7 +357,19 @@ export class TopicViewer extends React.Component {
                   {this.props.categories[this.props.viewedTopic.category].label}
                 </div>
               </div>
-              <div className="topic-viewer-description">
+              <div className={
+                this.props.viewedTopic.description.length == 0
+                ? "topic-viewer-description empty"
+                : "topic-viewer-description"
+              }>
+                {
+                  this.props.viewedTopic.description.length == 0
+                  ? (
+                    <div className="empty-message">
+                      No description.
+                    </div>
+                  ) : null
+                }
                 {this.props.viewedTopic.description}
               </div>
             </div>

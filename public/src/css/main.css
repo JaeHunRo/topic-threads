@@ -205,6 +205,17 @@ body {
   margin-left: 20px;
 }
 
+.topic-viewer-description.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-message {
+  font-size: 20px;
+  color: gray;
+}
+
 .topic-viewer-category-name {
   margin-top: 10px;
   font-size: 18px;
