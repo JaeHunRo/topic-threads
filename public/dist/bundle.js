@@ -32380,7 +32380,7 @@ var TopicViewer = exports.TopicViewer = function (_React$Component) {
       var previews = [];
       this.props.opinions.forEach(function (opinion, index) {
         previews.push(React.createElement(OpinionPreview, {
-          key: index + '-opinion-preview',
+          key: opinion.id + '-opinion-preview',
           info: opinion,
           selectOpinionVote: _this2.selectOpinionVote.bind(_this2),
           viewCommentList: _this2.viewCommentList.bind(_this2),

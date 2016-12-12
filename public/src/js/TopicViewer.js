@@ -61,7 +61,7 @@ export class TopicViewer extends React.Component {
     this.props.opinions.forEach((opinion, index) => {
       previews.push(
         <OpinionPreview
-          key={index+'-opinion-preview'}
+          key={opinion.id+'-opinion-preview'}
           info={opinion}
           selectOpinionVote={this.selectOpinionVote.bind(this)}
           viewCommentList={this.viewCommentList.bind(this)}
