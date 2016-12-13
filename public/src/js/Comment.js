@@ -1,5 +1,6 @@
 const React = require('react');
 const Util = require('./Util');
+const Timestamp = require('./Timestamp');
 
 export class Comment extends React.Component {
   constructor(props) {
@@ -8,6 +9,10 @@ export class Comment extends React.Component {
     this.state = {
 
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.info.createdAt != nextProps.info.createdAt;
   }
 
   render() {
@@ -22,9 +27,10 @@ export class Comment extends React.Component {
           }}>
             <div>{this.props.info.commentAuthor.charAt(0)}</div>
           </div>
-          <div className="comment-author">
-            {this.props.info.commentAuthor.split(' ')[0] + " • " + Util.getTimeAgo(this.props.info.createdAt)}
-          </div>
+          <Timestamp
+            cssClass={"comment-author"}
+            message={this.props.info.commentAuthor.split(' ')[0] + " •"}
+            creationTime={this.props.info.createdAt}/>
         </div>
       </div>
     );

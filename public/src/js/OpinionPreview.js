@@ -1,5 +1,6 @@
 const React = require('react');
 const Util = require('./Util');
+const Timestamp = require('./Timestamp');
 const voteOptions = {
   convincing: {
     key: "convincing",
@@ -61,6 +62,14 @@ export class OpinionPreview extends React.Component {
     this.setState({
       reactionsShown: false
     });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.optionIndex != this.state.optionIndex
+    || nextState.reactionsShown != this.state.reactionsShown
+    || nextState.voteOverlayShown != this.state.voteOverlayShown
+    || nextProps.info.userPreviouslyVoted != this.props.userPreviouslyVoted
+    || nextProps.info.voteCount != this.props.info.voteCount;
   }
 
   selectVoteOption(key, event) {
@@ -247,6 +256,10 @@ export class OpinionPreview extends React.Component {
         <div className="topic-opinion-timestamp">
           {'Posted ' + Util.getTimeAgo(this.props.info.createdAt)}
         </div>
+        <Timestamp
+          message={"Posted"}
+          cssClass={"topic-opinion-timestamp"}
+          creationTime={this.props.info.createdAt}/>
         <div style={{
           display: "flex",
           justifyContent: "center",
