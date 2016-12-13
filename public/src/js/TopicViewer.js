@@ -126,8 +126,6 @@ export class TopicViewer extends React.Component {
           $.when(voteGetRequest).done((response) => {
             console.log('response vote data', response);
             this.props.updateOpinion(response);
-            // opinion.voteCount = response.voteCount;
-            // opinion.userPreviouslyVoted = response.userPreviouslyVoted;
           });
         });
 

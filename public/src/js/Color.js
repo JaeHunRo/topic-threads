@@ -30,8 +30,6 @@ export class Color {
     }
 
     colors = array;
-    console.log(colors);
-    console.log(colorMap);
   }
 }
 

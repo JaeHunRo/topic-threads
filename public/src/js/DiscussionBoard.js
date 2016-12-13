@@ -1,7 +1,13 @@
 const React = require('react');
 const DiscussionTopic = require('./DiscussionTopic');
+const TopicFilterOptions = require('./TopicFilterOptions');
 const Util = require('./Util');
 const $ = require('jquery');
+
+const filterOptions = {
+  MostRecent: TopicFilterOptions.byMostRecent,
+  MostUpvoted: TopicFilterOptions.byMostUpvoted,
+}
 
 export class DiscussionBoard extends React.Component {
   constructor(props) {
@@ -14,7 +20,8 @@ export class DiscussionBoard extends React.Component {
       categoryValue: '',
       categorySelectorExpanded: false,
       composerShown: false,
-      composerError: false
+      composerError: false,
+      filterOption: filterOptions.MostUpvoted
     }
   }
 
@@ -204,7 +211,7 @@ export class DiscussionBoard extends React.Component {
 
   renderTopics() {
     let topicElements = [];
-    let topics = this.props.topics;
+    let topics = this.state.filterOption(this.props.topics);
     topics.forEach((topic, index) => {
       topicElements.push(
         <DiscussionTopic
@@ -318,6 +325,11 @@ export class DiscussionBoard extends React.Component {
           </div>
         </div>
         <div className="header-bar">
+          <div className="filter-options-container">
+            <div className="filter-options-label"></div>
+            <div className="filter-options-selected"></div>
+            <div className="filter-options-dropdown"></div>
+          </div>
           <div className="page-title">Topic Threads</div>
           <div className="board-buttons">
             <div className={
