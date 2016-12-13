@@ -21,15 +21,7 @@ var DATABASE_URL = 'YOUR_POSTGRES_URL';
 Run the following commands:
 ```
 npm install
+npm run build
 nodemon server.js
 ```
 Navigate to localhost:3001 and follow login instructions.
-
-Post topics under your Facebook username.
-
-## Backend TODO
-- [ ] Set up postgres dev environment to save locally instead of connecting to heroku.
-- [ ] Post/Get Opinions.
-- [ ] Post/Get Comments.
-- [ ] Upvote Topics.
-- [ ] Document api structure.
