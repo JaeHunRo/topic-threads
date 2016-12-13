@@ -39,10 +39,10 @@ export class DiscussionTopic extends React.Component {
       $.when(voteGetRequest).done((response) => {
         console.log('response vote data', response);
         this.props.updateTopic(response);
-        this.setState({
-          upvoted: response.userPreviouslyVoted === true,
-          votes: response.upvotes
-        });
+        // this.setState({
+        //   upvoted: response.userPreviouslyVoted === true,
+        //   votes: response.upvotes
+        // });
       });
     });
 
