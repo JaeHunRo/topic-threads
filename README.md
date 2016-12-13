@@ -28,8 +28,9 @@ Navigate to localhost:3001 and follow login instructions.
 Post topics under your Facebook username.
 
 ## Backend TODO
-- [ ] Set up postgres dev environment to save locally instead of connecting to heroku.
-- [ ] Post/Get Opinions.
-- [ ] Post/Get Comments.
-- [ ] Upvote Topics.
-- [ ] Document api structure.
+- [ ] Set up postgres dev environment to save locally instead of connecting to heroku (important especially if the application is deployed).
+- [ ] Edit posts.
+- [ ] Delete posts.
+- [ ] Clean up controller code (next vs. res.send).
+- [ ] Clean up routes (module for routes).
+- [ ] Clean up React components (component hierarchy, more bite-sized components, props).
