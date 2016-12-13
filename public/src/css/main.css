@@ -187,14 +187,14 @@ body {
 .topic-viewer-category {
   display: flex;
   flex-direction: column;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   align-items: center;
   justify-content: center;
 }
 
 .topic-viewer-description {
-  height: 100px;
+  height: 80px;
   width: 360px;
   overflow: auto;
   text-align: left;

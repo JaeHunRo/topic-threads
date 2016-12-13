@@ -357,7 +357,7 @@ export class TopicViewer extends React.Component {
               className="topic-viewer-opinions-section"
               style={{
                 width: (this.props.dimensions[0] - 320) + 'px',
-                height: (this.props.dimensions[1] - 435) + 'px'
+                height: (this.props.dimensions[1] - 415) + 'px'
               }}>
               {this.renderOpinionPreviews()}
             </div>
