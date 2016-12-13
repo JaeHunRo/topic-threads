@@ -456,7 +456,6 @@ export class DiscussionBoard extends React.Component {
               </div>
             </div>
           </div>
-          <div className="page-title">Topic Threads</div>
           <div className="board-buttons">
             <div className={
               this.state.showButtonLabel ? "add-topic-label shown" : "add-topic-label"
