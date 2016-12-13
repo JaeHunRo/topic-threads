@@ -37,7 +37,7 @@ export class DiscussionBoard extends React.Component {
       categorySelectorExpanded: false,
       composerShown: false,
       composerError: false,
-      filterOption: filterOptions.MostUpvoted,
+      filterOption: filterOptions.MostRecent,
       filterCategory: 'All',
       filterDropdownExpanded: dropdowns.None
     }
