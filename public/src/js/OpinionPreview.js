@@ -233,7 +233,7 @@ export class OpinionPreview extends React.Component {
           </div>
           <div className="topic-opinion-metadata">
             <div className="topic-opinion-author-name">
-              {this.props.info.opinionAuthor}
+              {this.props.info.opinionAuthor.split(' ')[0]}
             </div>
             <div className="opinion-vote-count-container">
               {this.renderVoteCount()}

@@ -23,7 +23,7 @@ export class Comment extends React.Component {
             <div>{this.props.info.commentAuthor.charAt(0)}</div>
           </div>
           <div className="comment-author">
-            {this.props.info.commentAuthor + " • " + Util.getTimeAgo(this.props.info.createdAt)}
+            {this.props.info.commentAuthor.split(' ')[0] + " • " + Util.getTimeAgo(this.props.info.createdAt)}
           </div>
         </div>
       </div>

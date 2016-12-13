@@ -231,7 +231,7 @@ export class TopicViewer extends React.Component {
           </div>
           <div className="topic-opinion-metadata">
             <div className="topic-opinion-author-name">
-              {opinion.opinionAuthor}
+              {opinion.opinionAuthor.split(' ')[0]}
             </div>
           </div>
         </div>
