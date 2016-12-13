@@ -1,6 +1,9 @@
 const React = require('react');
 const OpinionPreview = require('./OpinionPreview');
 const Comment = require('./Comment');
+const CommentComposer = require('./CommentComposer');
+const OpinionComposer = require('./OpinionComposer');
+const TopicInfo = require('./TopicInfo');
 const $ = require('jquery');
 const views = {
   Topic: 0,
@@ -15,7 +18,7 @@ export class TopicViewer extends React.Component {
       currentView: views.Topic,
       commentsFor: {},
       commentList: [],
-      composerShown: false,
+      opinionComposerShown: false,
       opinionValue: '',
       loadingComments: false,
       commentValue: '',
@@ -154,7 +157,7 @@ export class TopicViewer extends React.Component {
 
   toggleOpinionComposer() {
     this.setState({
-      composerShown: !this.state.composerShown
+      opinionComposerShown: !this.state.opinionComposerShown
     });
   }
 
@@ -182,6 +185,8 @@ export class TopicViewer extends React.Component {
           this.toggleOpinionComposer();
           this.setState({
             opinionValue: ''
+          }, () => {
+            console.log('has been cleared?', this.state.opinionValue);
           });
         });
       });
@@ -208,6 +213,9 @@ export class TopicViewer extends React.Component {
 
   cancelOpinion() {
     this.toggleOpinionComposer();
+    this.setState({
+      opinionValue: ''
+    });
   }
 
   handleOpinionChange(event) {
@@ -320,6 +328,9 @@ export class TopicViewer extends React.Component {
   }
 
   cancelComment() {
+    if (this.state.commentValue == '') {
+      return;
+    }
     this.setState({
       commentValue: ''
     });
@@ -339,38 +350,9 @@ export class TopicViewer extends React.Component {
       case views.Topic:
         return (
           <div>
-            <div className="topic-viewer-title">
-              {this.props.viewedTopic.title}
-            </div>
-            <div className="topic-viewer-info">
-              <div className="topic-viewer-category">
-                <div className="topic-viewer-category-icon-container">
-                  <img
-                    src={
-                      'src/assets/' + this.props.categories[this.props.viewedTopic.category].icon
-                    }
-                    className="topic-viewer-category-icon"/>
-                </div>
-                <div className="topic-viewer-category-name">
-                  {this.props.categories[this.props.viewedTopic.category].label}
-                </div>
-              </div>
-              <div className={
-                this.props.viewedTopic.description.length == 0
-                ? "topic-viewer-description empty"
-                : "topic-viewer-description"
-              }>
-                {
-                  this.props.viewedTopic.description.length == 0
-                  ? (
-                    <div className="empty-message">
-                      No description.
-                    </div>
-                  ) : null
-                }
-                {this.props.viewedTopic.description}
-              </div>
-            </div>
+            <TopicInfo
+              viewedTopic={this.props.viewedTopic}
+              categories={this.props.categories}/>
             <div
               className="topic-viewer-opinions-section"
               style={{
@@ -400,39 +382,13 @@ export class TopicViewer extends React.Component {
                 {this.renderOpinionAuthor()}
               </div>
             </div>
-            <div className="comment-composer-container">
-              <textarea
-                id="comment-composer"
-                className="comment-composer"
-                placeholder="Write a comment..."
-                value={this.state.commentValue}
-                onChange={this.handleCommentChange.bind(this)}>
-              </textarea>
-              <div className="comment-composer-buttons">
-                <div
-                  className={
-                    this.state.commentValue.length == 0
-                    ? "comment-composer-post-button unselectable disabled"
-                    : "comment-composer-post-button unselectable"
-                  }
-                  onClick={this.createComment.bind(this)}>
-                  <div>
-                    {
-                      this.state.postingComment
-                      ? (
-                        <img src="src/assets/loading.gif"/>
-                      )
-                      : "Post"
-                    }
-                  </div>
-                </div>
-                <div
-                  className="comment-composer-cancel-button unselectable"
-                  onClick={this.cancelComment.bind(this)}>
-                  <div>Cancel</div>
-                </div>
-              </div>
-            </div>
+            <CommentComposer
+              commentValue={this.state.commentValue}
+              handleCommentChange={this.handleCommentChange.bind(this)}
+              createComment={this.createComment.bind(this)}
+              cancelComment={this.cancelComment.bind(this)}
+              postingComment={this.state.postingComment}
+            />
             <div className="comments">
               {this.renderComments()}
             </div>
@@ -452,51 +408,14 @@ export class TopicViewer extends React.Component {
           left: '150px',
           top: '50px'
         }}>
-        <div
-          className={
-            this.state.composerShown
-            ? "opinion-composer-container shown"
-            : "opinion-composer-container"
-          }>
-          <div className="opinion-composer">
-            <div className="opinion-composer-text">
-              <div className="opinion-composer-label">
-                {"What's Your Opinion?"}
-              </div>
-              <textarea
-                className="opinion-composer-text-area"
-                value={this.state.opinionValue}
-                onChange={this.handleOpinionChange.bind(this)}
-                maxLength="1000">
-              </textarea>
-              <div className="opinion-composer-char-limit">
-                {this.state.opinionValue.length + " / 1000"}
-              </div>
-            </div>
-            <div className="opinion-composer-buttons">
-              <div
-                className={
-                  this.state.opinionValue.length == 0
-                  ? "opinion-composer-create-button unselectable disabled"
-                  : "opinion-composer-create-button unselectable "
-                }
-                onClick={this.createOpinion.bind(this)}>
-                {
-                  this.props.postingOpinion
-                  ? (
-                    <img src="src/assets/loading.gif"/>
-                  )
-                  : "Create"
-                }
-              </div>
-              <div
-                className="opinion-composer-cancel-button unselectable"
-                onClick={this.cancelOpinion.bind(this)}>
-                Cancel
-              </div>
-            </div>
-          </div>
-        </div>
+        <OpinionComposer
+          composerShown={this.state.opinionComposerShown}
+          opinionValue={this.state.opinionValue}
+          handleOpinionChange={this.handleOpinionChange.bind(this)}
+          createOpinion={this.createOpinion.bind(this)}
+          cancelOpinion={this.cancelOpinion.bind(this)}
+          postingOpinion={this.props.postingOpinion}
+          />
         <div
           className="exit-topic-viewer"
           onClick={this.toggleViewer.bind(this)}>

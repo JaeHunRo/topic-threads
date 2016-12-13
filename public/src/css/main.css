@@ -261,7 +261,7 @@ body {
   height: 250px;
   width: 300px;
   border-radius: 10px;
-  background-color: white;
+  background-color: #f6f6f6;
   box-shadow: 0 0 2px black;
   margin: 10px;
   position: relative;
@@ -285,6 +285,7 @@ body {
 .topic-opinion-author-icon {
   border-radius: 30px;
   border: 1px solid lightgray;
+  box-shadow: 0 0 2px black;
   width: 60px;
   height: 60px;
   display: flex;
@@ -492,6 +493,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 1px black;
   position: relative;
+  background-color: white;
 }
 
 .topic-opinion-preview {
@@ -610,7 +612,7 @@ body {
 .comment-author {
   color: gray;
   font-size: 12px;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .comment-author-icon {
@@ -622,7 +624,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 2px lightgray;
+  text-shadow: 0 0 2px black;
 }
 
 .comment-author-icon div {

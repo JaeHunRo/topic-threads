@@ -152,12 +152,6 @@ export class App extends React.Component{
     }, callback);
   }
 
-  cancelLoadingTopicPost() {
-    this.setState({
-      postingTopic: false
-    });
-  }
-
   addNewTopic(callback) {
     console.log('add new topic...');
     this.requestTopics(callback);
@@ -167,12 +161,6 @@ export class App extends React.Component{
     this.setState({
       postingOpinion: true
     }, callback);
-  }
-
-  cancelLoadingOpinionPost() {
-    this.setState({
-      postingOpinion: false
-    });
   }
 
   addNewOpinion(callback) {
@@ -186,6 +174,7 @@ export class App extends React.Component{
       console.log(data);
       this.setState({
         loadingOpinions: false,
+        postingOpinion: false,
         opinions: data.rows
       }, callback);
     });
@@ -207,7 +196,6 @@ export class App extends React.Component{
             categories={categories}
             addNewOpinion={this.addNewOpinion.bind(this)}
             startLoading={this.startLoadingOpinionPost.bind(this)}
-            cancelLoading={this.cancelLoadingOpinionPost.bind(this)}
             postingOpinion={this.state.postingOpinion}
             topicPage={this.state.topicPage}
             updateOpinion={this.updateOpinion.bind(this)}/>
@@ -237,7 +225,6 @@ export class App extends React.Component{
             postingTopic={this.state.postingTopic}
             addNewTopic={this.addNewTopic.bind(this)}
             startLoading={this.startLoadingTopicPost.bind(this)}
-            cancelLoading={this.cancelLoadingTopicPost.bind(this)}
             categories={categories}/>
         </div>
       </div>
