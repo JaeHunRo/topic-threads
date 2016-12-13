@@ -5,8 +5,20 @@ const Util = require('./Util');
 const $ = require('jquery');
 
 const filterOptions = {
-  MostRecent: TopicFilterOptions.byMostRecent,
-  MostUpvoted: TopicFilterOptions.byMostUpvoted,
+  MostRecent: {
+    filter: TopicFilterOptions.byMostRecent,
+    label: "Most Recent"
+  },
+  MostUpvoted: {
+    filter: TopicFilterOptions.byMostUpvoted,
+    label: "Most Upvoted"
+  },
+}
+
+const dropdowns = {
+  None: -1,
+  Options: 0,
+  Categories: 1
 }
 
 export class DiscussionBoard extends React.Component {
@@ -21,7 +33,9 @@ export class DiscussionBoard extends React.Component {
       categorySelectorExpanded: false,
       composerShown: false,
       composerError: false,
-      filterOption: filterOptions.MostUpvoted
+      filterOption: filterOptions.MostUpvoted,
+      filterCategory: 'All',
+      filterDropdownExpanded: dropdowns.None
     }
   }
 
@@ -209,9 +223,82 @@ export class DiscussionBoard extends React.Component {
     });
   }
 
+  selectFilterOption(option, type) {
+    if (type == dropdowns.Options) {
+      this.setState({
+        filterOption: option
+      });
+    } else if (type == dropdowns.Categories) {
+      this.setState({
+        filterCategory: option
+      });
+    }
+    this.toggleFilterDropdown(type);
+  }
+
+  renderFilterOptions() {
+    let optionElements = [];
+    Object.keys(filterOptions).forEach((option, index) => {
+      const optionElement = (
+        <div
+          key={index + '-filter-option'}
+          className="filter-option"
+          onClick={this.selectFilterOption.bind(this, filterOptions[option], dropdowns.Options)}>
+          {filterOptions[option].label}
+        </div>
+      );
+      optionElements.push(optionElement);
+    });
+    return optionElements;
+  }
+
+  renderCategoryFilterOptions() {
+    let categoryElements = [];
+    const allElement = (
+      <div
+        key={'all-category-filter-option'}
+        className="filter-option"
+        onClick={this.selectFilterOption.bind(this, 'All', dropdowns.Categories)}>
+        All
+      </div>
+    );
+    categoryElements.push(allElement);
+    Object.keys(this.props.categories).forEach((category, index) => {
+      const categoryElement = (
+        <div
+          key={index + '-category-filter-option'}
+          className="filter-option category-filter-option"
+          onClick={this.selectFilterOption.bind(this, category, dropdowns.Categories)}>
+          <img src={'src/assets/' + this.props.categories[category].icon}/>
+          <div>{this.props.categories[category].label}</div>
+        </div>
+      );
+      categoryElements.push(categoryElement);
+    });
+    return categoryElements;
+  }
+
+  toggleFilterDropdown(type) {
+    if (this.state.filterDropdownExpanded == dropdowns.None) {
+      this.setState({
+        filterDropdownExpanded: type
+      });
+    } else {
+      this.setState({
+        filterDropdownExpanded: this.state.filterDropdownExpanded == type ? dropdowns.None : type
+      });
+    }
+  }
+
   renderTopics() {
     let topicElements = [];
-    let topics = this.state.filterOption(this.props.topics);
+    let topics = this.props.topics;
+    if (this.state.filterCategory != 'All') {
+      topics = topics.filter((topic) => {
+        return topic.category == this.state.filterCategory;
+      });
+    }
+    topics = this.state.filterOption.filter(topics);
     topics.forEach((topic, index) => {
       topicElements.push(
         <DiscussionTopic
@@ -326,9 +413,48 @@ export class DiscussionBoard extends React.Component {
         </div>
         <div className="header-bar">
           <div className="filter-options-container">
-            <div className="filter-options-label"></div>
-            <div className="filter-options-selected"></div>
-            <div className="filter-options-dropdown"></div>
+            <div className={
+              this.state.filterDropdownExpanded == dropdowns.Options
+              ? "filter-options-dropdown-container expanded"
+              : "filter-options-dropdown-container"
+            }>
+              <div
+                className="filter-options-selected filter-option"
+                onClick={this.toggleFilterDropdown.bind(this, dropdowns.Options)}>
+                {this.state.filterOption.label}
+                <div className="dropdown-arrow">
+                  <i className={
+                    this.state.filterDropdownExpanded == dropdowns.Options
+                    ? "fa fa-sort-asc"
+                    : "fa fa-sort-desc"
+                  } aria-hidden="true"></i>
+                </div>
+              </div>
+              <div className="filter-options-dropdown">
+                {this.renderFilterOptions()}
+              </div>
+            </div>
+            <div className={
+              this.state.filterDropdownExpanded == dropdowns.Categories
+              ? "filter-options-dropdown-container expanded"
+              : "filter-options-dropdown-container"
+            }>
+              <div
+                className="filter-options-selected filter-option"
+                onClick={this.toggleFilterDropdown.bind(this, dropdowns.Categories)}>
+                {this.state.filterCategory == 'All' ? 'All' : this.props.categories[this.state.filterCategory].label}
+                <div className="dropdown-arrow">
+                  <i className={
+                    this.state.filterDropdownExpanded == dropdowns.Categories
+                    ? "fa fa-sort-asc"
+                    : "fa fa-sort-desc"
+                  } aria-hidden="true"></i>
+                </div>
+              </div>
+              <div className="filter-options-dropdown">
+                {this.renderCategoryFilterOptions()}
+              </div>
+            </div>
           </div>
           <div className="page-title">Topic Threads</div>
           <div className="board-buttons">

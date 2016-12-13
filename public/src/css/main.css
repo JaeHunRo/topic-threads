@@ -1222,6 +1222,95 @@ body {
   bottom: -13px;
 }
 
+.filter-options-container {
+  position: absolute;
+  height: 60px;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: white;
+}
+
+.filter-options-dropdown-container {
+  margin-left: 10px;
+}
+
+.filter-option {
+  width: 120px;
+  height: 30px;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  color: black;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+}
+
+.filter-option:hover {
+  background-color: rgb(0,122,255);
+  color: white;
+}
+
+.category-filter-option {
+  display: flex;
+  align-items: center;
+}
+
+.category-filter-option img {
+  width: 15px;
+  height: 15px;
+}
+
+.category-filter-option div {
+  margin-left: 5px;
+}
+
+.filter-options-selected {
+  border: 1px solid lightgray;
+  background-color: #ededed;
+}
+
+.filter-options-selected .dropdown-arrow {
+  top: 2px;
+}
+
+.expanded .filter-options-selected .dropdown-arrow {
+  top: 10px;
+}
+
+.expanded .filter-options-selected {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.filter-options-dropdown {
+  position: absolute;
+  z-index: 999;
+  display: none;
+  border: 1px solid lightgray;
+  border-top: none;
+}
+
+.expanded .filter-options-dropdown {
+  display: block;
+}
+
+.filter-options-dropdown .filter-option {
+  border-radius: 0;
+}
+
+.filter-options-dropdown,
+.filter-options-dropdown .filter-option:last-child {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 .error {
   font-size: 10px;
   color: red;

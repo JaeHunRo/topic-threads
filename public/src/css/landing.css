@@ -35,11 +35,12 @@ body {
 .login-button {
   padding: 15px 20px;
   background-color: #3B5998;
-  border-radius: 5px;
+  border-radius: 25px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 20px
 }
 
 .login-button:hover {
