@@ -13,6 +13,10 @@ const filterOptions = {
     filter: TopicFilterOptions.byMostUpvoted,
     label: "Most Upvoted"
   },
+  MostOpinions: {
+    filter: TopicFilterOptions.byMostOpinions,
+    label: "Most Opinions"
+  },
 }
 
 const dropdowns = {

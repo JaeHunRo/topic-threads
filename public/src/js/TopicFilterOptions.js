@@ -24,6 +24,19 @@ export class TopicFilterOptions {
       return obj[0];
     });
   }
+
+  static byMostOpinions(topics) {
+    let list = [];
+    topics.forEach((topic) => {
+      list.push([topic, topic.opinionCount]);
+    });
+    list.sort((a, b) => {
+      return b[1] - a[1];
+    });
+    return list.map((obj) => {
+      return obj[0];
+    });
+  }
 }
 
 module.exports = TopicFilterOptions;
