@@ -294,14 +294,19 @@ export class DiscussionBoard extends React.Component {
     }
   }
 
-  renderTopics() {
-    let topicElements = [];
-    let topics = this.props.topics;
+  filterByCategory(topics) {
     if (this.state.filterCategory != 'All') {
       topics = topics.filter((topic) => {
         return topic.category == this.state.filterCategory;
       });
     }
+    return topics;
+  }
+
+  renderTopics() {
+    let topicElements = [];
+    let topics = this.props.topics;
+    topics = this.filterByCategory(topics);
     topics = this.state.filterOption.filter(topics);
     topics.forEach((topic, index) => {
       topicElements.push(
@@ -510,7 +515,7 @@ export class DiscussionBoard extends React.Component {
           height: (this.props.dimensions[1] - 63) + 'px'
         }}>
           {
-            this.props.topics.length == 0 && !this.props.loadingTopics
+            this.filterByCategory(this.props.topics).length == 0 && !this.props.loadingTopics
             ? (
               <div className="no-topics-container">
                 <div className="no-topics">
