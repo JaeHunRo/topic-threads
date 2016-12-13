@@ -306,6 +306,15 @@ body {
   line-height: 20px;
 }
 
+.topic-opinion-timestamp {
+  font-size: 11px;
+  margin-top: 2px;
+  color: gray;
+  position: absolute;
+  bottom: 4px;
+  right: 24px;
+}
+
 .topic-opinion-vote-overlay {
   position: absolute;
   z-index: 10;
@@ -371,22 +380,39 @@ body {
   font-size: 14px;
 }
 
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(0,0,0,0.8);
+}
+
+.reaction-breakdown-container .arrow-up {
+  margin-left: 2px;
+}
+
+.reaction-breakdown-container {
+  position: absolute;
+  display: none;
+  z-index: 10;
+}
+
 .reaction-breakdown {
   background-color: rgba(0,0,0,0.8);
   height: 20px;
   padding: 5px;
+  top: 8px;
   border-radius: 5px;
   position: absolute;
   margin-left: -30px;
-  margin-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
-  display: none;
+  display: flex
 }
 
-.shown.reaction-breakdown {
+.shown.reaction-breakdown-container {
   display: flex;
 }
 
@@ -394,7 +420,7 @@ body {
   color: white;
   display: flex;
   align-items: center;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 .reaction-breakdown-item:first-child {
@@ -459,8 +485,8 @@ body {
 }
 
 .topic-opinion-preview-container {
-  width: 260px;
-  height: 120px;
+  width: 240px;
+  height: 110px;
   padding: 10px;
   margin-top: 10px;
   border-radius: 10px;
@@ -471,8 +497,8 @@ body {
 .topic-opinion-preview {
   font-size: 14px;
   line-height: 20px;
-  width: 260px;
-  max-height: 120px;
+  width: 240px;
+  max-height: 110px;
   padding: 10px;
   overflow: hidden;
   text-align: left;

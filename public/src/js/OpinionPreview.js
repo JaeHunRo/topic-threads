@@ -1,4 +1,5 @@
 const React = require('react');
+const Util = require('./Util');
 const voteOptions = {
   convincing: {
     key: "convincing",
@@ -194,10 +195,13 @@ export class OpinionPreview extends React.Component {
         </div>
         <div className={
           this.state.reactionsShown
-          ? "reaction-breakdown shown"
-          : "reaction-breakdown"
+          ? "reaction-breakdown-container shown"
+          : "reaction-breakdown-container"
         }>
-          {breakdownElements}
+          <div className="arrow-up"></div>
+          <div className="reaction-breakdown">
+            {breakdownElements}
+          </div>
         </div>
       </div>
     );
@@ -239,6 +243,9 @@ export class OpinionPreview extends React.Component {
               {this.renderVoteCount()}
             </div>
           </div>
+        </div>
+        <div className="topic-opinion-timestamp">
+          {'Posted ' + Util.getTimeAgo(this.props.info.createdAt)}
         </div>
         <div style={{
           display: "flex",
