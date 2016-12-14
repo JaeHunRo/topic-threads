@@ -25,6 +25,13 @@ const dropdowns = {
   Categories: 1
 }
 
+const infoOptions = {
+  LikedTopics: 'Upvoted',
+  ReactedOpinions: 'Reacted',
+  PostedOpinions: 'Opinions',
+  PostedComments: 'Comments'
+}
+
 export class DiscussionBoard extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +46,8 @@ export class DiscussionBoard extends React.Component {
       composerError: false,
       filterOption: filterOptions.MostRecent,
       filterCategory: 'All',
-      filterDropdownExpanded: dropdowns.None
+      filterDropdownExpanded: dropdowns.None,
+      profileInfoOption: infoOptions.LikedTopics,
     }
   }
 
@@ -71,25 +79,6 @@ export class DiscussionBoard extends React.Component {
     this.setState({
       descriptionValue: event.target.value
     });
-  }
-
-  boardClicked(event) {
-    const target = event.nativeEvent.target;
-    let profileIsClicked = target == document.getElementById('user-profile');
-    if (!profileIsClicked) {
-      let children = document.getElementById('user-profile').children;
-      for(let i = 0; i < children.length; i++) {
-        if (children[i] == target) {
-          profileIsClicked = true;
-          break;
-        }
-      }
-    }
-    if (!profileIsClicked && this.state.userProfileShown) {
-      this.setState({
-        userProfileShown: false
-      });
-    }
   }
 
   isEmpty(obj) {
@@ -303,6 +292,74 @@ export class DiscussionBoard extends React.Component {
     return topics;
   }
 
+  renderUserLikedTopics() {
+    let topics = this.props.topics;
+    let likedTopics = topics.filter((topic) => {
+      return topic.userPreviouslyVoted === true;
+    });
+    let topicElements = [];
+    likedTopics.forEach((topic) => {
+      const topicElement = (
+        <div
+          key={topic.id + '-liked-topic'}
+          className='user-liked-topic'
+          onClick={this.handleTopicExpand.bind(this, topic)}>
+          <div className="user-liked-topic-title">{topic.title}</div>
+          <div className="user-liked-topic-metadata">
+            <div className="user-liked-topic-upvotes">
+              <i className="fa fa-chevron-up" aria-hidden="true"/>
+              <div>{topic.upvotes}</div>
+            </div>
+            <div className="user-liked-topic-opinions">
+              <i className="fa fa-comments-o" aria-hidden="true"/>
+              <div>{topic.opinionCount}</div>
+            </div>
+          </div>
+        </div>
+      );
+      topicElements.push(topicElement);
+    });
+    return topicElements;
+  }
+
+  selectUserInfoOption(option) {
+    this.setState({
+      profileInfoOption: option
+    });
+  }
+
+  renderUserInfoOptions() {
+    let optionElements = [];
+    Object.keys(infoOptions).forEach((key, index) => {
+      const option = (
+        <div
+          key={index + '-info-option'}
+          className={
+            this.state.profileInfoOption == infoOptions[key]
+            ? "user-profile-info-option selected"
+            : "user-profile-info-option"
+          }
+          onClick={this.selectUserInfoOption.bind(this, infoOptions[key])}>
+          {infoOptions[key]}
+        </div>
+      );
+      optionElements.push(option);
+    });
+    return optionElements;
+  }
+
+  handleTopicExpand(topic) {
+    let overlay = document.getElementById('overlay');
+    overlay.classList.add('topic-expanded');
+    if (this.state.userProfileShown) {
+      this.setState({
+        userProfileShown: false
+      });
+    }
+    this.props.setTopic(topic);
+    this.props.toggleViewer();
+  }
+
   renderTopics() {
     let topicElements = [];
     let topics = this.props.topics;
@@ -316,7 +373,8 @@ export class DiscussionBoard extends React.Component {
           updateTopic={this.props.updateTopic}
           setTopic={this.props.setTopic}
           toggleViewer={this.props.toggleViewer}
-          categories={this.props.categories}/>
+          categories={this.props.categories}
+          handleTopicExpand={this.handleTopicExpand.bind(this)}/>
       );
     });
     return topicElements;
@@ -325,7 +383,7 @@ export class DiscussionBoard extends React.Component {
   render() {
     let initial = this.props.currentUser ? this.props.currentUser.username.charAt(0) : "?";
     return (
-      <div onClick={this.boardClicked.bind(this)}>
+      <div>
         <div
           className={
             this.state.composerShown
@@ -464,13 +522,6 @@ export class DiscussionBoard extends React.Component {
                 {this.renderCategoryFilterOptions()}
               </div>
             </div>
-          </div>
-          <div className="board-buttons">
-            <div className={
-              this.state.showButtonLabel ? "add-topic-label shown" : "add-topic-label"
-            }>
-              Create new topic
-            </div>
             <div
               className="add-topic-button unselectable"
               onMouseEnter={this.mouseEnterLabel.bind(this)}
@@ -478,6 +529,13 @@ export class DiscussionBoard extends React.Component {
               onClick={this.toggleTopicComposer.bind(this)}>
               <i className="fa fa-plus" aria-hidden="true"></i>
             </div>
+            <div className={
+              this.state.showButtonLabel ? "add-topic-label shown" : "add-topic-label"
+            }>
+              Create new topic
+            </div>
+          </div>
+          <div className="board-buttons">
             <div
               className="user-profile-button unselectable"
               onClick={this.toggleUserProfile.bind(this)}
@@ -491,19 +549,29 @@ export class DiscussionBoard extends React.Component {
         <div id="user-profile" className={
           this.state.userProfileShown ? "user-profile shown" : "user-profile"
         }>
-          <div className="user-profile-name">
-            {
-              this.props.currentUser
-              ? this.props.currentUser.username
-              : "No User Found"
-            }
-          </div>
-          <div className="user-profile-creation">
-            {
-              this.props.currentUser
-              ? "User since " + Util.getTimeAgo(this.props.currentUser.createdAt)
-              : "Error"
-            }
+          <div className="user-profile-content">
+            <div className="user-profile-info">
+              <div className="user-profile-name">
+                {
+                  this.props.currentUser
+                  ? this.props.currentUser.username
+                  : "No User Found"
+                }
+              </div>
+              <div className="user-profile-creation">
+                {
+                  this.props.currentUser
+                  ? "User since " + Util.getTimeAgo(this.props.currentUser.createdAt)
+                  : "Error"
+                }
+              </div>
+            </div>
+            <div className="user-profile-info-selector">
+              {this.renderUserInfoOptions()}
+            </div>
+            <div className="user-profile-liked-topics">
+              {this.renderUserLikedTopics()}
+            </div>
           </div>
           <a href="/logout">
             <div className="logout unselectable">

@@ -47,20 +47,13 @@ export class DiscussionTopic extends React.Component {
     });
   }
 
-  handleTopicExpand() {
-    let overlay = document.getElementById('overlay');
-    overlay.classList.add('topic-expanded');
-    this.props.setTopic(this.props.topic);
-    this.props.toggleViewer();
-  }
-
   render() {
     const topic = this.props.topic;
     return (
       <div className="unselectable discussion-topic-container">
         <div
           className="discussion-topic"
-          onClick={this.handleTopicExpand.bind(this)}>
+          onClick={this.props.handleTopicExpand.bind(this, topic)}>
           <div className="thumbtack"></div>
           <div className="topic-category">
             <div className="topic-category-icon">
