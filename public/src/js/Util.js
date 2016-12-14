@@ -10,7 +10,7 @@ export class Util {
 
     let agoString;
     if (seconds < 60) {
-      agoString = seconds;
+      agoString = seconds >= 0 ? seconds : 0;
       agoString += seconds == 1 ? " second" : " seconds";
     } else if (minutes < 60) {
       agoString = minutes;

@@ -253,9 +253,6 @@ export class OpinionPreview extends React.Component {
             </div>
           </div>
         </div>
-        <div className="topic-opinion-timestamp">
-          {'Posted ' + Util.getTimeAgo(this.props.info.createdAt)}
-        </div>
         <Timestamp
           message={"Posted"}
           cssClass={"topic-opinion-timestamp"}
