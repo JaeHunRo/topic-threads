@@ -1,6 +1,7 @@
 # topic-threads
 CS 316 Project
 
+*Creds to Louis Li for the red pins.
 ## How to setup and run
 Implement config/auth.js. App ID and App Secret can be found in Facebook developer dashboard for topic-threads app.
 ```
