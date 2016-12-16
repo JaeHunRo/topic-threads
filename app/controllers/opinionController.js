@@ -29,8 +29,8 @@ function getAllOpinions(req, res, next) {
                 db.OpinionVotes.findOne({
                     where: {
                         topic_id: opinion.topic_id,
-                        opinion_id: opinion.id, 
-                        user_id: user.id 
+                        opinion_id: opinion.id,
+                        user_id: user.id
                     }
                 }).then(function(vote){
                     if (vote == null){

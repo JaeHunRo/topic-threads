@@ -3,7 +3,7 @@ var async = require('async');
 /*
 Grabs number of votes of each votetype for each opinion and appends to the result.
 */
-function getOpinionVotes(req, res){
+function getOpinionVotes(req, res, next){
     db.User.findOne({
         where: {
             fb_id: req.user.id
@@ -27,7 +27,7 @@ function getOpinionVotes(req, res){
                 callback();
             });
         }, function(){
-            res.send(req.result);
+            next();
         });
     });
 }
@@ -125,7 +125,7 @@ function editOpinionVote(req, res){
                     opinion_id: req.params.opinionId,
                     user_id: user.id,
                     type: req.body.type
-                }, 
+                },
                 {
                     where: {
                         user_id: user.id,

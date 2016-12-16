@@ -58,7 +58,25 @@ function postComment(req, res, next) {
     });
 }
 
+function getCommentCountForAllTopics(req, res, next) {
+  var opinions = req.result.rows;
+  async.each(opinions, function(opinion, callback) {
+    db.Comment.count({
+      where: {
+        topic_id: opinion.dataValues.topic_id,
+        opinion_id: opinion.dataValues.id
+      }
+    }).then(function(count) {
+      opinion.dataValues.commentCount = count;
+      callback();
+    })
+  }, function(){
+    res.send(req.result);
+  });
+}
+
 module.exports = {
     postComment: postComment,
-    getComments: getComments
+    getComments: getComments,
+    getCommentCountForAllTopics: getCommentCountForAllTopics
 };
