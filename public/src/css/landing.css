@@ -2,6 +2,7 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: 'Exo 2', sans-serif;
+  background-image: url(http://dukespace.lib.duke.edu/dspace/bitstream/handle/10161/858/hawley.jpg?sequence=1);
 }
 
 .container {
@@ -15,8 +16,14 @@ body {
   background-color: #efefef;
 }
 
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .welcome-title {
-  font-size: 48px;
+  font-size: 72px;
   color: white;
   text-shadow: 0 0 5px black;
 }
@@ -24,8 +31,9 @@ body {
 .welcome-description {
   font-size: 18px;
   color: black;
-  width: 600px;
+  width: 400px;
   margin-top: 10px;
+  text-align: center;
 }
 
 .login-button-link {
