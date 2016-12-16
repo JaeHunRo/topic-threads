@@ -242,6 +242,7 @@ body {
   margin-top: 20px;
   font-size: 24px;
   font-family: 'Amatica SC', cursive;
+  font-weight: bold;
 }
 
 .topic-viewer-opinions-section {
@@ -509,6 +510,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  white-space: pre-wrap;
 }
 
 .preview-fade {
@@ -716,7 +718,7 @@ body {
 
 .opinion-composer {
   width: 400px;
-  height: 270px;
+  height: 340px;
   background-color: white;
   border-radius: 5px;
   display: flex;
@@ -731,14 +733,15 @@ body {
 }
 
 .opinion-composer-text {
-  width: 300px;
+  width: 350px;
   margin-top: 20px;
 }
 
 .opinion-composer-text-area.opinion-composer-text-area {
-  width: 278px;
-  height: 120px;
+  width: 328px;
+  height: 180px;
   resize: none;
+  margin-top: 10px;
 }
 
 .opinion-composer-buttons {
