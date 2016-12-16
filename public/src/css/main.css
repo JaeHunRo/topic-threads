@@ -335,13 +335,29 @@ body {
   line-height: 20px;
 }
 
-.topic-opinion-timestamp {
-  font-size: 11px;
-  margin-top: 2px;
-  color: lightgray;
+.topic-opinion-footer {
   position: absolute;
-  bottom: 4px;
-  right: 24px;
+  bottom: 1px;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.topic-opinion-timestamp,
+.topic-opinion-comment-count {
+  font-size: 11px;
+  color: lightgray;
+}
+
+.topic-opinion-comment-count span {
+  color: lightblue;
+}
+
+.topic-opinion-timestamp {
+  margin-right: 24px;
+  margin-left: 7px;
 }
 
 .topic-opinion-vote-overlay {

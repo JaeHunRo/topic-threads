@@ -11,7 +11,8 @@ export class Timestamp extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.creationTime != this.props.creationTime;
+    return nextProps.creationTime != this.props.creationTime
+    || nextProps.message != this.props.message;
   }
 
   render() {

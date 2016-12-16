@@ -253,10 +253,18 @@ export class OpinionPreview extends React.Component {
             </div>
           </div>
         </div>
-        <Timestamp
-          message={"Posted"}
-          cssClass={"topic-opinion-timestamp"}
-          creationTime={this.props.info.createdAt}/>
+        <div className="topic-opinion-footer">
+          <div className="topic-opinion-comment-count">
+            {this.props.info.commentCount}
+            &nbsp;
+            <span>{this.props.info.commentCount == 1 ? ' comment ' : ' comments '}</span>
+            &nbsp; •
+          </div>
+          <Timestamp
+            message={null}
+            cssClass={"topic-opinion-timestamp"}
+            creationTime={this.props.info.createdAt}/>
+        </div>
         <div style={{
           display: "flex",
           justifyContent: "center",
