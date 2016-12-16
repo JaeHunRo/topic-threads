@@ -187,14 +187,14 @@ body {
 .topic-viewer-category {
   display: flex;
   flex-direction: column;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   align-items: center;
   justify-content: center;
 }
 
 .topic-viewer-description {
-  height: 80px;
+  height: 60px;
   width: 360px;
   overflow: auto;
   text-align: left;
@@ -203,6 +203,7 @@ body {
   border: 1px solid lightgray;
   padding: 10px;
   margin-left: 20px;
+  font-size: 14px;
 }
 
 .topic-viewer-description.empty {
@@ -217,30 +218,30 @@ body {
 }
 
 .topic-viewer-category-name {
-  margin-top: 10px;
-  font-size: 18px;
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .topic-viewer-category-icon-container{
   padding: 10px;
   background-color: white;
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   border-radius: 30px;
   box-shadow: 0 0 5px black;
   margin-top: 10px;
 }
 
 .topic-viewer-category-icon {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
 }
 
 .topic-viewer-title {
   margin-top: 20px;
-  font-size: 42px;
-  padding: 5px;
-  font-family: 'Amatica SC', cursive;
+  font-size: 24px;
+  /*font-family: 'Amatica SC', cursive;*/
 }
 
 .topic-viewer-opinions-section {
