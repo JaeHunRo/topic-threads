@@ -307,7 +307,7 @@ export class DiscussionBoard extends React.Component {
           <div className="user-liked-topic-title">{topic.title}</div>
           <div className="user-liked-topic-metadata">
             <div className="user-liked-topic-upvotes">
-              <i className="fa fa-chevron-up" aria-hidden="true"/>
+              <i className="fa fa-thumbs-o-up" aria-hidden="true"/>
               <div>{topic.upvotes}</div>
             </div>
             <div className="user-liked-topic-opinions">
