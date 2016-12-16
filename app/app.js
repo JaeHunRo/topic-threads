@@ -25,7 +25,7 @@ app.use(passport.session());
 
 require('../config/passport')(passport); // pass passport for configuration
 
-/* 
+/*
  =====================================
  FACEBOOK ROUTES =====================
  =====================================
@@ -37,7 +37,7 @@ router.route('/fblogin')
 
 // handle the callback after facebook has authenticated the user
 router.route('/login/callback')
-	.get(passport.authenticate('facebook', { failureRedirect: '/' }), 
+	.get(passport.authenticate('facebook', { failureRedirect: '/' }),
 		function (req, res, next) {
 			res.redirect('/');
 		});
@@ -60,7 +60,7 @@ router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.get
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic); //Tested
 
 //Opinion routes
-router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes); //Tested
+router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes, commentController.getCommentCountForAllTopics); //Tested
 router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion); //Tested
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion); //Tested
 
