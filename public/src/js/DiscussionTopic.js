@@ -1,4 +1,5 @@
 var React = require('react');
+var Timestamp = require('./Timestamp');
 var $ = require('jquery');
 
 export class DiscussionTopic extends React.Component {
@@ -82,7 +83,11 @@ export class DiscussionTopic extends React.Component {
             </div>
           </div>
           <div className="topic-title">
-            {topic.title}
+            <div>{topic.title}</div>
+            <Timestamp
+              message={null}
+              creationTime={topic.createdAt}
+              cssClass="topic-timestamp"/>
           </div>
         </div>
         <div className="discussion-topic-metadata">

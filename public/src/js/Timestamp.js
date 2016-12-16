@@ -15,9 +15,10 @@ export class Timestamp extends React.Component {
   }
 
   render() {
+    let message = this.props.message ? this.props.message + ' ' : '';
     return (
       <div className={this.props.cssClass}>
-        {this.props.message + ' ' + Util.getTimeAgo(this.props.creationTime)}
+        {message + Util.getTimeAgo(this.props.creationTime)}
       </div>
     );
   }
