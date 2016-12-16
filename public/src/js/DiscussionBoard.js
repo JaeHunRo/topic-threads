@@ -370,6 +370,7 @@ export class DiscussionBoard extends React.Component {
         <DiscussionTopic
           key={'topic-' + topic.id}
           topic={topic}
+          seenTopics={this.props.seenTopics}
           updateTopic={this.props.updateTopic}
           setTopic={this.props.setTopic}
           toggleViewer={this.props.toggleViewer}

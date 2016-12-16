@@ -47,6 +47,13 @@ export class App extends React.Component{
       });
     }
 
+    let seenTopics = localStorage.getItem('seenTopics');
+    if (seenTopics) {
+      seenTopics = JSON.parse(seenTopics).ids;
+    } else {
+      seenTopics = [];
+    }
+
     this.state = {
       viewedTopic: null,
       viewerExpanded: false,
@@ -55,6 +62,7 @@ export class App extends React.Component{
       currentUser: null,
       loadingTopics: true,
       topics: [],
+      seenTopics: seenTopics,
       topicPage: 1,
       postingTopic: false,
       loadingOpinions: false,
@@ -70,7 +78,7 @@ export class App extends React.Component{
     });
 
     $.when(currentUserRequest).done((data) => {
-      console.log('user', data);
+      // console.log('user', data);
       this.setState({
         currentUser: data
       });
@@ -124,6 +132,14 @@ export class App extends React.Component{
 
   setViewedTopic(topic) {
     console.log('set topic', topic);
+
+    if (this.state.seenTopics.indexOf(topic.id) == -1) {
+      this.state.seenTopics.push(topic.id);
+      localStorage.setItem('seenTopics', JSON.stringify({
+        ids: this.state.seenTopics
+      }));
+    }
+
     let opinions = [];
     this.setState({
       viewedTopic: topic,
@@ -220,6 +236,7 @@ export class App extends React.Component{
             currentUser={this.state.currentUser}
             dimensions={this.state.dimensions}
             topics={this.state.topics}
+            seenTopics={this.state.seenTopics}
             updateTopic={this.updateTopic.bind(this)}
             loadingTopics={this.state.loadingTopics}
             postingTopic={this.state.postingTopic}

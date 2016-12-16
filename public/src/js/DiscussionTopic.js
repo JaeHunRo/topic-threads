@@ -55,6 +55,13 @@ export class DiscussionTopic extends React.Component {
           className="discussion-topic"
           onClick={this.props.handleTopicExpand.bind(this, topic)}>
           <div className="thumbtack"></div>
+          <div className={
+            this.props.seenTopics.indexOf(topic.id) == -1
+            ? "new-discussion-topic-ribbon"
+            : "new-discussion-topic-ribbon topic-seen"
+          }>
+            New
+          </div>
           <div className="topic-category">
             <div className="topic-category-icon">
               {

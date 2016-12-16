@@ -45,10 +45,30 @@ body {
   text-align: left;
   font-size: 14px;
   position: relative;
+  overflow: hidden;
 }
 
 .discussion-topic:hover {
-  opacity: 0.9;
+  background-color: rgb(255,255,150);
+}
+
+.new-discussion-topic-ribbon {
+  position: absolute;
+  top: 15px;
+  left: -25px;
+  padding: 5px;
+  background-color: rgb(0,122,255);
+  color: white;
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  width: 100px;
+  text-align: center;
+  box-shadow: 0 0 2px black;
+}
+
+.new-discussion-topic-ribbon.topic-seen {
+  display: none;
 }
 
 .discussion-topic-metadata {
@@ -918,7 +938,7 @@ body {
   font-size: 12px;
   margin-top: 10px;
   padding: 10px;
-  width: 258px;
+  width: 256px;
   border-radius: 5px;
   cursor: pointer;
   border: 1px solid lightgray;
@@ -1002,7 +1022,6 @@ body {
   color: gray;
   background-color: #ededed;
   padding: 10px 20px;
-  border: 1px solid gray;
   margin-top: 30px;
   line-height: 14px;
   font-size: 14px;
