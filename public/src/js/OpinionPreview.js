@@ -1,33 +1,8 @@
 const React = require('react');
 const Util = require('./Util');
 const Timestamp = require('./Timestamp');
-const voteOptions = {
-  convincing: {
-    key: "convincing",
-    label: "Convincing",
-    icon: "convincing.png"
-  },
-  flawed: {
-    key: "flawed",
-    label: "Flawed",
-    icon: "flawed.png"
-  },
-  savage: {
-    key: "savage",
-    label: "Savage",
-    icon: "savage.png"
-  },
-  debatable: {
-    key: "debatable",
-    label: "Debatable",
-    icon: "debatable.png"
-  },
-  intriguing: {
-    key: "intriguing",
-    label: "Intriguing",
-    icon: "intriguing.png"
-  },
-}
+const Reactions = require('./OpinionReactions');
+const ReactionBreakdown = require('./ReactionBreakdown');
 
 export class OpinionPreview extends React.Component {
   constructor(props) {
@@ -88,6 +63,7 @@ export class OpinionPreview extends React.Component {
   renderVoteOptions() {
     let voteOptionElements = [];
     let options = [];
+    const voteOptions = Reactions.reactions;
     Object.keys(voteOptions).forEach((key) => {
       if (voteOptions.hasOwnProperty(key)) {
         options.push(voteOptions[key]);
@@ -127,7 +103,8 @@ export class OpinionPreview extends React.Component {
   }
 
   renderVoteCount() {
-    const voteCount = this.props.info.voteCount
+    const voteCount = this.props.info.voteCount;
+    const voteOptions = Reactions.reactions;
 
     if (Object.keys(voteCount).length == 0) {
       return (
@@ -178,17 +155,6 @@ export class OpinionPreview extends React.Component {
     }
 
     const reactionsLabel = totalVoteCount > 1 ? " reactions." : " reaction.";
-    const reactions = Object.keys(voteOptions);
-    let breakdownElements = [];
-    reactions.forEach((reaction, index) => {
-      const breakdownElement = (
-        <div key={index + "-breakdown-item"} className="reaction-breakdown-item">
-          <img src={'src/assets/vote-icons/' + voteOptions[reaction].icon}/>
-          <div>{voteCount[reaction] ? voteCount[reaction] : 0}</div>
-        </div>
-      );
-      breakdownElements.push(breakdownElement);
-    });
 
     return (
       <div>
@@ -208,15 +174,14 @@ export class OpinionPreview extends React.Component {
           : "reaction-breakdown-container"
         }>
           <div className="arrow-up"></div>
-          <div className="reaction-breakdown">
-            {breakdownElements}
-          </div>
+          <ReactionBreakdown voteCount={voteCount}/>
         </div>
       </div>
     );
   }
 
   renderUserVote() {
+    const voteOptions = Reactions.reactions;
     if (this.props.info.userPreviouslyVoted == null) {
       return null;
     } else {

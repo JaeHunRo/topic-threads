@@ -313,12 +313,12 @@ body {
 
 .topic-opinion-info {
   height: 60px;
-  margin-top: 10px;
   margin-left: 20px;
   text-align: left;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
 }
 
 .topic-opinion-author-icon {
@@ -465,7 +465,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  display: flex
+  display: flex;
+}
+
+.topic-opinion-info-container {
+  margin-top: 10px;
+}
+
+.topic-opinion-info-container .reaction-breakdown {
+  position: static;
+  margin-top: 10px;
+  margin-left: 0;
 }
 
 .shown.reaction-breakdown-container {
@@ -608,7 +618,7 @@ body {
 .comment-section-opinion-author
 .topic-opinion-author-name {
   font-size: 14px;
-  color: gray;
+  color: black;
 }
 
 .comment-section-opinion-author {

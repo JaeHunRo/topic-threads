@@ -35,7 +35,7 @@ function registerUser(profile, callback) {
 }
 
 /*
-Simple API call which can be used to check the admin status of a user 
+Simple API call which can be used to check the admin status of a user
 (Perhaps for delete access?)
 Ends up returning an object containing all of the user information.
 */

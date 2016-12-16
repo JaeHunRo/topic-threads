@@ -4,6 +4,7 @@ const Comment = require('./Comment');
 const CommentComposer = require('./CommentComposer');
 const OpinionComposer = require('./OpinionComposer');
 const TopicInfo = require('./TopicInfo');
+const ReactionBreakdown = require('./ReactionBreakdown');
 const $ = require('jquery');
 const views = {
   Topic: 0,
@@ -224,24 +225,27 @@ export class TopicViewer extends React.Component {
     });
   }
 
-  renderOpinionAuthor() {
+  renderOpinionMetadata() {
     let opinion = this.state.commentsFor;
     if (!opinion) {
       return null;
     } else {
       return (
-        <div className="topic-opinion-info">
-          <div>{"-"}</div>
-          <div className="topic-opinion-author-icon" style={{
-            backgroundColor: this.props.colorUtil.getColor(opinion.user_id)
-          }}>
-            {opinion.opinionAuthor.charAt(0)}
-          </div>
-          <div className="topic-opinion-metadata">
-            <div className="topic-opinion-author-name">
-              {opinion.opinionAuthor.split(' ')[0]}
+        <div className="topic-opinion-info-container">
+          <div className="topic-opinion-info">
+            <div>{'-'}</div>
+            <div className="topic-opinion-author-icon" style={{
+              backgroundColor: this.props.colorUtil.getColor(opinion.user_id)
+            }}>
+              {opinion.opinionAuthor.charAt(0)}
+            </div>
+            <div className="topic-opinion-metadata">
+              <div className="topic-opinion-author-name">
+                {opinion.opinionAuthor.split(' ')[0]}
+              </div>
             </div>
           </div>
+          <ReactionBreakdown voteCount={opinion.voteCount} />
         </div>
       );
     }
@@ -379,7 +383,7 @@ export class TopicViewer extends React.Component {
                 {this.renderOpinionBody()}
               </div>
               <div className="comment-section-opinion-author">
-                {this.renderOpinionAuthor()}
+                {this.renderOpinionMetadata()}
               </div>
             </div>
             <CommentComposer

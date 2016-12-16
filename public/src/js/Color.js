@@ -1,6 +1,6 @@
 let colorMap = {};
 let index = 0;
-let colors = ["rgb(0,122,255)", "#4CBB17", "#FF7441", "#c6e2ff", "#f08080", "#6E6EA9", "#B86DFF"];
+let colors = ["rgb(0,122,255)", "#4CBB17", "#FF7441", "#f08080", "#6E6EA9", "#B86DFF"];
 export class Color {
   static getColor(userId) {
     if (colorMap[userId]) {
