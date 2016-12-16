@@ -94,20 +94,20 @@ export class DiscussionTopic extends React.Component {
           <span
             className={this.state.upvoted ? 'voter upvoted' : 'voter'}
             onClick={this.handleUpvote.bind(this)}>
-            <i className="fa fa-chevron-up" aria-hidden="true"></i>
+            <i className="fa fa-thumbs-o-up" aria-hidden="true"></i>
           </span>
           <span className="discussion-topic-metadata-info">
             <span className="discussion-topic-metadata-item">
               {this.state.votes}&nbsp;
               <span style={{color:'lightblue'}}>
-                {' vote' + (this.state.votes != 1 ? 's' : '')}
+                {' Vote' + (this.state.votes != 1 ? 's' : '')}
               </span>
             </span>
             <span className="discussion-topic-metadata-item">|</span>
             <span className="discussion-topic-metadata-item">
               {this.state.opinions}&nbsp;
               <span style={{color:'lightblue'}}>
-                {' opinion' + (this.state.opinions != 1 ? 's' : '')}
+                {' Opinion' + (this.state.opinions != 1 ? 's' : '')}
               </span>
             </span>
           </span>
