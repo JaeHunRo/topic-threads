@@ -511,6 +511,7 @@ body {
   top: 0;
   left: 0;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .preview-fade {
@@ -571,6 +572,9 @@ body {
   max-height: 200px;
   overflow: auto;
   font-size: 18px;
+  word-break: break-word;
+  line-height: 24px;
+  white-space: pre-wrap;
 }
 
 .comment-section-opinion-body span {
