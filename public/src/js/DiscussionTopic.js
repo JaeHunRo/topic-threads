@@ -84,27 +84,32 @@ export class DiscussionTopic extends React.Component {
           </div>
           <div className="topic-title">
             <div>{topic.title}</div>
-            <Timestamp
-              message={null}
-              creationTime={topic.createdAt}
-              cssClass="topic-timestamp"/>
+            <div className="discussion-topic-metadata">
+              <div className="topic-author">
+                {topic.topicAuthor.split(' ')[0] + ' •'}
+              </div>
+              <Timestamp
+                message={null}
+                creationTime={topic.createdAt}
+                cssClass="topic-timestamp"/>
+            </div>
           </div>
         </div>
-        <div className="discussion-topic-metadata">
+        <div className="discussion-topic-footer">
           <span
             className={this.state.upvoted ? 'voter upvoted' : 'voter'}
             onClick={this.handleUpvote.bind(this)}>
-            <i className="fa fa-thumbs-o-up" aria-hidden="true"></i>
+            <i className="fa fa-chevron-circle-up" aria-hidden="true"></i>
           </span>
-          <span className="discussion-topic-metadata-info">
-            <span className="discussion-topic-metadata-item">
+          <span className="discussion-topic-footer-info">
+            <span className="discussion-topic-footer-item">
               {this.state.votes}&nbsp;
               <span style={{color:'lightblue'}}>
                 {' Vote' + (this.state.votes != 1 ? 's' : '')}
               </span>
             </span>
-            <span className="discussion-topic-metadata-item">|</span>
-            <span className="discussion-topic-metadata-item">
+            <span className="discussion-topic-footer-item">|</span>
+            <span className="discussion-topic-footer-item">
               {this.state.opinions}&nbsp;
               <span style={{color:'lightblue'}}>
                 {' Opinion' + (this.state.opinions != 1 ? 's' : '')}
