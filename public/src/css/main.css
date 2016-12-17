@@ -240,6 +240,7 @@ body {
   padding: 10px;
   margin-left: 20px;
   font-size: 14px;
+  white-space: pre-wrap;
 }
 
 .topic-viewer-description.empty {
