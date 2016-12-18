@@ -2,7 +2,7 @@ body {
   margin: 0;
   background-image: url(../assets/cork-board.jpg);
   --sticky-color: #ffffc9;
-  --topic-viewer: lightblue;
+  --topic-viewer: #E9FBFA;
   --opinion-section: #ffffc9;
   --upvote-hover: #ffd27f;
   --upvoted: #ffa500;
