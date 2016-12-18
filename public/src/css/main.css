@@ -635,9 +635,13 @@ body {
   white-space: pre-wrap;
 }
 
-.comment-section-opinion-body span {
+.comment-section-opinion-body .quotation-mark {
   font-size: 24px;
   color: gray;
+}
+
+.comment-section-opinion-body a {
+  text-decoration: none;
 }
 
 .comments {
