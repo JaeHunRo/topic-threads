@@ -19,7 +19,7 @@ export class Comment extends React.Component {
     return (
       <div className="comment">
         <div className="comment-body">
-          {this.props.info.content}
+          {Util.parseLinkContent(this.props.info.content)}
         </div>
         <div className="comment-metadata">
           <div className="comment-author-icon" style={{

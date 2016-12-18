@@ -5,6 +5,7 @@ const CommentComposer = require('./CommentComposer');
 const OpinionComposer = require('./OpinionComposer');
 const TopicInfo = require('./TopicInfo');
 const ReactionBreakdown = require('./ReactionBreakdown');
+const Util = require('./Util');
 const $ = require('jquery');
 const views = {
   Topic: 0,
@@ -251,47 +252,15 @@ export class TopicViewer extends React.Component {
     }
   }
 
-  parseContent(content) {
-    let pattern = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-    let parts = [];
-    let urlIndices = [];
-    let index = 0;
-    content.replace(pattern, (url) => {
-      let urlIndex = content.indexOf(url);
-      urlIndices.push(urlIndex);
-      parts.push(content.substring(index, urlIndex));
-      parts.push(url);
-      index = content.indexOf(url) + url.length;
-    });
-    parts.push(content.substring(index, content.length));
-    let elements = [];
-    for(let i = 0; i < parts.length; i++) {
-      let element;
-      if (urlIndices.indexOf(content.indexOf(parts[i])) != -1) {
-        // this part is a url
-        element = (
-          <a key={i+'-opinion-string-index'} target="_blank" href={parts[i]}>{parts[i]}</a>
-        );
-      } else {
-        element = (
-          <span key={i+'-opinion-string-index'} className="opinion-text">{parts[i]}</span>
-        );
-      }
-      elements.push(element);
-    }
-    return elements;
-  }
-
   renderOpinionBody() {
     let opinion = this.state.commentsFor;
-    this.parseContent(opinion.content);
     if (!opinion) {
       return null;
     } else {
       return (
         <div className="comment-section-opinion-body">
           <span className="quotation-mark">&ldquo;</span>
-          {this.parseContent(opinion.content)}
+          {Util.parseLinkContent(opinion.content)}
           <span className="quotation-mark">&rdquo;</span>
         </div>
       );
