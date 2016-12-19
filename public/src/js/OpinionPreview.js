@@ -1,8 +1,11 @@
 const React = require('react');
+const $ = require('jquery');
 const Util = require('./Util');
 const Timestamp = require('./Timestamp');
 const Reactions = require('./OpinionReactions');
 const ReactionBreakdown = require('./ReactionBreakdown');
+
+const maxReactors = 10;
 
 export class OpinionPreview extends React.Component {
   constructor(props) {
@@ -11,8 +14,28 @@ export class OpinionPreview extends React.Component {
     this.state = {
       optionIndex: -1,
       voteOverlayShown: false,
-      reactionsShown: false
+      reactionsShown: false,
+      reactors: null
     }
+  }
+
+  componentDidMount() {
+    this.fetchReactors();
+  }
+
+  fetchReactors() {
+    const reactorsRequest = $.ajax({
+      contentType: 'application/json',
+      url: 'api/opinion_votes/topicId/' + this.props.info.topic_id + '/opinionId/' + this.props.info.id,
+      type: 'GET'
+    });
+
+    $.when(reactorsRequest).done((data) => {
+      console.log('reactors', data);
+      this.setState({
+        reactors: data.rows
+      });
+    });
   }
 
   mouseEnterOption(index) {
@@ -44,10 +67,21 @@ export class OpinionPreview extends React.Component {
     || nextState.reactionsShown != this.state.reactionsShown
     || nextState.voteOverlayShown != this.state.voteOverlayShown
     || nextProps.info.userPreviouslyVoted != this.props.userPreviouslyVoted
-    || nextProps.info.voteCount != this.props.info.voteCount;
+    || nextProps.info.voteCount != this.props.info.voteCount
+    || nextProps.updatingVote != this.props.updatingVote;
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.updatingVote !== this.props.info.id && this.props.updatingVote === this.props.info.id) {
+      console.log('fetch reactors');
+      this.fetchReactors();
+    }
   }
 
   selectVoteOption(key, event) {
+    this.setState({
+      reactors: null
+    });
     this.props.selectOpinionVote(key, this.props.info.id);
     this.toggleOverlay(event);
   }
@@ -156,6 +190,27 @@ export class OpinionPreview extends React.Component {
 
     const reactionsLabel = totalVoteCount > 1 ? " reactions." : " reaction.";
 
+    let reactorElements;
+    if (this.state.reactors !== null) {
+      reactorElements = [];
+      for(let i = 0; i < Math.min(this.state.reactors.length, maxReactors); i++) {
+        let reactorElement = (
+          <div key={this.state.reactors[i].id+'-reactor'} className="reactor-name">
+            {this.state.reactors[i].username.split(' ')[0]}
+          </div>
+        );
+        reactorElements.push(reactorElement);
+      }
+
+      if (this.state.reactors.length > maxReactors) {
+        reactorElements.push(
+          <div key={this.props.info.id+'-more-reactors'} className="reactor-name">
+            {'And ' + (this.state.reactors.length - maxReactors) + ' more...'}
+          </div>
+        )
+      }
+    }
+
     return (
       <div>
         <div
@@ -175,6 +230,13 @@ export class OpinionPreview extends React.Component {
         }>
           <div className="arrow-up"></div>
           <ReactionBreakdown voteCount={voteCount}/>
+          <div className="reactor-names">
+          {
+            this.state.reactors
+            ? reactorElements
+            : <div className="loading-indicator"><img src="src/assets/loading.gif"/></div>
+          }
+          </div>
         </div>
       </div>
     );

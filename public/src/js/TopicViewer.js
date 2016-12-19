@@ -24,7 +24,8 @@ export class TopicViewer extends React.Component {
       opinionValue: '',
       loadingComments: false,
       commentValue: '',
-      postingComment: false
+      postingComment: false,
+      updatingVote: -1
     }
   }
 
@@ -71,6 +72,7 @@ export class TopicViewer extends React.Component {
           selectOpinionVote={this.selectOpinionVote.bind(this)}
           viewCommentList={this.viewCommentList.bind(this)}
           colorUtil={this.props.colorUtil}
+          updatingVote={this.state.updatingVote}
           viewedTopic={this.props.viewedTopic}/>
       );
     });
@@ -126,11 +128,18 @@ export class TopicViewer extends React.Component {
           type: 'GET'
         });
 
-        $.when(voteRequest).done((data) => {
-          console.log('vote completed', data);
-          $.when(voteGetRequest).done((response) => {
-            console.log('response vote data', response);
-            this.props.updateOpinion(response);
+        this.setState({
+          updatingVote: opinionId
+        }, () => {
+          $.when(voteRequest).done((data) => {
+            console.log('vote completed', data);
+            $.when(voteGetRequest).done((response) => {
+              console.log('response vote data', response);
+              this.props.updateOpinion(response);
+              this.setState({
+                updatingVote: -1
+              })
+            });
           });
         });
 
