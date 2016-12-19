@@ -495,7 +495,7 @@ body {
   padding: 10px;
 }
 
-.reactor-name {
+.reactor {
   color: white;
   padding-left: 5px;
   padding-top: 5px;
@@ -503,10 +503,21 @@ body {
   text-align: left;
   width: 190px;
   font-size: 12px;
+  display: flex;
+  align-items: flex-start;
 }
 
-.reactor-name:last-child {
+.reactor:last-child {
   padding-bottom: 5px;
+}
+
+.reactor-name {
+  margin-left: 5px;
+}
+
+.reactor-reaction img {
+  width: 15px;
+  height: 15px;
 }
 
 .topic-opinion-info-container .reaction-breakdown {

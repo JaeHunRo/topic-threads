@@ -194,9 +194,13 @@ export class OpinionPreview extends React.Component {
     if (this.state.reactors !== null) {
       reactorElements = [];
       for(let i = 0; i < Math.min(this.state.reactors.length, maxReactors); i++) {
+        console.log('icon', voteOptions[this.state.reactors[i].type].icon);
         let reactorElement = (
-          <div key={this.state.reactors[i].id+'-reactor'} className="reactor-name">
-            {this.state.reactors[i].username.split(' ')[0]}
+          <div key={this.state.reactors[i].id+'-reactor'} className="reactor">
+            <div className="reactor-reaction">
+              <img src={"src/assets/vote-icons/" + voteOptions[this.state.reactors[i].type].icon}/>
+            </div>
+            <div className="reactor-name">{this.state.reactors[i].username.split(' ')[0]}</div>
           </div>
         );
         reactorElements.push(reactorElement);
