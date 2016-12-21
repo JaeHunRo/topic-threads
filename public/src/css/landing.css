@@ -61,6 +61,10 @@ body {
   padding: 30px;
 }
 
+.example-section.topics {
+  align-self: flex-start;
+}
+
 .example-section.comments {
   margin-top: 20px;
 }
