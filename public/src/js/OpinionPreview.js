@@ -31,7 +31,7 @@ export class OpinionPreview extends React.Component {
     });
 
     $.when(reactorsRequest).done((data) => {
-      console.log('reactors', data);
+      // console.log('reactors', data);
       this.setState({
         reactors: data.rows
       });
@@ -194,7 +194,6 @@ export class OpinionPreview extends React.Component {
     if (this.state.reactors !== null) {
       reactorElements = [];
       for(let i = 0; i < Math.min(this.state.reactors.length, maxReactors); i++) {
-        console.log('icon', voteOptions[this.state.reactors[i].type].icon);
         let reactorElement = (
           <div key={this.state.reactors[i].id+'-reactor'} className="reactor">
             <div className="reactor-reaction">

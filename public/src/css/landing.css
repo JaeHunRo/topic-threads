@@ -22,7 +22,7 @@ body {
 }
 
 .welcome-title {
-  font-size: 72px;
+  font-size: 54px;
   color: white;
   text-shadow: 0 0 5px black;
 }
@@ -36,6 +36,48 @@ body {
   text-align: center;
 }
 
+.usage-examples {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.example-section {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.example-section.topics {
+  border-right: 3px solid white;
+}
+
+.example-section img {
+  width: 300px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.section-title {
+  font-size: 24px;
+  color: white;
+  text-shadow: 0 0 5px black;
+  text-align: left;
+  width: 100%;
+}
+
+.section-description {
+  /*text-align: center;*/
+  text-shadow: 0 0 5px white;
+}
+
+.section-title,
+.section-description {
+  margin-top: 10px;
+}
+
 .join-us {
   margin-top: 30px;
   text-shadow: 0 0 5px white;
@@ -46,7 +88,7 @@ body {
 }
 
 .login-button {
-  padding: 15px 20px;
+  padding: 10px 20px;
   background-color: #3B5998;
   border-radius: 25px;
   border: 1px solid white;
