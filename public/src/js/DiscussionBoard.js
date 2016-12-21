@@ -97,6 +97,47 @@ export class DiscussionBoard extends React.Component {
     });
   }
 
+  handleBoardClick(event) {
+    let isChild;
+    if (this.state.userProfileShown) {
+      isChild = this.containsElement('user-profile', event.target);
+      this.setState({
+        userProfileShown: isChild
+      });
+    }
+    if (this.state.filterDropdownExpanded != dropdowns.None) {
+      switch (this.state.filterDropdownExpanded) {
+        case dropdowns.Options:
+          isChild = this.containsElement('categories-filter-dropdown', event.target);
+          this.setState({
+            filterDropdownExpanded: isChild ? dropdowns.Categories : dropdowns.None
+          });
+          break;
+        case dropdowns.Categories:
+          isChild = this.containsElement('options-filter-dropdown', event.target);
+          this.setState({
+            filterDropdownExpanded: isChild ? dropdowns.Options : dropdowns.None
+          });
+          break;
+      }
+    }
+    if (this.state.categorySelectorExpanded) {
+      this.setState({
+        categorySelectorExpanded: false
+      });
+    }
+  }
+
+  containsElement(containerId, element) {
+    if (element == document.getElementById(containerId) || element.parentElement == document.getElementById(containerId)) {
+      return true;
+    }
+    if (element.parentElement == document.getElementById('page-container')) {
+      return false;
+    }
+    return this.containsElement(containerId, element.parentElement);
+  }
+
   renderSelectedCategory() {
     let selectedContent;
     if (this.state.categoryValue == '') {
@@ -348,7 +389,8 @@ export class DiscussionBoard extends React.Component {
     return optionElements;
   }
 
-  handleTopicExpand(topic) {
+  handleTopicExpand(topic, event) {
+    event.stopPropagation();
     let overlay = document.getElementById('overlay');
     overlay.classList.add('topic-expanded');
     if (this.state.userProfileShown) {
@@ -384,7 +426,7 @@ export class DiscussionBoard extends React.Component {
   render() {
     let initial = this.props.currentUser ? this.props.currentUser.username.charAt(0) : "?";
     return (
-      <div>
+      <div id="page-container" onClick={this.handleBoardClick.bind(this)}>
         <div
           className={
             this.state.composerShown
@@ -481,7 +523,7 @@ export class DiscussionBoard extends React.Component {
         </div>
         <div className="header-bar">
           <div className="filter-options-container">
-            <div className={
+            <div id="options-filter-dropdown" className={
               this.state.filterDropdownExpanded == dropdowns.Options
               ? "filter-options-dropdown-container expanded"
               : "filter-options-dropdown-container"
@@ -502,7 +544,7 @@ export class DiscussionBoard extends React.Component {
                 {this.renderFilterOptions()}
               </div>
             </div>
-            <div className={
+            <div id="categories-filter-dropdown" className={
               this.state.filterDropdownExpanded == dropdowns.Categories
               ? "filter-options-dropdown-container expanded"
               : "filter-options-dropdown-container"
