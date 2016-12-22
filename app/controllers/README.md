@@ -339,6 +339,38 @@ Sample response:
 }
 ```
 
+#### Get all opinionVotes casted by a particular user: /api/opinion_votes/user
+Sample response:
+```
+{
+opinionVotes: {
+	count: 2,
+	rows: [
+		{
+			id: 99,
+			type: "convincing",
+			createdAt: "2016-12-17T23:15:13.262Z",
+			updatedAt: "2016-12-17T23:15:13.262Z",
+			user_id: 3,
+			topic_id: 16,
+			opinion_id: 50,
+			opinionContent: "EZ WIN"
+		},
+		{
+			id: 35,
+			type: "intriguing",
+			createdAt: "2016-12-12T23:38:13.273Z",
+			updatedAt: "2016-12-12T23:38:13.273Z",
+			user_id: 3,
+			topic_id: 3,
+			opinion_id: 17,
+			opinionContent: "i'm going to learn how to read! "
+		}
+	]
+}
+
+```
+
 
 #### POST a new opinion vote: /api/opinion_votes/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:
