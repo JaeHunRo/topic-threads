@@ -392,7 +392,7 @@ export class DiscussionBoard extends React.Component {
             }
             const voteElement = (
               <div
-                key={vote.topic_id + '-' + vote.opinion_id + '-vote'}
+                key={vote.topic_id + '-' + vote.opinion_id + '-user-vote'}
                 className="user-reacted-opinion"
                 onClick={this.handleTopicExpand.bind(this, topic)}>
                 <div className="user-reacted-opinion-reaction">
@@ -419,6 +419,48 @@ export class DiscussionBoard extends React.Component {
           });
         });
         break;
+      case infoOptions.PostedOpinions:
+        this.setState({
+          fetchingInfoSection: true,
+          profileInfoSection: []
+        });
+        const opinionsRequest = $.ajax({
+          contentType: 'application/json',
+          url: 'api/opinion/user',
+          type: 'GET',
+        });
+        $.when(opinionsRequest).done((data) => {
+          console.log(data);
+          let opinions = data.opinions.rows;
+          opinions.forEach((opinion) => {
+            const topic = this.getTopicById(opinion.topic_id);
+            let topicTitle;
+            if (topic) {
+              topicTitle = topic.title;
+            }
+            const opinionElement = (
+              <div
+                key={opinion.topic_id + '-' + opinion.id + '-user-opinion'}
+                className="user-created-opinion"
+                onClick={this.handleTopicExpand.bind(this, topic)}>
+                <div className="user-created-opinion-content">
+                  <span className="quotation-mark">&ldquo;</span>
+                  {opinion.content}
+                  <span className="quotation-mark">&rdquo;</span>
+                </div>
+                <div className="user-created-opinion-topic">
+                  <span>On:&nbsp;</span>
+                  {topicTitle}
+                </div>
+              </div>
+            );
+            infoElements.push(opinionElement);
+          });
+          this.setState({
+            fetchingInfoSection: false,
+            profileInfoSection: infoElements
+          });
+        });
       default:
         break;
     }
