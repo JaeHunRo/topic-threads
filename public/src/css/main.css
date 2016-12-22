@@ -1115,7 +1115,7 @@ body {
 }
 
 .user-reacted-opinion:hover,
-.user-created-opinion:first-child,
+.user-created-opinion:hover,
 .user-liked-topic:hover {
   box-shadow: 0 0 2px black;
   border-color: transparent;
