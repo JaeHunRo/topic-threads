@@ -1045,14 +1045,13 @@ body {
   align-items: flex-start;
 }
 
-.user-reacted-opinion-topic,
-.user-created-opinion-topic {
+.user-info-section-topic-preview {
   font-size: 12px;
   line-height: 14px;
   color: gray;
   display: flex;
   align-content: flex-start;
-  margin-top: 4px;
+  margin-top: 8px;
   background-color: var(--sticky-color);
   padding: 4px 8px;
   box-shadow: 0 0 2px;
@@ -1074,8 +1073,7 @@ body {
   margin-top: 4px;
 }
 
-.user-reacted-opinion-content span,
-.user-created-opinion-topic span {
+.user-info-section-opinion-preview span {
   color: rgb(0,122,255);
 }
 
@@ -1086,8 +1084,7 @@ body {
   align-items: flex-start;
 }
 
-.user-reacted-opinion-content,
-.user-created-opinion-content {
+.user-info-section-opinion-preview {
   font-size: 14px;
   width: 226px;
   line-height: 16px;
@@ -1096,8 +1093,7 @@ body {
   text-overflow: ellipsis;
 }
 
-.user-reacted-opinion-content .quotation-mark,
-.user-created-opinion-content .quotation-mark {
+.user-info-section-opinion-preview .quotation-mark {
   color: gray;
   font-size: 16px;
 }
@@ -1108,17 +1104,19 @@ body {
   height: 20px;
 }
 
-.user-liked-topic,
-.user-created-opinion {
+.user-info-section-item.user-reacted-opinion {
+  flex-direction: row;
+}
+
+.user-info-section-item.user-liked-topic {
+  background-color: var(--sticky-color);
+}
+
+.user-info-section-item {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-}
-
-.user-liked-topic,
-.user-reacted-opinion,
-.user-created-opinion {
-  display: flex;
   background-color: white;
   color: black;
   font-size: 12px;
@@ -1130,15 +1128,11 @@ body {
   border: 1px solid lightgray;
 }
 
-.user-reacted-opinion:first-child,
-.user-created-opinion:first-child,
-.user-liked-topic:first-child {
+.user-info-section-item:first-child {
   margin-top: 0;
 }
 
-.user-reacted-opinion:hover,
-.user-created-opinion:hover,
-.user-liked-topic:hover {
+.user-info-section-item:hover {
   box-shadow: 0 0 2px black;
   border-color: transparent;
 }

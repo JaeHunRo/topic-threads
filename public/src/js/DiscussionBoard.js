@@ -48,7 +48,7 @@ export class DiscussionBoard extends React.Component {
       filterOption: filterOptions.MostRecent,
       filterCategory: 'All',
       filterDropdownExpanded: dropdowns.None,
-      profileInfoOption: infoOptions.LikedTopics,
+      profileInfoOption: -1,
       profileInfoSection: [],
       fetchingInfoSection: false
     }
@@ -350,7 +350,7 @@ export class DiscussionBoard extends React.Component {
           const topicElement = (
             <div
               key={topic.id + '-liked-topic'}
-              className='user-liked-topic'
+              className='user-info-section-item user-liked-topic'
               onClick={this.handleTopicExpand.bind(this, topic)}>
               <div className="user-liked-topic-title">{topic.title}</div>
               <div className="user-liked-topic-metadata">
@@ -393,19 +393,19 @@ export class DiscussionBoard extends React.Component {
             const voteElement = (
               <div
                 key={vote.topic_id + '-' + vote.opinion_id + '-user-vote'}
-                className="user-reacted-opinion"
+                className="user-info-section-item user-reacted-opinion"
                 onClick={this.handleTopicExpand.bind(this, topic)}>
                 <div className="user-reacted-opinion-reaction">
                   <img src={"src/assets/vote-icons/" + Reactions.reactions[vote.type].icon}/>
                 </div>
                 <div className="user-reacted-opinion-previews">
-                  <div className="user-reacted-opinion-content">
+                  <div className="user-info-section-opinion-preview">
                     <span>On:&nbsp;</span>
                     <span className="quotation-mark">&ldquo;</span>
                     {vote.opinionContent}
                     <span className="quotation-mark">&rdquo;</span>
                   </div>
-                  <div className="user-reacted-opinion-topic">
+                  <div className="user-info-section-topic-preview">
                     <div className="topic-thumbtack"></div>
                     {topicTitle}
                   </div>
@@ -442,14 +442,14 @@ export class DiscussionBoard extends React.Component {
             const opinionElement = (
               <div
                 key={opinion.topic_id + '-' + opinion.id + '-user-opinion'}
-                className="user-created-opinion"
+                className="user-info-section-item"
                 onClick={this.handleTopicExpand.bind(this, topic)}>
-                <div className="user-created-opinion-content">
+                <div className="user-info-section-opinion-preview">
                   <span className="quotation-mark">&ldquo;</span>
                   {opinion.content}
                   <span className="quotation-mark">&rdquo;</span>
                 </div>
-                <div className="user-created-opinion-topic">
+                <div className="user-info-section-topic-preview">
                   <div className="topic-thumbtack"></div>
                   <div>
                     {topicTitle}
@@ -464,6 +464,53 @@ export class DiscussionBoard extends React.Component {
             profileInfoSection: infoElements
           });
         });
+        break;
+      case infoOptions.PostedComments:
+        console.log('posted comments');
+        this.setState({
+          fetchingInfoSection: true,
+          profileInfoSection: []
+        });
+        const commentsRequest = $.ajax({
+          contentType: 'application/json',
+          url: '/api/comment/user',
+          type: 'GET',
+        });
+        $.when(commentsRequest).done((data) => {
+          console.log(data);
+          let comments = data.comments.rows;
+          comments.forEach((comment) => {
+            const topic = this.getTopicById(comment.topic_id);
+            let topicTitle;
+            if (topic) {
+              topicTitle = topic.title;
+            }
+            const commentElement = (
+              <div
+                key={comment.topic_id + '-' + comment.opinion_id + '-' + comment.id + '-user-comment'}
+                className="user-info-section-item"
+                onClick={this.handleTopicExpand.bind(this, topic)}>
+                <div className="user-info-section-opinion-preview">
+                  <span className="quotation-mark">&ldquo;</span>
+                  {comment.content}
+                  <span className="quotation-mark">&rdquo;</span>
+                </div>
+                <div className="user-info-section-topic-preview">
+                  <div className="topic-thumbtack"></div>
+                  <div>
+                    {topicTitle}
+                  </div>
+                </div>
+              </div>
+            );
+            infoElements.push(commentElement);
+          });
+          this.setState({
+            fetchingInfoSection: false,
+            profileInfoSection: infoElements
+          });
+        });
+        break;
       default:
         break;
     }
@@ -480,6 +527,9 @@ export class DiscussionBoard extends React.Component {
   }
 
   selectUserInfoOption(option) {
+    if (option == this.state.profileInfoOption) {
+      return;
+    }
     this.setState({
       profileInfoOption: option
     }, () => {
@@ -495,8 +545,8 @@ export class DiscussionBoard extends React.Component {
           key={index + '-info-option'}
           className={
             this.state.profileInfoOption == infoOptions[key]
-            ? "user-profile-info-option selected"
-            : "user-profile-info-option"
+            ? "user-profile-info-option unselectable selected"
+            : "user-profile-info-option unselectable"
           }
           onClick={this.selectUserInfoOption.bind(this, infoOptions[key])}>
           {infoOptions[key]}
