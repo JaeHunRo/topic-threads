@@ -49,7 +49,8 @@ export class DiscussionBoard extends React.Component {
       filterCategory: 'All',
       filterDropdownExpanded: dropdowns.None,
       profileInfoOption: infoOptions.LikedTopics,
-      profileInfoSection: []
+      profileInfoSection: [],
+      fetchingInfoSection: false
     }
   }
 
@@ -68,6 +69,8 @@ export class DiscussionBoard extends React.Component {
   toggleUserProfile() {
     this.setState({
       userProfileShown: !this.state.userProfileShown
+    }, () => {
+      this.selectUserInfoOption(infoOptions.LikedTopics);
     });
   }
 
@@ -369,6 +372,10 @@ export class DiscussionBoard extends React.Component {
         });
         break;
       case infoOptions.ReactedOpinions:
+        this.setState({
+          fetchingInfoSection: true,
+          profileInfoSection: []
+        });
         const opinionVotesRequest = $.ajax({
           contentType: 'application/json',
           url: 'api/opinion_votes/user',
@@ -378,15 +385,36 @@ export class DiscussionBoard extends React.Component {
           console.log(data);
           let votes = data.opinionVotes.rows;
           votes.forEach((vote) => {
-            console.log(vote.type);
+            const topic = this.getTopicById(vote.topic_id);
+            let topicTitle;
+            if (topic) {
+              topicTitle = topic.title;
+            }
             const voteElement = (
-              <div>
-                <img src={"src/assets/vote-icons/" + Reactions.reactions[vote.type].icon}/>
+              <div
+                key={vote.topic_id + '-' + vote.opinion_id + '-vote'}
+                className="user-reacted-opinion"
+                onClick={this.handleTopicExpand.bind(this, topic)}>
+                <div className="user-reacted-opinion-reaction">
+                  <img src={"src/assets/vote-icons/" + Reactions.reactions[vote.type].icon}/>
+                </div>
+                <div className="user-reacted-opinion-previews">
+                  <div className="user-reacted-opinion-content">
+                    <span>On:&nbsp;</span>
+                    <span className="quotation-mark">&ldquo;</span>
+                    {vote.opinionContent}
+                    <span className="quotation-mark">&rdquo;</span>
+                  </div>
+                  <div className="user-reacted-opinion-topic">
+                    {topicTitle}
+                  </div>
+                </div>
               </div>
             );
             infoElements.push(voteElement);
           });
           this.setState({
+            fetchingInfoSection: false,
             profileInfoSection: infoElements
           });
         });
@@ -396,9 +424,21 @@ export class DiscussionBoard extends React.Component {
     }
   }
 
+  getTopicById(id) {
+    const topics = this.props.topics;
+    for(let i = 0; i < topics.length; i++) {
+      if (topics[i].id == id) {
+        return topics[i];
+      }
+    }
+    return null;
+  }
+
   selectUserInfoOption(option) {
     this.setState({
       profileInfoOption: option
+    }, () => {
+      this.renderUserInfoSection();
     });
   }
 
@@ -646,7 +686,17 @@ export class DiscussionBoard extends React.Component {
               {this.renderUserInfoOptions()}
             </div>
             <div className="user-profile-info-section">
-              {this.state.profileInfoSection}
+              {
+                this.state.fetchingInfoSection
+                ? (
+                  <div className="loading-info-section-container">
+                    <div className="loading-info-section">
+                      <img src="src/assets/loading.gif"/>
+                    </div>
+                  </div>
+                )
+                : this.state.profileInfoSection
+              }
             </div>
           </div>
           <a href="/logout">
