@@ -77,8 +77,20 @@ function getOpinionVotesForUser(req, res, next){
             if (!req.hasOwnProperty('result')){
                 req.result = {};
             }
-            req.result.opinionVotes = result;
-            next();
+            async.each(result.rows, function(opinionVote, callback){
+                db.Opinion.findOne({
+                    where: {
+                        topic_id: opinionVote.dataValues.topic_id,
+                        id: opinionVote.dataValues.opinion_id
+                    }
+                }).then(function(opinion){
+                    opinionVote.dataValues.opinionContent = opinion.dataValues.content;
+                    callback();
+                })
+            }, function(){
+                req.result.opinionVotes = result;
+                next();
+            })
         }).catch(function(err){
             res.status(400).send({
                 message: "Could not retrieve opinion votes for this user."
