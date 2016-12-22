@@ -60,6 +60,34 @@ function getDetailedOpinionVotes(req, res){
 }
 
 /*
+Returns a list of the opinion votes that a user has posted.
+*/
+function getOpinionVotesForUser(req, res, next){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.OpinionVotes.findAndCountAll({
+            where: {
+                user_id: user.id
+            },
+            order: '"updatedAt" DESC'
+        }).then(function(result){
+            if (!req.hasOwnProperty('result')){
+                req.result = {};
+            }
+            req.result.opinionVotes = result;
+            next();
+        }).catch(function(err){
+            res.status(400).send({
+                message: "Could not retrieve opinion votes for this user."
+            });
+        });
+    });
+}
+
+/*
 Adds a vote on a particular opinion.
 Request body requires: topic_id, opinion_id, and type ("savage", etc.)
 First checks to see if the user has already voted on that particular opinion,
@@ -181,6 +209,7 @@ module.exports = {
     getOpinionVotes: getOpinionVotes,
     postOpinionVote: postOpinionVote,
     getDetailedOpinionVotes: getDetailedOpinionVotes,
+    getOpinionVotesForUser: getOpinionVotesForUser,
     editOpinionVote: editOpinionVote,
     deleteOpinionVote: deleteOpinionVote
 };

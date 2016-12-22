@@ -128,7 +128,10 @@ function getOpinionsForUser(req, res, next){
             },
             order: '"updatedAt" DESC'
         }).then(function(result){
-            req.result = result;
+            if (!req.hasOwnProperty("result")){
+                req.result = {}
+            }
+            req.result.opinions = result;
             next();
         }).catch(function(error){
             res.status(400).send({

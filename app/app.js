@@ -80,6 +80,8 @@ router.delete('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, to
 //OpinionVote routes
 router.post('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.postOpinionVote); //Tested
 router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes); //Tested
+router.get('/api/opinion_votes/user', userController.isLoggedIn, opinionVotesController.getOpinionVotesForUser, finalController.sendResults);
+
 router.put('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.editOpinionVote); //Tested
 router.delete('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.deleteOpinionVote); //Tested
 

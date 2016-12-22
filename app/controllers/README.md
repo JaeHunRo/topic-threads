@@ -147,34 +147,35 @@ Sample response otherwise:
 #### GET opinions that a user has posted: /api/opinion/user
 Returns an error response with status 400 and message "There was an error retrieving opinions for this user." in the case of an error.
 
-Returns opinions in order of most recent. Does not require anything in the request body or parameter URLs.
+Returns opinions in order of most recent. Does not require anything in the request body or parameter URLs. NOTE: the response is nested under 'opinions' in the JSON.
 Sample response:
 ```javascript
-{
-	count: 2,
-	rows: [
-	{
-		id: 52,
-		content: "Ellen vs. Grace is an interesting matchup though....",
-		createdAt: "2016-12-17T23:19:16.148Z",
-		updatedAt: "2016-12-17T23:19:16.148Z",
-		user_id: 3,
-		topic_id: 16,
-		voteCount: {
-			intriguing: 2
-		}
-	},
-	{
-		id: 50,
-		content: "EZ WIN",
-		createdAt: "2016-12-17T23:14:22.519Z",
-		updatedAt: "2016-12-17T23:14:22.519Z",
-		user_id: 3,
-		topic_id: 16,
-		voteCount: {
-			flawed: 2,
-			convincing: 2,
-			savage: 1
+{	opinions: {
+		count: 2,
+		rows: [
+		{
+			id: 52,
+			content: "Ellen vs. Grace is an interesting matchup though....",
+			createdAt: "2016-12-17T23:19:16.148Z",
+			updatedAt: "2016-12-17T23:19:16.148Z",
+			user_id: 3,
+			topic_id: 16,
+			voteCount: {
+				intriguing: 2
+			}
+		},
+		{
+			id: 50,
+			content: "EZ WIN",
+			createdAt: "2016-12-17T23:14:22.519Z",
+			updatedAt: "2016-12-17T23:14:22.519Z",
+			user_id: 3,
+			topic_id: 16,
+			voteCount: {
+				flawed: 2,
+				convincing: 2,
+				savage: 1
+			}
 		}
 	}
 }
@@ -226,7 +227,7 @@ Sample response:
 
 
 #### GET all comments a particular user has posted: /api/comment/user
-Sorted in most-recent order. **IMPORTANT: note that the response is contained under 'comment' in the JSON object:
+Sorted in most-recent order. **IMPORTANT: note that the response is contained under 'comments' in the JSON object:
 ```
 {
 	comments: {

@@ -66,7 +66,9 @@ function getCommentsForUser(req, res, next){
             },
             order: '"updatedAt" DESC'
         }).then(function(result){
-            req.result = {};
+            if (!req.hasOwnProperty('result')){
+                req.result = {};
+            }
             req.result.comments = result;
             next();
         }).catch(function(error){
