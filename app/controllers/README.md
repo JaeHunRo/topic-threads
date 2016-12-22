@@ -144,6 +144,41 @@ Sample response otherwise:
 }
 ```
 
+#### GET opinions that a user has posted
+Returns an error response with status 400 and message "There was an error retrieving opinions for this user." in the case of an error.
+
+Sample response otherwise:
+```javascript
+{
+	count: 2,
+	rows: [
+	{
+		id: 52,
+		content: "Ellen vs. Grace is an interesting matchup though....",
+		createdAt: "2016-12-17T23:19:16.148Z",
+		updatedAt: "2016-12-17T23:19:16.148Z",
+		user_id: 3,
+		topic_id: 16,
+		voteCount: {
+			intriguing: 2
+		}
+	},
+	{
+		id: 50,
+		content: "EZ WIN",
+		createdAt: "2016-12-17T23:14:22.519Z",
+		updatedAt: "2016-12-17T23:14:22.519Z",
+		user_id: 3,
+		topic_id: 16,
+		voteCount: {
+			flawed: 2,
+			convincing: 2,
+			savage: 1
+		}
+	}
+}
+```
+
 #### POST a new opinion: /api/opinion/topicId/:topicId 
 Request body requires the following fields:
 * String: content

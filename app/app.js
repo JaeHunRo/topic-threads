@@ -11,6 +11,7 @@ var opinionController = require('./controllers/opinionController');
 var commentController = require('./controllers/commentController');
 var topicVotesController = require('./controllers/topicVotesController');
 var opinionVotesController = require('./controllers/opinionVotesController');
+var finalController = require('./controllers/finalController');
 
 var app = express();
 var router = express.Router();
@@ -62,6 +63,7 @@ router.post('/api/topic', userController.isLoggedIn, topicController.postTopic);
 //Opinion routes
 router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes, commentController.getCommentCountForAllTopics); //Tested
 router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion); //Tested
+router.get('/api/opinion/user', userController.isLoggedIn, opinionController.getOpinionsForUser, opinionVotesController.getOpinionVotes, finalController.sendResults);
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion); //Tested
 
 //Comment routes

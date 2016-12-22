@@ -112,6 +112,33 @@ function getOpinion(req, res, next){
     });
 }
 
+
+/**
+Retrieves all the opinions that one particular user has created.
+*/
+function getOpinionsForUser(req, res, next){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.Opinion.findAndCountAll({
+            where: {
+                user_id: user.id
+            },
+            order: '"updatedAt" DESC'
+        }).then(function(result){
+            req.result = result;
+            next();
+        }).catch(function(error){
+            res.status(400).send({
+                message: "There was an error retrieving opinions for this user."
+            });
+        });
+    })
+}
+
+
 function postOpinion(req, res, next) {
     db.User.findOne({
         where: {
@@ -155,5 +182,6 @@ module.exports = {
     postOpinion: postOpinion,
     getAllOpinions: getAllOpinions,
     getOpinion: getOpinion,
+    getOpinionsForUser: getOpinionsForUser,
     getOpinionCountForAllTopics: getOpinionCountForAllTopics
 };
