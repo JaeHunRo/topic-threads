@@ -1,6 +1,7 @@
 const React = require('react');
 const DiscussionTopic = require('./DiscussionTopic');
 const TopicFilterOptions = require('./TopicFilterOptions');
+const Reactions = require('./OpinionReactions');
 const Util = require('./Util');
 const $ = require('jquery');
 
@@ -48,6 +49,7 @@ export class DiscussionBoard extends React.Component {
       filterCategory: 'All',
       filterDropdownExpanded: dropdowns.None,
       profileInfoOption: infoOptions.LikedTopics,
+      profileInfoSection: []
     }
   }
 
@@ -333,34 +335,65 @@ export class DiscussionBoard extends React.Component {
     return topics;
   }
 
-  renderUserLikedTopics() {
-    let topics = this.props.topics;
-    let likedTopics = topics.filter((topic) => {
-      return topic.userPreviouslyVoted === true;
-    });
-    let topicElements = [];
-    likedTopics.forEach((topic) => {
-      const topicElement = (
-        <div
-          key={topic.id + '-liked-topic'}
-          className='user-liked-topic'
-          onClick={this.handleTopicExpand.bind(this, topic)}>
-          <div className="user-liked-topic-title">{topic.title}</div>
-          <div className="user-liked-topic-metadata">
-            <div className="user-liked-topic-upvotes">
-              <i className="fa fa-chevron-circle-up" aria-hidden="true"/>
-              <div>{topic.upvotes}</div>
+  renderUserInfoSection() {
+    let infoElements = [];
+    switch(this.state.profileInfoOption) {
+      case infoOptions.LikedTopics:
+        let topics = this.props.topics;
+        let likedTopics = topics.filter((topic) => {
+          return topic.userPreviouslyVoted === true;
+        });
+        likedTopics.forEach((topic) => {
+          const topicElement = (
+            <div
+              key={topic.id + '-liked-topic'}
+              className='user-liked-topic'
+              onClick={this.handleTopicExpand.bind(this, topic)}>
+              <div className="user-liked-topic-title">{topic.title}</div>
+              <div className="user-liked-topic-metadata">
+                <div className="user-liked-topic-upvotes">
+                  <i className="fa fa-chevron-circle-up" aria-hidden="true"/>
+                  <div>{topic.upvotes}</div>
+                </div>
+                <div className="user-liked-topic-opinions">
+                  <i className="fa fa-comments-o" aria-hidden="true"/>
+                  <div>{topic.opinionCount}</div>
+                </div>
+              </div>
             </div>
-            <div className="user-liked-topic-opinions">
-              <i className="fa fa-comments-o" aria-hidden="true"/>
-              <div>{topic.opinionCount}</div>
-            </div>
-          </div>
-        </div>
-      );
-      topicElements.push(topicElement);
-    });
-    return topicElements;
+          );
+          infoElements.push(topicElement);
+        });
+        this.setState({
+          profileInfoSection: infoElements
+        });
+        break;
+      case infoOptions.ReactedOpinions:
+        const opinionVotesRequest = $.ajax({
+          contentType: 'application/json',
+          url: 'api/opinion_votes/user',
+          type: 'GET',
+        });
+        $.when(opinionVotesRequest).done((data) => {
+          console.log(data);
+          let votes = data.opinionVotes.rows;
+          votes.forEach((vote) => {
+            console.log(vote.type);
+            const voteElement = (
+              <div>
+                <img src={"src/assets/vote-icons/" + Reactions.reactions[vote.type].icon}/>
+              </div>
+            );
+            infoElements.push(voteElement);
+          });
+          this.setState({
+            profileInfoSection: infoElements
+          });
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   selectUserInfoOption(option) {
@@ -612,8 +645,8 @@ export class DiscussionBoard extends React.Component {
             <div className="user-profile-info-selector">
               {this.renderUserInfoOptions()}
             </div>
-            <div className="user-profile-liked-topics">
-              {this.renderUserLikedTopics()}
+            <div className="user-profile-info-section">
+              {this.state.profileInfoSection}
             </div>
           </div>
           <a href="/logout">
