@@ -144,10 +144,11 @@ Sample response otherwise:
 }
 ```
 
-#### GET opinions that a user has posted
+#### GET opinions that a user has posted: /api/opinion/user
 Returns an error response with status 400 and message "There was an error retrieving opinions for this user." in the case of an error.
 
-Sample response otherwise:
+Returns opinions in order of most recent. Does not require anything in the request body or parameter URLs.
+Sample response:
 ```javascript
 {
 	count: 2,
@@ -222,6 +223,37 @@ Sample response:
 	]
 }
 ```
+
+
+#### GET all comments a particular user has posted: /api/comment/user
+Sorted in most-recent order. **IMPORTANT: note that the response is contained under 'comment' in the JSON object:
+```
+{
+	comments: {
+		count: 4,
+		rows: [
+			{
+				id: 45,
+				content: "Hi nina",
+				createdAt: "2016-12-21T06:08:20.996Z",
+				updatedAt: "2016-12-21T06:08:20.996Z",
+				user_id: 3,
+				topic_id: 7,
+				opinion_id: 29
+			},
+			{
+				id: 29,
+				content: "i really don't think so ellen",
+				createdAt: "2016-12-16T04:41:23.685Z",
+				updatedAt: "2016-12-16T04:41:23.685Z",
+				user_id: 3,
+				topic_id: 12,
+				opinion_id: 40
+		}]
+	}
+}
+```
+
 
 #### POST a new comment: /api/comment/topicId/:topicId/opinionId/:opinionId
 Request body requires the following fields:

@@ -114,7 +114,7 @@ function getOpinion(req, res, next){
 
 
 /**
-Retrieves all the opinions that one particular user has created.
+Retrieves all the opinions that one particular user has created in most recent order.
 */
 function getOpinionsForUser(req, res, next){
     db.User.findOne({
