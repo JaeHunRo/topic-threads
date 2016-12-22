@@ -406,6 +406,7 @@ export class DiscussionBoard extends React.Component {
                     <span className="quotation-mark">&rdquo;</span>
                   </div>
                   <div className="user-reacted-opinion-topic">
+                    <div className="topic-thumbtack"></div>
                     {topicTitle}
                   </div>
                 </div>
@@ -449,8 +450,10 @@ export class DiscussionBoard extends React.Component {
                   <span className="quotation-mark">&rdquo;</span>
                 </div>
                 <div className="user-created-opinion-topic">
-                  <span>On:&nbsp;</span>
-                  {topicTitle}
+                  <div className="topic-thumbtack"></div>
+                  <div>
+                    {topicTitle}
+                  </div>
                 </div>
               </div>
             );

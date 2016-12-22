@@ -1050,6 +1050,28 @@ body {
   font-size: 12px;
   line-height: 14px;
   color: gray;
+  display: flex;
+  align-content: flex-start;
+  margin-top: 4px;
+  background-color: var(--sticky-color);
+  padding: 4px 8px;
+  box-shadow: 0 0 2px;
+  border-radius: 5px;
+}
+
+.topic-thumbtack {
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-image: linear-gradient(
+    to right bottom,
+    red,
+    rgba(0,0,0,0.5)
+  );
+  box-shadow: 0 0 4px black;
+  margin-right: 6px;
+  margin-top: 4px;
 }
 
 .user-reacted-opinion-content span,
