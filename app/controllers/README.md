@@ -106,7 +106,8 @@ Sample response:
 			voteCount: {   //Number of votes for each type. Note that fields with 0 votes are omitted.
 				savage: 1,
 				debatable: 2
-			}
+			},
+			commentCount: 2
 		},
 		{
 			id: 5,
@@ -117,7 +118,8 @@ Sample response:
 			topic_id: 2,
 			userPreviouslyVoted: null,
 			opinionAuthor: "Phil Foo",
-			voteCount: { }
+			voteCount: { },
+			commentCount: 3
 		}
 	]
 }
@@ -147,35 +149,35 @@ Sample response otherwise:
 #### GET opinions that a user has posted: /api/opinion/user
 Returns an error response with status 400 and message "There was an error retrieving opinions for this user." in the case of an error.
 
-Returns opinions in order of most recent. Does not require anything in the request body or parameter URLs. NOTE: the response is nested under 'opinions' in the JSON.
-Sample response:
+Returns opinions in order of most recent. Does not require anything in the request body or parameter URLs.
 ```javascript
-{	opinions: {
-		count: 2,
-		rows: [
-		{
-			id: 52,
-			content: "Ellen vs. Grace is an interesting matchup though....",
-			createdAt: "2016-12-17T23:19:16.148Z",
-			updatedAt: "2016-12-17T23:19:16.148Z",
-			user_id: 3,
-			topic_id: 16,
-			voteCount: {
-				intriguing: 2
-			}
-		},
-		{
-			id: 50,
-			content: "EZ WIN",
-			createdAt: "2016-12-17T23:14:22.519Z",
-			updatedAt: "2016-12-17T23:14:22.519Z",
-			user_id: 3,
-			topic_id: 16,
-			voteCount: {
-				flawed: 2,
-				convincing: 2,
-				savage: 1
-			}
+{
+	count: 2,
+	rows: [
+	{
+		id: 52,
+		content: "Ellen vs. Grace is an interesting matchup though....",
+		createdAt: "2016-12-17T23:19:16.148Z",
+		updatedAt: "2016-12-17T23:19:16.148Z",
+		user_id: 3,
+		topic_id: 16,
+		topicTitle: "One-on-Ones",
+		voteCount: {
+			intriguing: 2
+		}
+	},
+	{
+		id: 50,
+		content: "EZ WIN",
+		createdAt: "2016-12-17T23:14:22.519Z",
+		updatedAt: "2016-12-17T23:14:22.519Z",
+		user_id: 3,
+		topic_id: 16,
+		topicTitle: "One-on-Ones",
+		voteCount: {
+			flawed: 2,
+			convincing: 2,
+			savage: 1
 		}
 	}
 }
@@ -230,28 +232,26 @@ Sample response:
 Sorted in most-recent order. **IMPORTANT: note that the response is contained under 'comments' in the JSON object:
 ```
 {
-	comments: {
-		count: 4,
-		rows: [
-			{
-				id: 45,
-				content: "Hi nina",
-				createdAt: "2016-12-21T06:08:20.996Z",
-				updatedAt: "2016-12-21T06:08:20.996Z",
-				user_id: 3,
-				topic_id: 7,
-				opinion_id: 29
-			},
-			{
-				id: 29,
-				content: "i really don't think so ellen",
-				createdAt: "2016-12-16T04:41:23.685Z",
-				updatedAt: "2016-12-16T04:41:23.685Z",
-				user_id: 3,
-				topic_id: 12,
-				opinion_id: 40
-		}]
-	}
+	count: 4,
+	rows: [
+		{
+			id: 45,
+			content: "Hi nina",
+			createdAt: "2016-12-21T06:08:20.996Z",
+			updatedAt: "2016-12-21T06:08:20.996Z",
+			user_id: 3,
+			topic_id: 7,
+			opinion_id: 29
+		},
+		{
+			id: 29,
+			content: "i really don't think so ellen",
+			createdAt: "2016-12-16T04:41:23.685Z",
+			updatedAt: "2016-12-16T04:41:23.685Z",
+			user_id: 3,
+			topic_id: 12,
+			opinion_id: 40
+	}]
 }
 ```
 
@@ -285,6 +285,37 @@ Sample response:
 		username: "Phil Foo"
 	}
 	]
+}
+```
+
+#### GET all votes a particular user has casted: /api/topic_votes/user
+Sample response:
+```
+{
+	count: 2,
+	rows: [
+		{
+			id: 21,
+			isUp: false,
+			createdAt: "2016-12-12T23:36:50.339Z",
+			updatedAt: "2016-12-12T23:36:51.349Z",
+			user_id: 3,
+			topic_id: 8,
+			upvotes: 0,
+			downvotes: 0,
+			topicTitle: "New Sample Topic"
+		},
+		{
+			id: 20,
+			isUp: true,
+			createdAt: "2016-12-12T23:36:42.881Z",
+			updatedAt: "2016-12-12T23:36:42.881Z",
+			user_id: 3,
+			topic_id: 9,
+			upvotes: 0,
+			downvotes: 0,
+			topicTitle: "who going to jade?"
+	}
 }
 ```
 
@@ -343,7 +374,6 @@ Sample response:
 Sample response:
 ```
 {
-opinionVotes: {
 	count: 2,
 	rows: [
 		{
@@ -354,7 +384,8 @@ opinionVotes: {
 			user_id: 3,
 			topic_id: 16,
 			opinion_id: 50,
-			opinionContent: "EZ WIN"
+			opinionContent: "EZ WIN",
+			topicTitle: "Memes"
 		},
 		{
 			id: 35,
@@ -364,9 +395,9 @@ opinionVotes: {
 			user_id: 3,
 			topic_id: 3,
 			opinion_id: 17,
-			opinionContent: "i'm going to learn how to read! "
+			opinionContent: "i'm going to learn how to read! ",
+			topicTitle: "Memes"
 		}
-	]
 }
 
 ```

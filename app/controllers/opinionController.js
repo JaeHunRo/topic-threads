@@ -128,16 +128,32 @@ function getOpinionsForUser(req, res, next){
             },
             order: '"updatedAt" DESC'
         }).then(function(result){
-            if (!req.hasOwnProperty("result")){
-                req.result = {}
-            }
-            req.result.opinions = result;
+            req.result = result;
             next();
         }).catch(function(error){
             res.status(400).send({
                 message: "There was an error retrieving opinions for this user."
             });
         });
+    })
+}
+
+/**
+Iterates through a list already defined in req.result and finds corresponding opinion content based on opinion_id
+*/
+function getOpinionContent(req, res, next){
+    async.each(req.result.rows, function(object, callback){
+        db.Opinion.findOne({
+            where: {
+                id: object.opinion_id,
+                topic_id: object.topic_id
+            }
+        }).then(function(opinion){
+            object.dataValues.opinionContent = opinion.dataValues.content;
+            callback();
+        })
+    }, function(){
+        next();
     })
 }
 
@@ -165,7 +181,7 @@ function postOpinion(req, res, next) {
     });
 }
 
-function getOpinionCountForAllTopics(req, res, next) {
+function getOpinionCountForTopics(req, res, next) {
     var topics = req.result.rows;
     async.each(topics, function(topic, callback){
         db.Opinion.count({
@@ -186,5 +202,6 @@ module.exports = {
     getAllOpinions: getAllOpinions,
     getOpinion: getOpinion,
     getOpinionsForUser: getOpinionsForUser,
-    getOpinionCountForAllTopics: getOpinionCountForAllTopics
+    getOpinionCountForTopics: getOpinionCountForTopics,
+    getOpinionContent: getOpinionContent
 };

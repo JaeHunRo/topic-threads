@@ -34,7 +34,7 @@ function getComments(req, res, next) {
     });
 }
 
-function getCommentCountForAllTopics(req, res, next) {
+function getCommentCountForOpinions(req, res, next) {
   var opinions = req.result.rows;
   async.each(opinions, function(opinion, callback) {
     db.Comment.count({
@@ -47,7 +47,7 @@ function getCommentCountForAllTopics(req, res, next) {
       callback();
     })
   }, function(){
-    res.send(req.result);
+    next();
   });
 }
 
@@ -69,7 +69,7 @@ function getCommentsForUser(req, res, next){
             if (!req.hasOwnProperty('result')){
                 req.result = {};
             }
-            req.result.comments = result;
+            req.result = result;
             next();
         }).catch(function(error){
             res.status(400).send({
@@ -108,5 +108,5 @@ module.exports = {
     postComment: postComment,
     getComments: getComments,
     getCommentsForUser: getCommentsForUser,
-    getCommentCountForAllTopics: getCommentCountForAllTopics
+    getCommentCountForOpinions: getCommentCountForOpinions
 };

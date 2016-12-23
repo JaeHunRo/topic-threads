@@ -52,6 +52,28 @@ function getDetailedTopicVotes(req, res){
     });
 }
 
+function getTopicVotesForUser(req, res, next){
+    db.User.findOne({
+        where: {
+            fb_id: req.user.id
+        }
+    }).then(function(user){
+        db.TopicVotes.findAndCountAll({
+            where: {
+                user_id: user.id
+            },
+            order: '"updatedAt" DESC'
+        }).then(function(result){
+            req.result = result;
+            next();
+        });
+    }).catch(function(err){
+        res.status(400).send({
+            message: "There was an error retrieving topic votes for this user."
+        });
+    });
+}
+
 /*
 Posts a topic vote associated with a particular topic.
 Required in the request body: topic_id and isUp (a boolean).
@@ -162,6 +184,7 @@ function editTopicVote(req, res){
 module.exports = {
     getTopicVotes: getTopicVotes,
     postTopicVote: postTopicVote,
+    getTopicVotesForUser: getTopicVotesForUser,
     deleteTopicVote: deleteTopicVote,
     editTopicVote: editTopicVote,
     getDetailedTopicVotes: getDetailedTopicVotes

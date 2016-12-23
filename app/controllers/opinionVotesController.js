@@ -14,7 +14,7 @@ function getOpinionVotes(req, res, next){
             db.OpinionVotes.findAndCountAll({
                 where: {
                     topic_id: opinion.topic_id,
-                    opinion_id: opinion.id
+                    opinion_id: opinion.id 
                 }
             }).then(function(votes){
                 var votesRows = votes.rows;
@@ -74,23 +74,8 @@ function getOpinionVotesForUser(req, res, next){
             },
             order: '"updatedAt" DESC'
         }).then(function(result){
-            if (!req.hasOwnProperty('result')){
-                req.result = {};
-            }
-            async.each(result.rows, function(opinionVote, callback){
-                db.Opinion.findOne({
-                    where: {
-                        topic_id: opinionVote.dataValues.topic_id,
-                        id: opinionVote.dataValues.opinion_id
-                    }
-                }).then(function(opinion){
-                    opinionVote.dataValues.opinionContent = opinion.dataValues.content;
-                    callback();
-                })
-            }, function(){
-                req.result.opinionVotes = result;
-                next();
-            })
+            req.result = result;
+            next();
         }).catch(function(err){
             res.status(400).send({
                 message: "Could not retrieve opinion votes for this user."

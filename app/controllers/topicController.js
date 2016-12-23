@@ -51,6 +51,25 @@ function getAllTopics(req, res, next){
     });
 }
 
+
+/**
+Iterates through a list already defined in req.result and finds corresponding topic titles based on topic_id
+*/
+function getTopicTitles(req, res, next){
+    async.each(req.result.rows, function(object, callback){
+        db.Topic.findOne({
+            where: {
+                id: object.topic_id
+            }
+        }).then(function(topic){
+            object.dataValues.topicTitle = topic.dataValues.title;
+            callback();
+        })
+    }, function(){
+        next();
+    })
+}
+
 /*
 Gets information associated with a particular topic. Nothing
 additional necessary in the request body. Also appends the
@@ -131,5 +150,6 @@ function postTopic(req, res, next) {
 module.exports = {
     postTopic: postTopic,
     getAllTopics: getAllTopics,
+    getTopicTitles: getTopicTitles,
     getTopic: getTopic
 };

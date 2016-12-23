@@ -56,23 +56,25 @@ INTERNAL API ROUTES
 ========================================
 */
 //Topic routes
-router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes, opinionController.getOpinionCountForAllTopics); //Tested
+router.get('/api/topic/pageNum/:pageNum', userController.isLoggedIn, topicController.getAllTopics, topicVotesController.getTopicVotes, opinionController.getOpinionCountForTopics); //Tested
 router.get('/api/topic/:topicId', userController.isLoggedIn, topicController.getTopic); //Tested
 router.post('/api/topic', userController.isLoggedIn, topicController.postTopic); //Tested
 
 //Opinion routes
-router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes, commentController.getCommentCountForAllTopics); //Tested
+router.get('/api/opinion/topicId/:topicId/pageNum/:pageNum', userController.isLoggedIn, opinionController.getAllOpinions, opinionVotesController.getOpinionVotes, 
+commentController.getCommentCountForOpinions, finalController.sendResults); //Tested
 router.get('/api/opinion/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionController.getOpinion); //Tested
-router.get('/api/opinion/user', userController.isLoggedIn, opinionController.getOpinionsForUser, opinionVotesController.getOpinionVotes, finalController.sendResults);
+router.get('/api/opinion/user', userController.isLoggedIn, opinionController.getOpinionsForUser, opinionVotesController.getOpinionVotes, topicController.getTopicTitles, finalController.sendResults);
 router.post('/api/opinion/topicId/:topicId', userController.isLoggedIn, opinionController.postOpinion); //Tested
 
 //Comment routes
 router.get('/api/comment/topicId/:topicId/opinionId/:opinionId/pageNum/:pageNum', userController.isLoggedIn, commentController.getComments); //Tested
-router.get('/api/comment/user', userController.isLoggedIn, commentController.getCommentsForUser, finalController.sendResults); //Tested
+router.get('/api/comment/user', userController.isLoggedIn, commentController.getCommentsForUser, topicController.getTopicTitles, opinionController.getOpinionContent, finalController.sendResults); //Tested
 router.post('/api/comment/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, commentController.postComment); //Tested
 
 //TopicVote routes
 router.get('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.getDetailedTopicVotes); //Tested
+router.get('/api/topic_votes/user', userController.isLoggedIn, topicVotesController.getTopicVotesForUser, topicVotesController.getTopicVotes, topicController.getTopicTitles, finalController.sendResults);
 router.post('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.postTopicVote); //Tested
 router.put('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.editTopicVote); //Tested
 router.delete('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, topicVotesController.deleteTopicVote); //Tested
@@ -80,7 +82,7 @@ router.delete('/api/topic_votes/topicId/:topicId', userController.isLoggedIn, to
 //OpinionVote routes
 router.post('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.postOpinionVote); //Tested
 router.get('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.getDetailedOpinionVotes); //Tested
-router.get('/api/opinion_votes/user', userController.isLoggedIn, opinionVotesController.getOpinionVotesForUser, finalController.sendResults);
+router.get('/api/opinion_votes/user', userController.isLoggedIn, opinionVotesController.getOpinionVotesForUser, topicController.getTopicTitles, opinionController.getOpinionContent, finalController.sendResults);
 
 router.put('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.editOpinionVote); //Tested
 router.delete('/api/opinion_votes/topicId/:topicId/opinionId/:opinionId', userController.isLoggedIn, opinionVotesController.deleteOpinionVote); //Tested
